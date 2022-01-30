@@ -18,7 +18,7 @@ namespace Game {
 
         private void Update() {
             if (Input.GetKeyDown(KeyCode.H)) {
-                Vector3 mouseToWorld = InputUtils.MouseToWorld(Camera.main, mask);
+                Vector3 mouseToWorld = InputUtility.MouseToWorld(Camera.main, mask);
                 grid.InstantiateOnGrid(mouseToWorld, prefab, Quaternion.identity, transform);
             }
         }

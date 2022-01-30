@@ -22,9 +22,5 @@ namespace Utils {
         public static Vector2Int RoundToVector2IntXZ(this Vector3 v) {
             return new Vector2Int(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.z));
         }
-
-        public static Vector3Int RoundToVector3Int(this Vector3 v) {
-            return new Vector3Int(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
-        }
     }
 }
