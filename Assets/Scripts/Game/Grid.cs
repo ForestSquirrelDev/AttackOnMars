@@ -12,7 +12,7 @@ namespace Game {
         private int height;
         private float cellSize;
         private Transform parent;
-        private List<GridObject>[,] objectsGrid;
+        private Dictionary<Vector2Int, GridObject> gridObjects = new();
         private int[,] cells;
 
         public Grid(int width, int height, float cellSize, Transform parent) {
@@ -22,24 +22,23 @@ namespace Game {
             this.parent = parent;
 
             cells = new int[width, height];
-            objectsGrid = new List<GridObject>[width, height];
         }
 
-        public Vector3 GridToWorld(Vector3 cell) {
-            return parent.TransformPoint(cell * cellSize);
+        public Vector3 GridToWorld(Vector2Int cell) {
+            return parent.TransformPoint(cell.ToVector3XZ() * cellSize);
         }
 
-        public Vector3 GridToWorldCentered(Vector3 cell) {
-            return parent.TransformPoint(cell.CenterXZ() * cellSize);
+        public Vector3 GridToWorldCentered(Vector2Int cell) {
+            return parent.TransformPoint(cell.ToVector3XZ().CenterXZ() * cellSize);
         }
         
-        public Vector3 WorldToGridFloored(Vector3 world) {
-            return (parent.InverseTransformPoint(world) / cellSize).FloorToInt();
+        public Vector2Int WorldToGridFloored(Vector3 world) {
+            return (parent.InverseTransformPoint(world) / cellSize).FloorToInt().RoundToVector2IntXZ();
         }
 
-        public GameObject InstantiateOnGrid(Vector3 inputWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {
-            Vector3Int tile = WorldToGridFloored(inputWorldPos).RoundToVector3Int();
-            if (tile.x < 0 || tile.x >= width || tile.z < 0 || tile.z >= height) {
+        public GameObject InstantiateOnGrid(Vector3 inWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {
+            Vector2Int tile = WorldToGridFloored(inWorldPos);
+            if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) {
                 Debug.LogWarning("Can't instantiate: index was out of range");
                 return null;
             }
@@ -51,25 +50,21 @@ namespace Game {
                 Debug.LogWarning("Can't instantiate: missing prefab reference");
                 return null;
             }
-            Vector3 worldPosition = GridToWorldCentered(tile);
-            worldPosition.y = inputWorldPos.y;
-            GameObject obj = Object.Instantiate(prefab, worldPosition, rotation, parent);
+            Vector3 outWorldPos = GridToWorldCentered(tile);
+            outWorldPos.y = inWorldPos.y;
+            GameObject obj = Object.Instantiate(prefab, outWorldPos, rotation, parent);
             if (!obj.TryGetComponent(out GridObject gridObject)) {
                 Object.Destroy(obj);
                 Debug.LogWarning("Object was destroyed due to missing GridObject component.");
                 return null;
             }
-            AddGridObject(tile, gridObject);
+            gridObject.Position = tile;
+            gridObjects.Add(tile, gridObject);
             return obj;
         }
 
-        public bool TileIsOccupied(Vector3Int tile) {
-            return objectsGrid[tile.x, tile.z] != null && objectsGrid[tile.x, tile.z].Count > 0;
-        }
-
-        private void AddGridObject(Vector3Int tile, GridObject gridObject) {
-            objectsGrid[tile.x, tile.z] ??= new List<GridObject>();
-            objectsGrid[tile.x, tile.z].Add(gridObject);
+        public bool TileIsOccupied(Vector2Int tile) {
+            return gridObjects.ContainsKey(tile);
         }
     }
 }

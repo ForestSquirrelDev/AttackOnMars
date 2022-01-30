@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
@@ -16,7 +14,6 @@ namespace Game {
         
         private void Awake() {
             grid = new Grid(width, height, cellSize, transform);
-            Debug.Log(grid.WorldToGridFloored(cube.position));
         }
 
         private void Update() {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game;
 using UnityEditor;
 using UnityEngine;
+using Utils;
 using Grid = Game.Grid;
 
 namespace Editor {
@@ -41,14 +42,14 @@ namespace Editor {
             linePositions.Clear();
             for (int x = 0; x < grid.Width; x++) {
                 for (int z = 0; z < grid.Height; z++) {
-                    Vector3 worldPos = grid.GridToWorld(new Vector3(x, 0, z));
+                    Vector3 worldPos = grid.GridToWorld(new Vector3(x, 0, z).RoundToVector2IntXZ());
                     linePositions.Add(new Tuple<Vector3, Vector3>(worldPos, new Vector3(worldPos.x, worldPos.y, worldPos.z + manager.cellSize)));
                     linePositions.Add(new Tuple<Vector3, Vector3>(worldPos, new Vector3(worldPos.x + manager.cellSize, worldPos.y, worldPos.z)));
                 }
             }
-            Vector3 rightBottomCorner = grid.GridToWorld(new Vector3(width, 0, 0));
-            Vector3 rightTopCorner = grid.GridToWorld(new Vector3(width, 0, height));
-            Vector3 leftTopCorner = grid.GridToWorld(new Vector3(0, 0, height));
+            Vector3 rightBottomCorner = grid.GridToWorld(new Vector3(width, 0, 0).RoundToVector2IntXZ());
+            Vector3 rightTopCorner = grid.GridToWorld(new Vector3(width, 0, height).RoundToVector2IntXZ());
+            Vector3 leftTopCorner = grid.GridToWorld(new Vector3(0, 0, height).RoundToVector2IntXZ());
             linePositions.Add(new Tuple<Vector3, Vector3>(rightBottomCorner, rightTopCorner));
             linePositions.Add(new Tuple<Vector3, Vector3>(leftTopCorner, rightTopCorner));
         }
