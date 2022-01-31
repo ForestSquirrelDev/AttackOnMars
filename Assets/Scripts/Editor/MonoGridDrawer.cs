@@ -1,38 +1,27 @@
 using System;
 using System.Collections.Generic;
 using Game;
-using UnityEditor;
 using UnityEngine;
 using Utils;
 using Grid = Game.Grid;
 
 namespace Editor {
-    [CustomEditor(typeof(GridManager))]
-    public class EditorGridDrawer : UnityEditor.Editor {
+    public class MonoGridDrawer : MonoBehaviour {
+        private GridManager manager;
         private Grid grid;
         private int width, height;
         private float cellSize;
         private Vector3 parentPos;
         private List<Tuple<Vector3, Vector3>> linePositions = new();
-
-        public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
-            GridManager manager = target as GridManager;
+        
+        private void OnDrawGizmos() {
+            manager ??= GetComponent<GridManager>();
             if (grid == null || manager.width != width || manager.height != height || manager.cellSize != cellSize || manager.transform.position != parentPos) {
                 UpdateGrid(manager);
             }
-        }
-        
-        private void OnSceneGUI() {
             DrawGrid();
         }
         
-        private void DrawGrid() {
-            foreach (var direction in linePositions) {
-                Handles.DrawLine(direction.Item1, direction.Item2);
-            }
-        }
-
         private void UpdateGrid(GridManager manager) {
             width = manager.width;
             height = manager.height;
@@ -52,6 +41,12 @@ namespace Editor {
             Vector3 leftTopCorner = grid.GridToWorld(new Vector3(0, 0, height).RoundToVector2IntXZ());
             linePositions.Add(new Tuple<Vector3, Vector3>(rightBottomCorner, rightTopCorner));
             linePositions.Add(new Tuple<Vector3, Vector3>(leftTopCorner, rightTopCorner));
+        }
+        
+        private void DrawGrid() {
+            foreach (var direction in linePositions) {
+                Gizmos.DrawLine(direction.Item1, direction.Item2);
+            }
         }
     }
 }
