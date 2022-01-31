@@ -33,7 +33,7 @@ namespace Game {
         }
         
         public Vector2Int WorldToGridFloored(Vector3 world) {
-            return (parent.InverseTransformPoint(world) / cellSize).FloorToInt().RoundToVector2IntXZ();
+            return (parent.InverseTransformPoint(world) / cellSize).FloorToVector2IntXZ();
         }
 
         public GameObject InstantiateOnGrid(Vector3 inWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {

@@ -7,7 +7,7 @@ namespace Utils {
         }
 
         public static Vector3 CenterXZ(this Vector3 v, bool floorToInt = true) {
-            if (floorToInt) v.FloorToInt();
+            if (floorToInt) v = v.FloorToInt();
             return new Vector3(v.x + 0.5f, v.y, v.z + 0.5f);
         }
 
@@ -21,6 +21,10 @@ namespace Utils {
 
         public static Vector2Int RoundToVector2IntXZ(this Vector3 v) {
             return new Vector2Int(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.z));
+        }
+
+        public static Vector2Int FloorToVector2IntXZ(this Vector3 v) {
+            return new Vector2Int(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.z));
         }
     }
 }
