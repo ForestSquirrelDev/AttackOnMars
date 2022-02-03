@@ -20864,6 +20864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a1c99729f362b5428224ad25e614f8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  positioningQuad: {fileID: 3548974914552825911}
   buildingData: {fileID: 11400000, guid: bc01831b5f0f56d4696f39ad647d571a, type: 2}
 --- !u!1 &3411975025046434295
 GameObject:

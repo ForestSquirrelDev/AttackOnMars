@@ -1,14 +1,14 @@
 {
-    "name": "EditorAssembly",
+    "name": "EasyButtons.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:0337c0c0ad07a354a8fde30501cddb7f",
-        "GUID:a0d325ab58303474ba23ef1fbde73e6e",
         "GUID:f24cf67903b27ae498b3069ecc30cc11"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

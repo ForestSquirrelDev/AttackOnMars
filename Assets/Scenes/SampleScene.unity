@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &316437256 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 9118110106712693194, guid: 1b3309348f7702f43890792b1951f864, type: 3}
-  m_PrefabInstance: {fileID: 9118110107012311746}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &329450779
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,11 +153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871e014b65419de4599a7ce149f106db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Test>k__BackingField: 12
   width: 50
   height: 50
   cellSize: 3
-  cube: {fileID: 316437256}
-  prefab: {fileID: 1979706888108350, guid: f72d03e48b3dbfd4ca0f692e695377c3, type: 3}
+  terrain: {fileID: 873730277}
+  debugPrefab: {fileID: 1979706888108350, guid: f72d03e48b3dbfd4ca0f692e695377c3, type: 3}
   mask:
     serializedVersion: 2
     m_Bits: 8
@@ -179,7 +175,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &329450782
 MonoBehaviour:
@@ -611,7 +607,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: NaN, y: 1.05e-43, z: 0.000002057364, w: 0}
+  m_BoundingSphereOverride: {x: 6.21e-43, y: 1.39e-43, z: 0, w: 27.474106}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -664,7 +660,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9118110106712693194, guid: 1b3309348f7702f43890792b1951f864, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9118110106712693194, guid: 1b3309348f7702f43890792b1951f864, type: 3}
       propertyPath: m_LocalPosition.x
