@@ -15,7 +15,6 @@ namespace Game {
         private static float cellSize;
         private static Transform parent;
         private static Terrain terrain;
-        private static List<Vector3> positioningCornersBuffer = new();
         private static List<Vector2Int> occupiedTilesBuffer = new();
         private static Dictionary<Vector2Int, GridTile> tiles = new();
 
@@ -64,7 +63,6 @@ namespace Game {
             foreach (Vector2Int occupiedTile in occupiedTilesBuffer) {
                 tiles[occupiedTile] = new GridTile(building);
             }
-            (building as DefenseTurret).Awake();
             return obj;
         }
         

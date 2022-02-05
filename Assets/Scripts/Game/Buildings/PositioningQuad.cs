@@ -47,8 +47,8 @@ namespace Game {
         }
         
         private void InitGrid() {
-            CalculateGridSize(out int width, out int height);
-            positioningGrid = new PositioningGrid(width, height);
+            Vector2Int size = CalculateGridSize();
+            positioningGrid = new PositioningGrid(size.x, size.y);
         }
 
         private void OnDrawGizmos() {
@@ -73,9 +73,9 @@ namespace Game {
             }
         }
         
-        private void CalculateGridSize(out int width, out int height) {
-            vertices.Clear();
-            meshFilter.mesh.GetVertices(vertices);
+        private Vector2Int CalculateGridSize() {
+            if (vertices.Count == 0)
+                meshFilter.mesh.GetVertices(vertices);
             Vector3 leftBottomCorner = vertices[0];
             Vector3 leftTopCorner = vertices[2];
             Vector3 rightBottomCorner = vertices[1];
@@ -87,9 +87,10 @@ namespace Game {
             Vector2Int leftBottomToGlobalGrid = BuildingGrid.WorldToGridFloored(leftBottomCorner);
             Vector2Int leftTopToGlobalGrid = BuildingGrid.WorldToGridFloored(leftTopCorner);
             Vector2Int rightBottomToGlobalGrid = BuildingGrid.WorldToGridFloored(rightBottomCorner);
-
-            height = Mathf.Abs(leftTopToGlobalGrid.y - leftBottomToGlobalGrid.y);
-            width = Mathf.Abs(rightBottomToGlobalGrid.x - leftBottomToGlobalGrid.x);
+            
+            int width = Mathf.Abs(rightBottomToGlobalGrid.x - leftBottomToGlobalGrid.x);
+            int height = Mathf.Abs(leftTopToGlobalGrid.y - leftBottomToGlobalGrid.y);
+            return new Vector2Int(width, height);
         }
     }
 }
