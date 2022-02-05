@@ -153,9 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871e014b65419de4599a7ce149f106db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Test>k__BackingField: 12
-  width: 50
-  height: 50
+  width: 47
+  height: 40
   cellSize: 3
   terrain: {fileID: 873730277}
   debugPrefab: {fileID: 1979706888108350, guid: f72d03e48b3dbfd4ca0f692e695377c3, type: 3}
@@ -607,7 +606,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 6.21e-43, y: 1.39e-43, z: 0, w: 27.474106}
+  m_BoundingSphereOverride: {x: 7.74e-43, y: 8e-44, z: 0, w: 8e-44}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

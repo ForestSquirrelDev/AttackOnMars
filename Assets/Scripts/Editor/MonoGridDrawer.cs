@@ -4,7 +4,6 @@ using EasyButtons;
 using Game;
 using UnityEngine;
 using Utils;
-using Grid = Game.Grid;
 
 namespace Editor {
     public class MonoGridDrawer : MonoBehaviour {
@@ -16,7 +15,7 @@ namespace Editor {
         
         private void OnDrawGizmos() {
             manager ??= GetComponent<GridManager>();
-            if (!Grid.Inited)
+            if (!BuildingGrid.Inited)
                 manager.InitGrid();
             if (manager.Width != width || manager.Height != height || manager.CellSize != cellSize || manager.transform.position != parentPos) {
                 UpdateGrid();
@@ -25,6 +24,7 @@ namespace Editor {
         }
 
         private void OnValidate() {
+            manager ??= GetComponent<GridManager>();
             manager.InitGrid();
             UpdateGrid();
         }
@@ -39,7 +39,7 @@ namespace Editor {
             
             for (int x = 0; x < manager.Width; x++) {
                 for (int z = 0; z < manager.Height; z++) {
-                    Vector3 worldPos = Grid.GridToWorld(new Vector3(x, 0, z).RoundToVector2IntXZ());
+                    Vector3 worldPos = BuildingGrid.GridToWorld(new Vector3(x, 0, z).RoundToVector2IntXZ());
                     Vector3 targetZ = new Vector3(worldPos.x, worldPos.y, worldPos.z + manager.CellSize);
                     targetZ.y = manager.Terrain.SampleHeight(targetZ);
                     Vector3 targetX = new Vector3(worldPos.x + manager.CellSize, worldPos.y, worldPos.z);
@@ -48,9 +48,10 @@ namespace Editor {
                     linePositions.Add(new Tuple<Vector3, Vector3>(worldPos, targetX));
                 }
             }
-            Vector3 rightBottomCorner = Grid.GridToWorld(new Vector3(width, 0, 0).RoundToVector2IntXZ());
-            Vector3 rightTopCorner = Grid.GridToWorld(new Vector3(width, 0, height).RoundToVector2IntXZ());
-            Vector3 leftTopCorner = Grid.GridToWorld(new Vector3(0, 0, height).RoundToVector2IntXZ());
+            
+            Vector3 rightBottomCorner = BuildingGrid.GridToWorld(new Vector3(width, 0, 0).RoundToVector2IntXZ());
+            Vector3 rightTopCorner = BuildingGrid.GridToWorld(new Vector3(width, 0, height).RoundToVector2IntXZ());
+            Vector3 leftTopCorner = BuildingGrid.GridToWorld(new Vector3(0, 0, height).RoundToVector2IntXZ());
             linePositions.Add(new Tuple<Vector3, Vector3>(rightBottomCorner, rightTopCorner));
             linePositions.Add(new Tuple<Vector3, Vector3>(leftTopCorner, rightTopCorner));
         }

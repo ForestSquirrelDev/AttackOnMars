@@ -4,7 +4,7 @@ using UnityEngine;
 using Utils;
 
 namespace Game {
-    public static class Grid {
+    public static class BuildingGrid {
         public static int Width => width;
         public static int Height => height;
         public static float CellSize => cellSize;
@@ -54,17 +54,17 @@ namespace Game {
         public static GameObject InstantiateOnGrid(Vector3 inWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {
             if (!InstantiateInternal(prefab, rotation, parent, out var obj, out var building)) return null;
             SetSpawnPosition(inWorldPos, obj);
-            positioningCornersBuffer.Clear();
+            building.Init();
             occupiedTilesBuffer.Clear();
-            positioningCornersBuffer.AddRange(building.GetPositioningQuadCorners());
-            foreach (Vector3 corner in positioningCornersBuffer) {
-                occupiedTilesBuffer.Add(WorldToGridFloored(corner));
+            occupiedTilesBuffer.AddRange(building.positionsInGrid);
+            foreach (var VARIABLE in occupiedTilesBuffer) {
+                Debug.Log(VARIABLE);
             }
             if (!isPlaceable()) return null;
             foreach (Vector2Int occupiedTile in occupiedTilesBuffer) {
                 tiles[occupiedTile] = new GridTile(building);
             }
-            building.positionsInGrid = new HashSet<Vector2Int>(occupiedTilesBuffer);
+            (building as DefenseTurret).Awake();
             return obj;
         }
         
@@ -75,7 +75,7 @@ namespace Game {
                     return false;
                 }
                 if (TileIsOccupied(occupiedTile)) {
-                    Debug.Log("Can't Instantiate: tile is occupied");
+                    Debug.Log("Can't Instantiate: tile is occupied " + occupiedTile);
                     return false;
                 }
             }
@@ -88,7 +88,7 @@ namespace Game {
             obj.transform.position = outWorldPos;
         }
         
-        private static bool InstantiateInternal(GameObject prefab, Quaternion rotation, Transform parent, out GameObject obj, out IBuilding building) {
+        private static bool InstantiateInternal(GameObject prefab, Quaternion rotation, Transform parent, out GameObject obj, out Building building) {
             if (prefab == null) {
                 Debug.LogWarning("Can't instantiate: missing prefab reference");
                 obj = null;

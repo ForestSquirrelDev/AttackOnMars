@@ -1,13 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
 
 namespace Game {
     public class GridManager : MonoBehaviour {
-        [field: SerializeField]
-        public int Test { get; private set; }
-
         public int Width => width;
         public int Height => height;
         public float CellSize => cellSize;
@@ -19,8 +17,7 @@ namespace Game {
         [SerializeField] private Terrain terrain;
         [FormerlySerializedAs("prefab")] [SerializeField] private GameObject debugPrefab;
         [SerializeField] private LayerMask mask;
-        
-        
+
         private void Awake() {
            InitGrid();
         }
@@ -28,12 +25,12 @@ namespace Game {
         private void Update() {
             if (Input.GetKeyDown(KeyCode.H)) {
                 Vector3 mouseToWorld = InputUtility.MouseToWorld(Camera.main, mask);
-                Grid.InstantiateOnGrid(mouseToWorld, debugPrefab, Quaternion.identity, transform);
+                    BuildingGrid.InstantiateOnGrid(mouseToWorld, debugPrefab, Quaternion.identity, transform);
             }
         }
 
         public void InitGrid() {
-            Grid.Init(Width, Height, CellSize, transform, Terrain);
+            BuildingGrid.Init(Width, Height, CellSize, transform, Terrain);
         }
     }
 }
