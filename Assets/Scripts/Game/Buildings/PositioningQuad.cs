@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Unity.Entities;
 using UnityEngine;
 using Utils;
 
@@ -10,10 +11,10 @@ namespace Game {
 
         private Matrix4x4 gridToWorld;
         private PositioningGrid positioningGrid;
-        private List<Vector3> vertices = new();
-        private List<Vector2Int> localGrid = new();
-        private List<Vector3> worldGrid = new();
-        private List<Vector2Int> globalGrid = new();
+        private List<Vector3> vertices = new List<Vector3>();
+        private List<Vector2Int> localGrid = new List<Vector2Int>();
+        private List<Vector3> worldGrid = new List<Vector3>();
+        private List<Vector2Int> globalGrid = new List<Vector2Int>();
 
         public void Init() {
             // we are constructing matrix because this grid needs to be independent from parent transforms, i.e. we need pure grid with tiles of unit size

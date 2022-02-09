@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game {
     public class PositioningGrid {
-        private List<Vector2Int> positions = new();
+        private List<Vector2Int> positions = new List<Vector2Int>();
 
         public PositioningGrid(int width, int height) {
             for (int x = 0; x < width; x++) {

@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Utils {
@@ -29,6 +30,10 @@ namespace Utils {
 
         public static Vector2Int FloorToVector2IntXZ(this Vector3 v) {
             return new Vector2Int(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.z));
+        }
+
+        public static Vector4 ToVector4(this float3 f3) {
+            return new Vector4(f3.x, f3.y, f3.z, 0);
         }
     }
 }

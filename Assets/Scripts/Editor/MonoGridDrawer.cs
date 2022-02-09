@@ -11,7 +11,7 @@ namespace Editor {
         private int width, height;
         private float cellSize;
         private Vector3 parentPos;
-        private List<Tuple<Vector3, Vector3>> linePositions = new();
+        private List<Tuple<Vector3, Vector3>> linePositions = new List<Tuple<Vector3, Vector3>>();
         
         private void OnDrawGizmos() {
             manager ??= GetComponent<GridManager>();

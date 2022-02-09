@@ -15,8 +15,8 @@ namespace Game {
         private static float cellSize;
         private static Transform parent;
         private static Terrain terrain;
-        private static List<Vector2Int> occupiedTilesBuffer = new();
-        private static Dictionary<Vector2Int, GridTile> tiles = new();
+        private static List<Vector2Int> occupiedTilesBuffer = new List<Vector2Int>();
+        private static Dictionary<Vector2Int, GridTile> tiles = new Dictionary<Vector2Int, GridTile>();
 
         public static void Init(int gridWidth, int gridHeight, float gridCellSize, Transform gridParent, Terrain gridTerrain) {
             if (Inited) return;
@@ -50,20 +50,27 @@ namespace Game {
             return (parent.InverseTransformPoint(world) / cellSize).FloorToVector2IntXZ();
         }
 
-        public static GameObject InstantiateOnGrid(Vector3 inWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {
-            if (!InstantiateInternal(prefab, rotation, parent, out var obj, out var building)) return null;
-            SetSpawnPosition(inWorldPos, obj);
+        public static Vector3 WorldToGridCentered(Vector3 world) {
+            Vector2Int grid = WorldToGridFloored(world);
+            return GridToWorldCentered(grid);
+        }
+
+        public static bool InstantiateOnGrid(Vector3 inWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {
+            Vector2Int spawnTile = WorldToGridFloored(inWorldPos);
+            if (TileIsOccupied(spawnTile)) return false;
+            if (!InstantiateInternal(prefab, rotation, parent, out var obj, out Building building)) return false;
+            SetSpawnPosition(spawnTile, obj);
             building.Init();
             occupiedTilesBuffer.Clear();
             occupiedTilesBuffer.AddRange(building.positionsInGrid);
-            foreach (var VARIABLE in occupiedTilesBuffer) {
-                Debug.Log(VARIABLE);
+            if (!isPlaceable()) {
+                Object.Destroy(building.gameObject);
+                return false;
             }
-            if (!isPlaceable()) return null;
             foreach (Vector2Int occupiedTile in occupiedTilesBuffer) {
                 tiles[occupiedTile] = new GridTile(building);
             }
-            return obj;
+            return true;
         }
         
         private static bool isPlaceable() {
@@ -80,8 +87,7 @@ namespace Game {
             return true;
         }
 
-        private static void SetSpawnPosition(Vector3 inWorldPos, GameObject obj) {
-            Vector2Int spawnTile = WorldToGridFloored(inWorldPos);
+        private static void SetSpawnPosition(Vector2Int spawnTile, GameObject obj) {
             Vector3 outWorldPos = GridToWorldCentered(spawnTile);
             obj.transform.position = outWorldPos;
         }

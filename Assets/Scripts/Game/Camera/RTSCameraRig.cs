@@ -13,7 +13,7 @@ namespace Game.CameraManagement {
 
         private const float min_terrain_height = 30f;
         private const float max_heght = 150f;
-        float terrainHeightUnderCamera = 0;
+        float terrainHeightUnderCamera;
 
         private bool rotating;
 
@@ -26,7 +26,7 @@ namespace Game.CameraManagement {
 
         private void Update() {
             CalculateSpeed(out var horizontalSpeed, out var verticalSpeed, out var scrollSpeed);
-            Vector3 combinedMovement = ConstructMovementVectors(scrollSpeed, horizontalSpeed, verticalSpeed);
+            Vector3 combinedMovement = ConstructMovementVector(scrollSpeed, horizontalSpeed, verticalSpeed);
             thisTransform.position += combinedMovement;
             ClampHeight();
             RotateCamera();
@@ -45,7 +45,7 @@ namespace Game.CameraManagement {
             }
         }
         
-        private Vector3 ConstructMovementVectors(float scrollSpeed, float horizontalSpeed, float verticalSpeed) {
+        private Vector3 ConstructMovementVector(float scrollSpeed, float horizontalSpeed, float verticalSpeed) {
             Vector3 vertical = new Vector3(0, scrollSpeed, 0);
             Vector3 lateral = horizontalSpeed * thisTransform.right;
             Vector3 forward = thisTransform.forward;
