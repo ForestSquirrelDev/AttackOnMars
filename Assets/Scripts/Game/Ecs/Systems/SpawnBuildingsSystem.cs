@@ -3,19 +3,43 @@ using Game.Ecs.Monobehaviours;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
+using Utils;
 
 namespace Game.Ecs.Systems {
     public class SpawnBuildingsSystem : ComponentSystem {
+        private Entity buildingGhost;
+        private int clicksCount;
+        private Camera camera;
+        
+        protected override void OnStartRunning() {
+            base.OnStartRunning();
+            camera = Camera.main;
+        }
+        
         protected override void OnUpdate() {
-            if (Input.GetMouseButtonDown(0)) {
-                Entity spawnedEntity = EntityManager.Instantiate(ConvertedEntitiesStorage.entities[BuildingType.Turret].ghost);
-                EntityManager.SetComponentData(spawnedEntity, new Translation());
-                EntityManager.SetComponentData(spawnedEntity, new LocalToWorld());
+            if (!Input.GetMouseButtonDown(0)) return;
+            if (clicksCount == 0) {
+                SpawnGhost();
+            } else {
+                if (!TrySpawnBuilding()) return;
+                Reset();
             }
         }
-        protected override void OnStartRunning() {
-            Debug.Log("On start running");
-            base.OnStartRunning();
+        
+        private bool TrySpawnBuilding() {
+            return BuildingGridInstantiater.InstantiateOnGrid(InputUtility.MouseToWorld(camera),
+                ConvertedEntitiesStorage.entities[BuildingType.Turret].building, EntityManager);
+        }
+
+        private void SpawnGhost() {
+            buildingGhost = EntityManager.Instantiate(ConvertedEntitiesStorage.entities[BuildingType.Turret].ghost);
+            EntityManager.SetComponentData(buildingGhost, new Translation());
+            clicksCount++;
+        }
+
+        private void Reset() {
+            EntityManager.DestroyEntity(buildingGhost);
+            clicksCount = 0;
         }
     }
 }

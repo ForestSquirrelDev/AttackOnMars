@@ -32,8 +32,12 @@ namespace Utils {
             return new Vector2Int(Mathf.FloorToInt(v.x), Mathf.FloorToInt(v.z));
         }
 
-        public static Vector4 ToVector4(this float3 f3) {
-            return new Vector4(f3.x, f3.y, f3.z, 0);
+        public static Vector4 ToVector4(this float3 f3, float w = 1) {
+            return new Vector4(f3.x, f3.y, f3.z, w);
+        }
+
+        public static int2 ToInt2(this Vector2Int v) {
+            return new int2(v.x, v.y);
         }
     }
 }

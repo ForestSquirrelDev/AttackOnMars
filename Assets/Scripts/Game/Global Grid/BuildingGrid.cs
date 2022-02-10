@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Game.Buildings;
+using Unity.Entities;
 using UnityEngine;
 using Utils;
 
@@ -15,8 +15,7 @@ namespace Game {
         private static float cellSize;
         private static Transform parent;
         private static Terrain terrain;
-        private static List<Vector2Int> occupiedTilesBuffer = new List<Vector2Int>();
-        private static Dictionary<Vector2Int, GridTile> tiles = new Dictionary<Vector2Int, GridTile>();
+        private static Dictionary<Vector2Int, Entity> tiles = new Dictionary<Vector2Int, Entity>();
 
         public static void Init(int gridWidth, int gridHeight, float gridCellSize, Transform gridParent, Terrain gridTerrain) {
             if (Inited) return;
@@ -29,7 +28,7 @@ namespace Game {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     Vector2Int pos = new Vector2Int(x, y);
-                    tiles.Add(pos, null);
+                    tiles.Add(pos, default);
                 }
             }
         }
@@ -54,65 +53,12 @@ namespace Game {
             Vector2Int grid = WorldToGridFloored(world);
             return GridToWorldCentered(grid);
         }
-
-        public static bool InstantiateOnGrid(Vector3 inWorldPos, GameObject prefab, Quaternion rotation, Transform parent) {
-            Vector2Int spawnTile = WorldToGridFloored(inWorldPos);
-            if (TileIsOccupied(spawnTile)) return false;
-            if (!InstantiateInternal(prefab, rotation, parent, out var obj, out Building building)) return false;
-            SetSpawnPosition(spawnTile, obj);
-            building.Init();
-            occupiedTilesBuffer.Clear();
-            occupiedTilesBuffer.AddRange(building.positionsInGrid);
-            if (!isPlaceable()) {
-                Object.Destroy(building.gameObject);
-                return false;
-            }
-            foreach (Vector2Int occupiedTile in occupiedTilesBuffer) {
-                tiles[occupiedTile] = new GridTile(building);
-            }
-            return true;
-        }
         
-        private static bool isPlaceable() {
-            foreach (Vector2Int occupiedTile in occupiedTilesBuffer) {
-                if (TileOutOfGrid(occupiedTile)) {
-                    Debug.LogWarning("Can't instantiate: index was out of range");
-                    return false;
-                }
-                if (TileIsOccupied(occupiedTile)) {
-                    Debug.Log("Can't Instantiate: tile is occupied " + occupiedTile);
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static void SetSpawnPosition(Vector2Int spawnTile, GameObject obj) {
-            Vector3 outWorldPos = GridToWorldCentered(spawnTile);
-            obj.transform.position = outWorldPos;
-        }
-        
-        private static bool InstantiateInternal(GameObject prefab, Quaternion rotation, Transform parent, out GameObject obj, out Building building) {
-            if (prefab == null) {
-                Debug.LogWarning("Can't instantiate: missing prefab reference");
-                obj = null;
-                building = null;
-                return false;
-            }
-            obj = Object.Instantiate(prefab, Vector3.zero, rotation, parent);
-            if (!obj.TryGetComponent(out building)) {
-                Object.Destroy(obj);
-                Debug.LogWarning("Object was destroyed due to missing building component.");
-                return false;
-            }
-            return true;
-        }
-
         public static bool TileIsOccupied(Vector2Int tile) {
             if (TileOutOfGrid(tile)) {
                 return true;
             }
-            return tiles[tile] != null;
+            return tiles[tile] != default;
         }
 
         public static bool TileOutOfGrid(Vector2Int tile) {
