@@ -28,7 +28,6 @@ namespace Game {
         private static void InstantiateEcs(Vector3 inWorldPos, Entity entity, EntityManager manager) {
             Entity building = manager.Instantiate(entity);
             manager.SetComponentData(building, new Translation {Value = inWorldPos});
-            manager.AddComponent(building, typeof(PositioningQuadComponent));
             InstantiatedBuildingsStorage.buildings.Add(building);
         }
 

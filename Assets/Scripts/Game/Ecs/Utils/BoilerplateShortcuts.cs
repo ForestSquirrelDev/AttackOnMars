@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -39,10 +37,10 @@ namespace Game.Ecs.Utils {
             m.SetColumn(3, position);
         }
         
-        public static void AxesWiseMatrixUnscaled(ref Matrix4x4 m, float3 right, float3 up, float3 forward, float3 position) {
-            m.SetColumn(0, right.ToVector4().normalized);
-            m.SetColumn(1, up.ToVector4().normalized);
-            m.SetColumn(2, forward.ToVector4().normalized);
+        public static void AxesWiseMatrixUnscaled(ref Matrix4x4 m, float4 right, float4 up, float4 forward, float4 position) {
+            m.SetColumn(0, right.Normalized());
+            m.SetColumn(1, up.Normalized());
+            m.SetColumn(2, forward.Normalized());
             Vector4 pos = position.ToVector4();
             pos.w = 1;
             m.SetColumn(3, pos);
@@ -54,6 +52,15 @@ namespace Game.Ecs.Utils {
             m.SetColumn(2, forward.normalized);
             position.w = 1;
             m.SetColumn(3, position);
+        }
+
+        public static void ToUnitScale(ref Matrix4x4 m) {
+            Vector4 right = m.GetColumn(0).normalized;
+            Vector4 up = m.GetColumn(1).normalized;
+            Vector4 forward = m.GetColumn(2).normalized;
+            m.SetColumn(0, right);
+            m.SetColumn(1, up);
+            m.SetColumn(2, forward);
         }
     }
 }

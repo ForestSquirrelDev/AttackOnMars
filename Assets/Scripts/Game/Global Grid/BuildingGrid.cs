@@ -49,6 +49,10 @@ namespace Game {
             return (parent.InverseTransformPoint(world) / cellSize).FloorToVector2IntXZ();
         }
 
+        public static Vector2Int WorldToGridCeiled(Vector3 world) {
+            return (parent.InverseTransformPoint(world) / cellSize).CeilToVector2IntXZ();
+        }
+
         public static Vector3 WorldToGridCentered(Vector3 world) {
             Vector2Int grid = WorldToGridFloored(world);
             return GridToWorldCentered(grid);
