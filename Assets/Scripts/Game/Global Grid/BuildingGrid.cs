@@ -15,6 +15,8 @@ namespace Game {
         private static float cellSize;
         private static Transform parent;
         private static Terrain terrain;
+        private static Matrix4x4 localToWorld;
+        private static Matrix4x4 worldToLocal;
         private static Dictionary<Vector2Int, Entity> tiles = new Dictionary<Vector2Int, Entity>();
 
         public static void Init(int gridWidth, int gridHeight, float gridCellSize, Transform gridParent, Terrain gridTerrain) {
@@ -24,33 +26,35 @@ namespace Game {
             cellSize = gridCellSize;
             parent = gridParent;
             terrain = gridTerrain;
-            Inited = true;
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     Vector2Int pos = new Vector2Int(x, y);
                     tiles.Add(pos, default);
                 }
             }
+            localToWorld = parent.localToWorldMatrix;
+            worldToLocal = parent.worldToLocalMatrix;
+            Inited = true;
         }
 
         public static Vector3 GridToWorld(Vector2Int cell) {
-            Vector3 world = parent.TransformPoint(cell.ToVector3XZ() * cellSize);
+            Vector3 world = localToWorld.MultiplyPoint3x4(cell.ToVector3XZ() * cellSize);
             world.y = terrain.SampleHeight(world);
             return world;
         }
 
         public static Vector3 GridToWorldCentered(Vector2Int cell) {
-            Vector3 world = parent.TransformPoint(cell.ToVector3XZ().CenterXZ() * cellSize);
+            Vector3 world = localToWorld.MultiplyPoint3x4(cell.ToVector3XZ().CenterXZ() * cellSize);
             world.y = terrain.SampleHeight(world);
             return world;
         }
         
         public static Vector2Int WorldToGridFloored(Vector3 world) {
-            return (parent.InverseTransformPoint(world) / cellSize).FloorToVector2IntXZ();
+            return (worldToLocal.MultiplyPoint3x4(world) / cellSize).FloorToVector2IntXZ();
         }
 
         public static Vector2Int WorldToGridCeiled(Vector3 world) {
-            return (parent.InverseTransformPoint(world) / cellSize).CeilToVector2IntXZ();
+            return (worldToLocal.MultiplyPoint3x4(world) / cellSize).CeilToVector2IntXZ();
         }
 
         public static Vector3 WorldToGridCentered(Vector3 world) {

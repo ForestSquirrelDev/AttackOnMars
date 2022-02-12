@@ -36,7 +36,7 @@ namespace Utils {
             return new Vector2Int(Mathf.CeilToInt(v.x), Mathf.CeilToInt(v.z));
         }
 
-        public static Vector4 ToVector4(this float3 f3, float w = 1) {
+        public static Vector4 ToVector4(this float3 f3, float w = 0) {
             return new Vector4(f3.x, f3.y, f3.z, w);
         }
 

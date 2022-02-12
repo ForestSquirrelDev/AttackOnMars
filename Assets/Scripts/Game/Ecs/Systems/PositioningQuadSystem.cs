@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Game.Ecs.Components;
-using Game.Ecs.Utils;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -27,16 +26,13 @@ namespace Game.Ecs.Systems {
                 if (positioningQuad.inited) return;
                 sw.Start();
                 this.localToWorld = localToWorld;
-                BoilerplateShortcuts.AxesWiseMatrix(ref transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
+                Matrix4x4Extensions.AxesWiseMatrix(ref transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
                 InitGrid();
                 GetOccupiedGlobalGridTiles();
                 positioningQuad.inited = true;
                 sw.Stop();
-                double ticks = sw.ElapsedTicks;
-                double seconds = ticks / Stopwatch.Frequency;
-                double milliseconds = (ticks / Stopwatch.Frequency) * 1000;
-                double nanoseconds = (ticks / Stopwatch.Frequency) * 1000000000;
-                Debug.Log(nanoseconds);
+                Debug.Log($"Nanoseconds: {StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Nanoseconds)}, milliseconds: " +
+                          $"{StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Milliseconds)}");
                 sw.Reset();
             });
         }
@@ -77,7 +73,7 @@ namespace Game.Ecs.Systems {
 
         private void FillWorldGrid() {
             worldGrid.Clear();
-            BoilerplateShortcuts.ToUnitScale(ref gridOrigin);
+            Matrix4x4Extensions.ToUnitScale(ref gridOrigin);
             foreach (var tile in localGrid) {
                 Vector3 world = gridOrigin.MultiplyPoint3x4(tile.ToVector3XZ() * BuildingGrid.CellSize);
                 worldGrid.Add(world);
@@ -111,7 +107,7 @@ namespace Game.Ecs.Systems {
         }
         
         private void ConstructGridOriginMatrix(float3 gridPosition) {
-            BoilerplateShortcuts.AxesWiseMatrix(ref gridOrigin, localToWorld.Right, localToWorld.Forward, localToWorld.Up,
+            Matrix4x4Extensions.AxesWiseMatrix(ref gridOrigin, localToWorld.Right, localToWorld.Forward, localToWorld.Up,
                 transformCenter.MultiplyPoint3x4(gridPosition.ToVector4()));
         }
     }

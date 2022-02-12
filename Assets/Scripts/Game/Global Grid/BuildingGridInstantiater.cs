@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Game.Ecs.Utils;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -9,10 +7,13 @@ namespace Game {
     public static class BuildingGridInstantiater {
         private static List<Vector2Int> occupiedTilesBuffer = new List<Vector2Int>();
 
-        public static bool InstantiateOnGrid(Vector3 inWorldPos, Entity entity, EntityManager manager) {
+        public static bool InstantiateOnGrid(Vector3 inWorldPos, Entity entityIn, EntityManager manager, out Entity entityOut) {
             Vector2Int spawnTile = BuildingGrid.WorldToGridFloored(inWorldPos);
-            if (BuildingGrid.TileIsOccupied(spawnTile)) return false;
-            InstantiateEcs(BuildingGrid.GridToWorldCentered(spawnTile), entity, manager);
+            if (BuildingGrid.TileIsOccupied(spawnTile)) {
+                entityOut = default;
+                return false;
+            }
+            entityOut = InstantiateEcs(BuildingGrid.GridToWorldCentered(spawnTile), entityIn, manager);
             occupiedTilesBuffer.Clear();
             //occupiedTilesBuffer.AddRange(building.positionsInGrid);
             // if (!isPlaceable()) {
@@ -25,10 +26,10 @@ namespace Game {
             return true;
         }
         
-        private static void InstantiateEcs(Vector3 inWorldPos, Entity entity, EntityManager manager) {
+        private static Entity InstantiateEcs(Vector3 inWorldPos, Entity entity, EntityManager manager) {
             Entity building = manager.Instantiate(entity);
             manager.SetComponentData(building, new Translation {Value = inWorldPos});
-            InstantiatedBuildingsStorage.buildings.Add(building);
+            return building;
         }
 
         private static bool isPlaceable() {
@@ -44,9 +45,5 @@ namespace Game {
             }
             return true;
         }
-    }
-
-    public static class InstantiatedBuildingsStorage {
-        public static List<Entity> buildings = new List<Entity>();
     }
 }

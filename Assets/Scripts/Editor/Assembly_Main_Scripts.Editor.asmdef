@@ -1,24 +1,19 @@
 {
-    "name": "GameAssembly",
+    "name": "Assembly_Main_Scripts.Editor",
     "rootNamespace": "",
     "references": [
+        "GUID:0337c0c0ad07a354a8fde30501cddb7f",
         "GUID:a0d325ab58303474ba23ef1fbde73e6e",
         "GUID:f24cf67903b27ae498b3069ecc30cc11",
         "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:e0cd26848372d4e5c891c569017e11f1",
-        "GUID:a5baed0c9693541a5bd947d336ec7659",
-        "GUID:44dcb2bf5b9be4b5aa76674c8edcd1d5",
-        "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:8819f35a0fc84499b990e90a4ca1911f",
-        "GUID:5e1a1adb03e27cc479fab8f1f448cb9b"
+        "GUID:7b01f2bfdb36c8f48b2211ed257128e6",
+        "GUID:2f10ff3481c24d946a0de2123cca31e3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
-    "precompiledReferences": [
-        ""
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

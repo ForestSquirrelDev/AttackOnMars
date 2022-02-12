@@ -1,4 +1,3 @@
-using Game.Ecs.Components;
 using Game.Ecs.Monobehaviours;
 using Unity.Entities;
 using Unity.Transforms;
@@ -27,12 +26,14 @@ namespace Game.Ecs.Systems {
         }
         
         private bool TrySpawnBuilding() {
-            return BuildingGridInstantiater.InstantiateOnGrid(InputUtility.MouseToWorld(camera),
-                ConvertedEntitiesStorage.entities[BuildingType.Turret].building, EntityManager);
+            if (!BuildingGridInstantiater.InstantiateOnGrid(InputUtility.MouseToWorld(camera),
+                ConvertedEntitiesContainer.entities[BuildingType.Turret].building, EntityManager, out Entity entity)) return false;
+            InstantiatedBuildingsContainer.buildings.Add(entity);
+            return true;
         }
 
         private void SpawnGhost() {
-            buildingGhost = EntityManager.Instantiate(ConvertedEntitiesStorage.entities[BuildingType.Turret].ghost);
+            buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.entities[BuildingType.Turret].ghost);
             EntityManager.SetComponentData(buildingGhost, new Translation());
             clicksCount++;
         }

@@ -1,8 +1,9 @@
 {
-    "name": "UtilsAssembly",
+    "name": "Assembly_Main_Scripts.Utils",
     "rootNamespace": "",
     "references": [
-        "GUID:d8b63aba1907145bea998dd612889d6b"
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:734d92eba21c94caba915361bd5ac177"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

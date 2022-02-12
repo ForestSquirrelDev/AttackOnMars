@@ -11,7 +11,7 @@ namespace Game.Ecs.Monobehaviours {
             foreach (var prefabData in prefabDatas) {
                 Entity ghostEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.ghost, settings);
                 Entity buildingEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.prefab, settings);
-                ConvertedEntitiesStorage.entities.Add(prefabData.buildingType, new ConvertedEntityPrefabData{building = buildingEntity, ghost = ghostEntity, buildingType = prefabData.buildingType});
+                ConvertedEntitiesContainer.entities.Add(prefabData.buildingType, new ConvertedEntityPrefabData{building = buildingEntity, ghost = ghostEntity, buildingType = prefabData.buildingType});
             }
         }
 
