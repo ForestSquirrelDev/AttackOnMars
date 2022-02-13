@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Game.Ecs.Components.BufferElements;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -66,11 +65,6 @@ namespace Game {
         }
         
         public static bool TileIsOccupied(Vector2Int tile) {
-            if (tiles.ContainsKey(tile)) {
-                //Debug.Log($"Tile occupied? {tiles[tile] != Entity.Null}");
-            } else {
-                //Debug.Log($"Wrong tile {tile}");
-            }
             return TileOutOfGrid(tile) || tiles[tile] != Entity.Null;
         }
 
@@ -82,10 +76,7 @@ namespace Game {
             foreach (var tile in tiles) {
                 Vector2Int v = tile.ToVector2Int();
                 if (BuildingGrid.tiles.ContainsKey(v)) {
-                    //Debug.Log($"Added tile: {v} + { entity}");
                     BuildingGrid.tiles[v] = entity;
-                } else {
-                    //Debug.Log($"Tile was not present in grid: {tile}");
                 }
             }
         }

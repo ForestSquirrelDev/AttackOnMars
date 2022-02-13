@@ -21,13 +21,12 @@ namespace Game.Ecs.Systems {
         private List<int2> globalGridTiles = new List<int2>();
 
         protected override void OnUpdate() {
-            Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld, ref PositioningQuadComponent positioningQuad) => {
-                //Debug.Log("OnUpdate ghost");
+            Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld, 
+                ref PositioningQuadComponent positioningQuad) => {
                 SetPositionsInGrid(localToWorld, buffer);
             });
             Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
-                //Debug.Log("OnUpdate building");
                 if (positioningQuad.inited) return;
                 SetPositionsInGrid(localToWorld, buffer);
                 BuildingGrid.AddBuildingToGrid(globalGridTiles, parent.Value);
@@ -37,8 +36,7 @@ namespace Game.Ecs.Systems {
 
         public List<int2> GetPositionsInGrid() => globalGridTiles;
 
-        protected void SetPositionsInGrid(LocalToWorld localToWorld, DynamicBuffer<Int2BufferElement> buffer) {
-            sw.Start();
+        private void SetPositionsInGrid(LocalToWorld localToWorld, DynamicBuffer<Int2BufferElement> buffer) {
             this.localToWorld = localToWorld;
             Matrix4x4Extensions.AxesWiseMatrix(ref transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
             InitGrid();
@@ -50,10 +48,6 @@ namespace Game.Ecs.Systems {
                     buffer.Add(new Int2BufferElement { value = globalGridTiles[i] });
                 }
             }
-            sw.Stop();
-            // Debug.Log($"Nanoseconds: {StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Nanoseconds)}, milliseconds: " +
-            //           $"{StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Milliseconds)}");
-            sw.Reset();
         }
 
         private void GetOccupiedGlobalGridTiles() {
