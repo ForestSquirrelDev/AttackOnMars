@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using Game.Ecs.Components.BufferElements;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using Utils;
+using Debug = UnityEngine.Debug;
 
 namespace Game {
     public static class BuildingGrid {
@@ -20,7 +24,7 @@ namespace Game {
         private static Dictionary<Vector2Int, Entity> tiles = new Dictionary<Vector2Int, Entity>();
 
         public static void Init(int gridWidth, int gridHeight, float gridCellSize, Transform gridParent, Terrain gridTerrain) {
-            if (Inited) return;
+            tiles.Clear();
             width = gridWidth;
             height = gridHeight;
             cellSize = gridCellSize;
@@ -29,12 +33,11 @@ namespace Game {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     Vector2Int pos = new Vector2Int(x, y);
-                    tiles.Add(pos, default);
+                    tiles.Add(pos, Entity.Null);
                 }
             }
             localToWorld = parent.localToWorldMatrix;
             worldToLocal = parent.worldToLocalMatrix;
-            Inited = true;
         }
 
         public static Vector3 GridToWorld(Vector2Int cell) {
@@ -63,14 +66,35 @@ namespace Game {
         }
         
         public static bool TileIsOccupied(Vector2Int tile) {
-            if (TileOutOfGrid(tile)) {
-                return true;
+            if (tiles.ContainsKey(tile)) {
+                //Debug.Log($"Tile occupied? {tiles[tile] != Entity.Null}");
+            } else {
+                //Debug.Log($"Wrong tile {tile}");
             }
-            return tiles[tile] != default;
+            return TileOutOfGrid(tile) || tiles[tile] != Entity.Null;
         }
 
         public static bool TileOutOfGrid(Vector2Int tile) {
             return tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height;
+        }
+
+        public static void AddBuildingToGrid(IEnumerable<int2> tiles, Entity entity) {
+            foreach (var tile in tiles) {
+                Vector2Int v = tile.ToVector2Int();
+                if (BuildingGrid.tiles.ContainsKey(v)) {
+                    //Debug.Log($"Added tile: {v} + { entity}");
+                    BuildingGrid.tiles[v] = entity;
+                } else {
+                    //Debug.Log($"Tile was not present in grid: {tile}");
+                }
+            }
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        public static void DebugTiles() {
+            foreach (var tile in tiles) {
+                Debug.Log($"key: {tile.Key}, value: {tile.Value}");
+            }
         }
     }
 }

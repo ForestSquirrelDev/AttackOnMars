@@ -1,11 +1,10 @@
 using System.Collections.Generic;
+using Game.Ecs.Monobehaviours;
+using static Game.Ecs.Monobehaviours.MonoBuildingsToEntitiesConverter;
 
-namespace Game.Ecs.Monobehaviours {
-    /// <summary>
-    /// Contains entities that are converted from prefabs on the initialization stage. Those entities are then used to spawn new ones on runtime.
-    /// </summary>
+namespace Game.Ecs.Containers {
     public static class ConvertedEntitiesContainer {
-        public static Dictionary<BuildingType, MonoBuildingsToEntitiesConverter.ConvertedEntityPrefabData> entities 
-            = new Dictionary<BuildingType, MonoBuildingsToEntitiesConverter.ConvertedEntityPrefabData>();
+        public static Dictionary<BuildingType, ConvertedEntityPrefabData> entities 
+            = new Dictionary<BuildingType, ConvertedEntityPrefabData>();
     }
 }

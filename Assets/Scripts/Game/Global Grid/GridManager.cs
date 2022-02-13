@@ -1,4 +1,8 @@
+using System;
+using System.Diagnostics;
 using UnityEngine;
+using Utils;
+using Debug = UnityEngine.Debug;
 
 namespace Game {
     public class GridManager : MonoBehaviour {
@@ -11,6 +15,8 @@ namespace Game {
         [SerializeField] private int height = 20;
         [SerializeField] private float cellSize = 3;
         [SerializeField] private Terrain terrain;
+        
+        private Stopwatch sw = new Stopwatch();
 
         private void Awake() {
            InitGrid();

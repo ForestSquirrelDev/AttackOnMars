@@ -15,8 +15,6 @@ namespace Editor {
         
         private void OnDrawGizmos() {
             manager ??= GetComponent<GridManager>();
-            if (!BuildingGrid.Inited)
-                manager.InitGrid();
             if (manager.Width != width || manager.Height != height || manager.CellSize != cellSize || manager.transform.position != parentPos) {
                 UpdateGrid();
             }

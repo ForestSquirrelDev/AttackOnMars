@@ -55,5 +55,9 @@ namespace Utils {
         public static float4 ToFloat4(this Vector4 v) {
             return new float4(v.x, v.y, v.z, v.w);
         }
+
+        public static Vector2Int ToVector2Int(this int2 value) {
+            return new Vector2Int(value.x, value.y);
+        }
     }
 }

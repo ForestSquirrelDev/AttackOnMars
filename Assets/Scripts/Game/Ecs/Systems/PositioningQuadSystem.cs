@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Game.Ecs.Components;
-using Unity.Burst;
+using Game.Ecs.Components.BufferElements;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -11,42 +11,59 @@ using Debug = UnityEngine.Debug;
 
 namespace Game.Ecs.Systems {
     public class PositioningQuadSystem : ComponentSystem {
+        private Stopwatch sw = new Stopwatch();
         private Matrix4x4 transformCenter;
         private Matrix4x4 gridOrigin;
         private LocalToWorld localToWorld;
         private PositioningGrid positioningGrid;
-        private List<Vector2Int> localGrid = new List<Vector2Int>();
-        private List<Vector3> worldGrid = new List<Vector3>();
-        private List<Vector2Int> globalGrid = new List<Vector2Int>();
-
-        private Stopwatch sw = new Stopwatch();
+        private List<Vector2Int> localGridTiles = new List<Vector2Int>();
+        private List<Vector3> worldGridTiles = new List<Vector3>();
+        private List<int2> globalGridTiles = new List<int2>();
 
         protected override void OnUpdate() {
-            Entities.WithAll<PositioningQuadComponent>().ForEach((ref LocalToWorld localToWorld, ref PositioningQuadComponent positioningQuad) => {
+            Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld, ref PositioningQuadComponent positioningQuad) => {
+                //Debug.Log("OnUpdate ghost");
+                SetPositionsInGrid(localToWorld, buffer);
+            });
+            Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
+                ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
+                //Debug.Log("OnUpdate building");
                 if (positioningQuad.inited) return;
-                sw.Start();
-                this.localToWorld = localToWorld;
-                Matrix4x4Extensions.AxesWiseMatrix(ref transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
-                InitGrid();
-                GetOccupiedGlobalGridTiles();
+                SetPositionsInGrid(localToWorld, buffer);
+                BuildingGrid.AddBuildingToGrid(globalGridTiles, parent.Value);
                 positioningQuad.inited = true;
-                sw.Stop();
-                Debug.Log($"Nanoseconds: {StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Nanoseconds)}, milliseconds: " +
-                          $"{StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Milliseconds)}");
-                sw.Reset();
             });
         }
 
-        public List<Vector2Int> GetOccupiedGlobalGridTiles() {
-            positioningGrid.GetGrid(localGrid);
+        public List<int2> GetPositionsInGrid() => globalGridTiles;
+
+        protected void SetPositionsInGrid(LocalToWorld localToWorld, DynamicBuffer<Int2BufferElement> buffer) {
+            sw.Start();
+            this.localToWorld = localToWorld;
+            Matrix4x4Extensions.AxesWiseMatrix(ref transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
+            InitGrid();
+            GetOccupiedGlobalGridTiles();
+            for (int i = 0; i < globalGridTiles.Count; i++) {
+                if (buffer.Length >= globalGridTiles.Count) {
+                    buffer[i] = new Int2BufferElement { value = globalGridTiles[i] };
+                } else {
+                    buffer.Add(new Int2BufferElement { value = globalGridTiles[i] });
+                }
+            }
+            sw.Stop();
+            // Debug.Log($"Nanoseconds: {StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Nanoseconds)}, milliseconds: " +
+            //           $"{StopwatchExtensions.ToMetricTime(sw.ElapsedTicks, StopwatchExtensions.TimeUnit.Milliseconds)}");
+            sw.Reset();
+        }
+
+        private void GetOccupiedGlobalGridTiles() {
+            positioningGrid.GetGrid(localGridTiles);
             FillWorldGrid();
             FillGlobalGrid();
-            return globalGrid;
         }
         
         private void InitGrid() {
             int2 size = CalculateGridSize();
-            Debug.Log(size);
             ConstructGridOriginMatrix(new float3(-0.5f, 0f, -0.5f));
             positioningGrid = new PositioningGrid(size.x, size.y);
         }
@@ -54,7 +71,7 @@ namespace Game.Ecs.Systems {
         [Conditional("UNITY_EDITOR")]
         public void OnDrawGizmos() {
             Gizmos.color = Color.green;
-            foreach (var v in worldGrid) {
+            foreach (var v in worldGridTiles) {
                 Gizmos.DrawSphere(BuildingGrid.WorldToGridCentered(v), 0.5f);
             }
             Gizmos.color = Color.red;
@@ -72,18 +89,18 @@ namespace Game.Ecs.Systems {
         }
 
         private void FillWorldGrid() {
-            worldGrid.Clear();
+            worldGridTiles.Clear();
             Matrix4x4Extensions.ToUnitScale(ref gridOrigin);
-            foreach (var tile in localGrid) {
+            foreach (var tile in localGridTiles) {
                 Vector3 world = gridOrigin.MultiplyPoint3x4(tile.ToVector3XZ() * BuildingGrid.CellSize);
-                worldGrid.Add(world);
+                worldGridTiles.Add(world);
             }
         }
         
         private void FillGlobalGrid() {
-            globalGrid.Clear();
-            foreach (var tile in worldGrid) {
-                globalGrid.Add(BuildingGrid.WorldToGridFloored(tile));
+            globalGridTiles.Clear();
+            foreach (var tile in worldGridTiles) {
+                globalGridTiles.Add(BuildingGrid.WorldToGridFloored(tile).ToInt2());
             }
         }
         
