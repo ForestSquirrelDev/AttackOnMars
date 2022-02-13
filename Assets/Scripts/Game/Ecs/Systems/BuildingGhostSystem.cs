@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using Utils;
+using Utils.Logger;
 
 namespace Game.Ecs.Systems {
     public class BuildingGhostSystem : ComponentSystem {
