@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using Utils;
-using Debug = UnityEngine.Debug;
+using Utils.Logger;
 
 namespace Game.Ecs.Systems {
     public class PositioningQuadSystem : ComponentSystem {
@@ -21,10 +21,15 @@ namespace Game.Ecs.Systems {
         private List<int2> globalGridTiles = new List<int2>();
 
         protected override void OnUpdate() {
-            Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld, 
-                ref PositioningQuadComponent positioningQuad) => {
+            CustomLogger.Log("Ayo", "Quad OnUpdate1", CustomLogger.Options.Joint);
+            CustomLogger.Log("Ayo1", "Quad OnUpdate2", CustomLogger.Options.Joint);
+            CustomLogger.Log("Ayo2", "Quad OnUpdate3", CustomLogger.Options.Joint);
+            CustomLogger.Log("Ayo3", "Quad OnUpdate4", CustomLogger.Options.Joint);
+            CustomLogger.Log("Ayo4", "Quad OnUpdate5", CustomLogger.Options.Joint);
+            Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld) => {
                 SetPositionsInGrid(localToWorld, buffer);
             });
+            //CustomLogger.Log("Ayo2", "Quad Late OnUpdate", CustomLogger.Options.Singleton);
             Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
                 if (positioningQuad.inited) return;

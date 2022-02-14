@@ -7,22 +7,16 @@ namespace Utils.Logger {
     public static class CustomLogger {
         private static StateController stateController = new StateController();
         private static JointLoggingState jointLogging;
-        private static GroupLoggingState groupLogging;
         private static SingletonLoggingState singletonLogging;
 
-        private static bool SingletonLoggingRequired => singletonLogging?.singletonReqs.Count > 0;
-        private static bool GroupLoggingRequired => groupLogging?.LogActions.Count > 0;
-        private static bool JointLoggingRequired => groupLogging?.LogActions.Count == 0 && singletonLogging?.singletonReqs.Count == 0;
+        private static bool SingletonLoggingRequired => !string.IsNullOrEmpty(singletonLogging?.log);
+        private static bool JointLoggingRequired => string.IsNullOrEmpty(singletonLogging?.log);
 
         static CustomLogger() {
             jointLogging = new JointLoggingState();
-            groupLogging = new GroupLoggingState();
             singletonLogging = new SingletonLoggingState();
             stateController.AddHighPriorityTransition(singletonLogging, () => SingletonLoggingRequired);
-            stateController.AddTransition(jointLogging, groupLogging, () => GroupLoggingRequired);
-            stateController.AddTransition(groupLogging, jointLogging, () => JointLoggingRequired);
             stateController.AddTransition(singletonLogging, jointLogging, () => JointLoggingRequired);
-            stateController.AddTransition(singletonLogging, groupLogging, () => GroupLoggingRequired);
             stateController.SetState(jointLogging);
             _ = UpdateLoop();
         }
@@ -30,28 +24,30 @@ namespace Utils.Logger {
         private static async Task UpdateLoop() {
             if (!Application.isEditor) return;
             while (Application.isPlaying) {
-                stateController.Update(Time.fixedDeltaTime);
-                Debug.Log($"Joint loggers count: {jointLogging.LogActions.Count}. Singleton loggers count: {singletonLogging.singletonReqs.Count}");
-                await Task.Delay(20);
+                stateController.Update(0);
+                await Task.Delay(1);
             }
         }
 
-        public static void AddSingletonLogger(Action logAction) {
-            if (singletonLogging.singletonReqs.Contains(logAction)) return;
-            singletonLogging.singletonReqs.Enqueue(logAction);
+        public static void Log(string key,string log, Options options) {
+            switch (options) {
+                case Options.Singleton:
+                    singletonLogging.requirements.Enqueue(new LogRequirement());
+                    singletonLogging.AddLogger(log);
+                    break;
+                case Options.Joint:
+                    jointLogging.AddLog(key, log);
+                    jointLogging.Requirements.Enqueue(new LogRequirement());
+                    break;
+            }
         }
 
-        public static void AddGroupLogger(Action logAction) {
-            if (groupLogging.LogActions.Contains(logAction)) return;
-            groupLogging.LogActions.Add(logAction);
+        public enum Options {
+            Joint,
+            Singleton
         }
 
-        public static void AddJointLogger(Action logAction) {
-            if (groupLogging.LogActions.Contains(logAction)) return;
-            jointLogging.LogActions.Add(logAction);
-        }
-
-        private static void Log(string s) {
+        public struct LogRequirement {
             
         }
     }

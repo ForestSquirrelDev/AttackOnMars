@@ -1,29 +1,35 @@
 using System;
 using System.Collections.Generic;
 using Shared.FSM;
+using UnityEngine;
+using static Utils.Logger.CustomLogger;
 
 namespace Utils.Logger {
     public class SingletonLoggingState : IState {
         public string StateName { get; }
-        public Queue<Action> singletonReqs { get; set; } = new Queue<Action>();
+        public Queue<LogRequirement> requirements { get; } = new Queue<LogRequirement>();
+        public string log { get; private set; }
 
         private Action currentLogAction;
         private int previousCount;
 
         public void OnEnter() {
-            currentLogAction = singletonReqs.Dequeue();
-            previousCount = singletonReqs.Count;
+            
         }
 
         public void UpdateState(float deltaTime) {
-            if (previousCount != singletonReqs.Count && singletonReqs.Count > 0) {
-                currentLogAction = singletonReqs.Dequeue();
+            if (requirements.Count > 0) {
+                requirements.Dequeue();
+                Debug.Log(log);
             }
-            currentLogAction?.Invoke();
         }
 
         public void OnExit() {
-            singletonReqs.Clear();
+            log = "";
+        }
+
+        public void AddLogger(string log) {
+            this.log = log;
         }
     }
 }
