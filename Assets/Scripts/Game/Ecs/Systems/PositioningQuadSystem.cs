@@ -7,7 +7,6 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using Utils;
-using Utils.Logger;
 
 namespace Game.Ecs.Systems {
     public class PositioningQuadSystem : ComponentSystem {
@@ -19,10 +18,11 @@ namespace Game.Ecs.Systems {
         private List<Vector2Int> localGridTiles = new List<Vector2Int>();
         private List<Vector3> worldGridTiles = new List<Vector3>();
         private List<int2> globalGridTiles = new List<int2>();
-
+        
         protected override void OnUpdate() {
             Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld) => {
-                SetPositionsInGrid(localToWorld, buffer);
+                for (int i = 500; i > 0; i--)
+                    SetPositionsInGrid(localToWorld, buffer);
             });
             Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
@@ -61,26 +61,6 @@ namespace Game.Ecs.Systems {
             positioningGrid = new PositioningGrid(size.x, size.y);
         }
         
-        [Conditional("UNITY_EDITOR")]
-        public void OnDrawGizmos() {
-            Gizmos.color = Color.green;
-            foreach (var v in worldGridTiles) {
-                Gizmos.DrawSphere(BuildingGrid.WorldToGridCentered(v), 0.5f);
-            }
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(0));
-            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(0));
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(1));
-            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(1));
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(2));
-            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(2));
-            
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(transformCenter.MultiplyPoint3x4(new Vector3(-.5f, 0, .5f)), .5f);
-        }
-
         private void FillWorldGrid() {
             worldGridTiles.Clear();
             Matrix4x4Extensions.ToUnitScale(ref gridOrigin);
@@ -119,6 +99,26 @@ namespace Game.Ecs.Systems {
         private void ConstructGridOriginMatrix(float3 gridPosition) {
             Matrix4x4Extensions.AxesWiseMatrix(ref gridOrigin, localToWorld.Right, localToWorld.Forward, localToWorld.Up,
                 transformCenter.MultiplyPoint3x4(gridPosition.ToVector4()));
+        }
+        
+        [Conditional("UNITY_EDITOR")]
+        public void OnDrawGizmos() {
+            Gizmos.color = Color.green;
+            foreach (var v in worldGridTiles) {
+                Gizmos.DrawSphere(BuildingGrid.WorldToGridCentered(v), 0.5f);
+            }
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(0));
+            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(0));
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(1));
+            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(1));
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(2));
+            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(2));
+            
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(transformCenter.MultiplyPoint3x4(new Vector3(-.5f, 0, .5f)), .5f);
         }
     }
 }

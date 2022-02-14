@@ -12,10 +12,12 @@ namespace Game.Ecs.Systems {
         
         private Camera camera;
         private PositioningQuadSystem quadSystem;
+        private JobifiedPositioningQuadSystem test;
 
         protected override void OnCreate() {
             camera = Camera.main;
             quadSystem = World.GetExistingSystem<PositioningQuadSystem>();
+            test = World.GetExistingSystem<JobifiedPositioningQuadSystem>();
         }
 
         protected override void OnUpdate() {

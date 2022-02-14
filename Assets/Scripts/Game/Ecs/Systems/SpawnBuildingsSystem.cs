@@ -21,9 +21,6 @@ namespace Game.Ecs.Systems {
         }
 
         protected override void OnUpdate() {
-            if (Input.GetKeyDown(KeyCode.H)) {
-                BuildingGrid.DebugTiles();
-            }
             if (!Input.GetMouseButtonDown(0)) return;
             if (clicksCount == 0) {
                 SpawnGhost();
