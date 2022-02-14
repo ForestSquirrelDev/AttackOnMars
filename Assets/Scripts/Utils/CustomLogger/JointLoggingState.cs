@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Shared.FSM;
 using UnityEngine;
@@ -8,16 +7,16 @@ namespace Utils.Logger {
     public class JointLoggingState : IState {
         public string StateName { get; }
         public Queue<LogRequirement> Requirements { get; } = new Queue<LogRequirement>();
-        public Dictionary<string, string> Logs { get; } = new Dictionary<string, string>();
+        private Dictionary<string, string> Logs { get; } = new Dictionary<string, string>();
 
         public void OnEnter() {
             
         }
 
         public void UpdateState(float deltaTime) {
-            if (Requirements.Count > 0) {
-                Requirements.Dequeue();
-                foreach (var log in Logs) {
+            foreach (var log in Logs) {
+                if (Requirements.Count > 0) {
+                    Requirements.Dequeue();
                     Debug.Log(log.Value);
                 }
             }
@@ -25,6 +24,7 @@ namespace Utils.Logger {
 
         public void OnExit() {
             Logs.Clear();
+            Requirements.Clear();
         }
 
         public void AddLog(string key, string log) {

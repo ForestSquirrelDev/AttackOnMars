@@ -7,7 +7,7 @@ using static Utils.Logger.CustomLogger;
 namespace Utils.Logger {
     public class SingletonLoggingState : IState {
         public string StateName { get; }
-        public Queue<LogRequirement> requirements { get; } = new Queue<LogRequirement>();
+        public Queue<LogRequirement> Requirements { get; } = new Queue<LogRequirement>();
         public string log { get; private set; }
 
         private Action currentLogAction;
@@ -18,14 +18,15 @@ namespace Utils.Logger {
         }
 
         public void UpdateState(float deltaTime) {
-            if (requirements.Count > 0) {
-                requirements.Dequeue();
+            if (Requirements.Count > 0) {
+                Requirements.Dequeue();
                 Debug.Log(log);
             }
         }
 
         public void OnExit() {
             log = "";
+            Requirements.Clear();
         }
 
         public void AddLogger(string log) {

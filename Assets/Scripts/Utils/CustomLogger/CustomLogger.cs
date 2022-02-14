@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Shared.FSM;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Utils.Logger {
     public static class CustomLogger {
@@ -29,26 +30,39 @@ namespace Utils.Logger {
             }
         }
 
-        public static void Log(string key,string log, Options options) {
-            switch (options) {
-                case Options.Singleton:
-                    singletonLogging.requirements.Enqueue(new LogRequirement());
+        public static void Log(string log, LogOptions logOptions, string key = null) {
+            switch (logOptions) {
+                case LogOptions.Singleton:
                     singletonLogging.AddLogger(log);
+                    singletonLogging.Requirements.Enqueue(new LogRequirement());
                     break;
-                case Options.Joint:
+                case LogOptions.Joint:
+                    if (string.IsNullOrEmpty(key)) key = GetRandomString();
                     jointLogging.AddLog(key, log);
                     jointLogging.Requirements.Enqueue(new LogRequirement());
                     break;
             }
         }
 
-        public enum Options {
-            Joint,
-            Singleton
-        }
+        private static string GetRandomString() {
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            char[] stringChars = new char[8];
+            Random random = new Random();
 
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new String(stringChars);
+        }
+        
         public struct LogRequirement {
             
         }
+    }
+    public enum LogOptions {
+        Joint,
+        Singleton
     }
 }
