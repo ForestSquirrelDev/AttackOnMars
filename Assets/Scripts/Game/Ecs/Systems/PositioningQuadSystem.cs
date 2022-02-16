@@ -21,8 +21,7 @@ namespace Game.Ecs.Systems {
         
         protected override void OnUpdate() {
             Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld) => {
-                for (int i = 500; i > 0; i--)
-                    SetPositionsInGrid(localToWorld, buffer);
+                SetPositionsInGrid(localToWorld, buffer);
             });
             Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {

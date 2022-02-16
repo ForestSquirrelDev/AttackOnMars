@@ -11,12 +11,12 @@ namespace Game.Ecs.Systems {
         private Matrix4x4 transformCenter;
         [ReadOnly]
         private NativeArray<int2> result;
-
+        
         protected override void OnCreate() {
             result = new NativeArray<int2>(10000, Allocator.Persistent);
         }
 
-        protected override JobHandle OnUpdate(JobHandle inputDeps) { ;
+        protected override JobHandle OnUpdate(JobHandle inputDeps) {
             if (Input.GetKeyDown(KeyCode.H)) {
                 int i = 0;
                 foreach (var tile in result) {
