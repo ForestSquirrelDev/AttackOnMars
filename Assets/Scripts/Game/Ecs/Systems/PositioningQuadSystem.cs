@@ -10,16 +10,21 @@ using Utils;
 
 namespace Game.Ecs.Systems {
     public class PositioningQuadSystem : ComponentSystem {
-        private Stopwatch sw = new Stopwatch();
-        private Matrix4x4 transformCenter;
-        private Matrix4x4 gridOrigin;
-        private LocalToWorld localToWorld;
-        private PositioningGrid positioningGrid;
-        private List<Vector2Int> localGridTiles = new List<Vector2Int>();
-        private List<Vector3> worldGridTiles = new List<Vector3>();
-        private List<int2> globalGridTiles = new List<int2>();
-        
+        private Matrix4x4 _transformCenter;
+        private Matrix4x4 _gridOrigin;
+        private LocalToWorld _localToWorld;
+        private PositioningGrid _positioningGrid;
+        private List<Vector2Int> _localGridTiles = new List<Vector2Int>();
+        private List<Vector3> _worldGridTiles = new List<Vector3>();
+        private List<int2> _globalGridTiles = new List<int2>();
+        private GridKeeperSystem _gridKeeperSystem;
+
+        protected override void OnCreate() {
+            _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
+        }
+
         protected override void OnUpdate() {
+            return;
             Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld) => {
                 SetPositionsInGrid(localToWorld, buffer);
             });
@@ -27,29 +32,29 @@ namespace Game.Ecs.Systems {
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
                 if (positioningQuad.inited) return;
                 SetPositionsInGrid(localToWorld, buffer);
-                BuildingGrid.AddBuildingToGrid(globalGridTiles, parent.Value);
+                _gridKeeperSystem.buildingGrid.AddBuildingToGrid(_globalGridTiles, parent.Value);
                 positioningQuad.inited = true;
             });
         }
 
-        public List<int2> GetPositionsInGrid() => globalGridTiles;
+        public List<int2> GetPositionsInGrid() => _globalGridTiles;
 
         private void SetPositionsInGrid(LocalToWorld localToWorld, DynamicBuffer<Int2BufferElement> buffer) {
-            this.localToWorld = localToWorld;
-            Matrix4x4Extensions.AxesWiseMatrix(ref transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
+            this._localToWorld = localToWorld;
+            Matrix4x4Extensions.AxesWiseMatrix(ref _transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
             InitGrid();
             GetOccupiedGlobalGridTiles();
-            for (int i = 0; i < globalGridTiles.Count; i++) {
-                if (buffer.Length >= globalGridTiles.Count) {
-                    buffer[i] = new Int2BufferElement { value = globalGridTiles[i] };
+            for (int i = 0; i < _globalGridTiles.Count; i++) {
+                if (buffer.Length >= _globalGridTiles.Count) {
+                    buffer[i] = new Int2BufferElement { value = _globalGridTiles[i] };
                 } else {
-                    buffer.Add(new Int2BufferElement { value = globalGridTiles[i] });
+                    buffer.Add(new Int2BufferElement { value = _globalGridTiles[i] });
                 }
             }
         }
 
         private void GetOccupiedGlobalGridTiles() {
-            positioningGrid.GetGrid(localGridTiles);
+            _positioningGrid.GetGrid(_localGridTiles);
             FillWorldGrid();
             FillGlobalGrid();
         }
@@ -57,22 +62,22 @@ namespace Game.Ecs.Systems {
         private void InitGrid() {
             int2 size = CalculateGridSize();
             ConstructGridOriginMatrix(new float3(-0.5f, 0f, -0.5f));
-            positioningGrid = new PositioningGrid(size.x, size.y);
+            _positioningGrid = new PositioningGrid(size.x, size.y);
         }
         
         private void FillWorldGrid() {
-            worldGridTiles.Clear();
-            Matrix4x4Extensions.ToUnitScale(ref gridOrigin);
-            foreach (var tile in localGridTiles) {
-                Vector3 world = gridOrigin.MultiplyPoint3x4(tile.ToVector3XZ() * BuildingGrid.CellSize);
-                worldGridTiles.Add(world);
+            _worldGridTiles.Clear();
+            Matrix4x4Extensions.ToUnitScale(ref _gridOrigin);
+            foreach (var tile in _localGridTiles) {
+                Vector3 world = _gridOrigin.MultiplyPoint3x4(tile.ToVector3XZ() * _gridKeeperSystem.buildingGrid.CellSize);
+                _worldGridTiles.Add(world);
             }
         }
         
         private void FillGlobalGrid() {
-            globalGridTiles.Clear();
-            foreach (var tile in worldGridTiles) {
-                globalGridTiles.Add(BuildingGrid.WorldToGridFloored(tile).ToInt2());
+            _globalGridTiles.Clear();
+            foreach (var tile in _worldGridTiles) {
+                _globalGridTiles.Add(_gridKeeperSystem.buildingGrid.WorldToGridFloored(tile).ToInt2());
             }
         }
         
@@ -81,13 +86,13 @@ namespace Game.Ecs.Systems {
             float3 leftTopCorner = new float3(-0.5f, 0, 0.5f);
             float3 rightBottomCorner = new float3(0.5f, 0f, -0.5f);
 
-            leftBottomCorner = transformCenter.MultiplyPoint3x4(leftBottomCorner);
-            leftTopCorner = transformCenter.MultiplyPoint3x4(leftTopCorner);
-            rightBottomCorner = transformCenter.MultiplyPoint3x4(rightBottomCorner);
+            leftBottomCorner = _transformCenter.MultiplyPoint3x4(leftBottomCorner);
+            leftTopCorner = _transformCenter.MultiplyPoint3x4(leftTopCorner);
+            rightBottomCorner = _transformCenter.MultiplyPoint3x4(rightBottomCorner);
 
-            int2 leftBottomToGlobalGrid = BuildingGrid.WorldToGridCeiled(leftBottomCorner).ToInt2();
-            int2 leftTopToGlobalGrid = BuildingGrid.WorldToGridCeiled(leftTopCorner).ToInt2();
-            int2 rightBottomToGlobalGrid = BuildingGrid.WorldToGridCeiled(rightBottomCorner).ToInt2();
+            int2 leftBottomToGlobalGrid = _gridKeeperSystem.buildingGrid.WorldToGridCeiled(leftBottomCorner).ToInt2();
+            int2 leftTopToGlobalGrid = _gridKeeperSystem.buildingGrid.WorldToGridCeiled(leftTopCorner).ToInt2();
+            int2 rightBottomToGlobalGrid = _gridKeeperSystem.buildingGrid.WorldToGridCeiled(rightBottomCorner).ToInt2();
             
             int width = math.clamp(math.abs(rightBottomToGlobalGrid.x - leftBottomToGlobalGrid.x) + 1, 1, int.MaxValue);
             int height = math.clamp(math.abs(leftTopToGlobalGrid.y - leftBottomToGlobalGrid.y) + 1, 1, int.MaxValue);
@@ -96,28 +101,28 @@ namespace Game.Ecs.Systems {
         }
         
         private void ConstructGridOriginMatrix(float3 gridPosition) {
-            Matrix4x4Extensions.AxesWiseMatrix(ref gridOrigin, localToWorld.Right, localToWorld.Forward, localToWorld.Up,
-                transformCenter.MultiplyPoint3x4(gridPosition.ToVector4()));
+            Matrix4x4Extensions.AxesWiseMatrix(ref _gridOrigin, _localToWorld.Right, _localToWorld.Forward, _localToWorld.Up,
+                _transformCenter.MultiplyPoint3x4(gridPosition.ToVector4()));
         }
         
         [Conditional("UNITY_EDITOR")]
         public void OnDrawGizmos() {
             Gizmos.color = Color.green;
-            foreach (var v in worldGridTiles) {
-                Gizmos.DrawSphere(BuildingGrid.WorldToGridCentered(v), 0.5f);
+            foreach (var v in _worldGridTiles) {
+                Gizmos.DrawSphere(_gridKeeperSystem.buildingGrid.WorldToGridCentered(v), 0.5f);
             }
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(0));
-            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(0));
+            Gizmos.DrawLine(_gridOrigin.GetColumn(3), _gridOrigin.GetColumn(3) + _gridOrigin.GetColumn(0));
+            Gizmos.DrawLine(_transformCenter.GetColumn(3), _transformCenter.GetColumn(3) + _transformCenter.GetColumn(0));
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(1));
-            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(1));
+            Gizmos.DrawLine(_gridOrigin.GetColumn(3), _gridOrigin.GetColumn(3) + _gridOrigin.GetColumn(1));
+            Gizmos.DrawLine(_transformCenter.GetColumn(3), _transformCenter.GetColumn(3) + _transformCenter.GetColumn(1));
             Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(gridOrigin.GetColumn(3), gridOrigin.GetColumn(3) + gridOrigin.GetColumn(2));
-            Gizmos.DrawLine(transformCenter.GetColumn(3), transformCenter.GetColumn(3) + transformCenter.GetColumn(2));
+            Gizmos.DrawLine(_gridOrigin.GetColumn(3), _gridOrigin.GetColumn(3) + _gridOrigin.GetColumn(2));
+            Gizmos.DrawLine(_transformCenter.GetColumn(3), _transformCenter.GetColumn(3) + _transformCenter.GetColumn(2));
             
             Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(transformCenter.MultiplyPoint3x4(new Vector3(-.5f, 0, .5f)), .5f);
+            Gizmos.DrawSphere(_transformCenter.MultiplyPoint3x4(new Vector3(-.5f, 0, .5f)), .5f);
         }
     }
 }

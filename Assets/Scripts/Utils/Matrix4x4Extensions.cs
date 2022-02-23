@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -47,6 +48,16 @@ namespace Utils {
             m.SetColumn(0, right);
             m.SetColumn(1, up);
             m.SetColumn(2, forward);
+        }
+
+        [return: ReadOnly]
+        public static float4 MultiplyPoint(this float4x4 matrix, float4 v) {
+            return math.mul(matrix, v);
+        }
+        
+        [return: ReadOnly]
+        public static float3 MultiplyPoint3x4(this float3x4 matrix, float4 v) {
+            return math.mul(matrix, v);
         }
     }
 }

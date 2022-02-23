@@ -152,24 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715b9842183f75646afb7e711077c4b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transformCenter:
-    e00: 0
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 0
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 0
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 0
-  loops: 0
 --- !u!4 &37150134
 Transform:
   m_ObjectHideFlags: 0
@@ -282,10 +264,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871e014b65419de4599a7ce149f106db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
-  cellSize: 3
-  terrain: {fileID: 873730277}
+  _width: 100
+  _height: 100
+  _cellSize: 3
+  _terrain: {fileID: 873730277}
 --- !u!4 &329450781
 Transform:
   m_ObjectHideFlags: 0
@@ -294,7 +276,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 329450779}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 227.7, y: 31.9, z: 373.7}
+  m_LocalPosition: {x: 201.7, y: 31.9, z: 307.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

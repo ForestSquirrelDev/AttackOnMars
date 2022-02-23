@@ -9,22 +9,24 @@ using static Game.InstantiatedBuildingsContainer;
 
 namespace Game.Ecs.Systems {
     public class SpawnBuildingsSystem : ComponentSystem {
-        private Entity buildingGhost;
-        private Entity buildingGhostQuad;
-        private BuildingGhostSystem ghostSystem;
-        private int clicksCount;
-        private Camera camera;
+        private Entity _buildingGhost;
+        private Entity _buildingGhostQuad;
+        private BuildingGhostSystem _ghostSystem;
+        private int _clicksCount;
+        private Camera _camera;
+        private GridKeeperSystem _gridKeeperSystem;
         
         protected override void OnCreate() {
-            camera = Camera.main;
-            ghostSystem = World.GetExistingSystem<BuildingGhostSystem>();
+            _camera = Camera.main;
+            _ghostSystem = World.GetExistingSystem<BuildingGhostSystem>();
+            _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
         }
 
         protected override void OnUpdate() {
             if (!Input.GetMouseButtonDown(0)) return;
-            if (clicksCount == 0) {
+            if (_clicksCount == 0) {
                 SpawnGhost();
-                clicksCount++;
+                _clicksCount++;
             } else {
                 if (!TrySpawnBuilding()) return;
                 Reset();
@@ -32,14 +34,14 @@ namespace Game.Ecs.Systems {
         }
         
         private void SpawnGhost() {
-            buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.entities[BuildingType.Turret].ghost);
-            buildingGhostQuad = buildingGhost.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
-            EntityManager.AddBuffer<Int2BufferElement>(buildingGhostQuad);
+            _buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.entities[BuildingType.Turret].ghost);
+            _buildingGhostQuad = _buildingGhost.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
+            EntityManager.AddBuffer<Int2BufferElement>(_buildingGhostQuad);
         }
         
         private bool TrySpawnBuilding() {
-            if (!ghostSystem.CanSpawn) return false;
-            if (!BuildingGridInstantiater.InstantiateOnGrid(InputUtility.MouseToWorld(camera),
+            if (!_ghostSystem.CanSpawn) return false;
+            if (!_gridKeeperSystem.buildingGrid.InstantiateOnGrid(InputUtility.MouseToWorld(_camera),
                 ConvertedEntitiesContainer.entities[BuildingType.Turret].building, EntityManager, out Entity building)) return false;
             Entity positioningQuad = building.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
             EntityManager.SetComponentData(building, new BuildingComponent {positioningQuad = EntityManager.GetComponentData<PositioningQuadComponent>(positioningQuad)});
@@ -51,9 +53,9 @@ namespace Game.Ecs.Systems {
         }
 
         private void Reset() {
-            EntityManager.DestroyEntity(buildingGhost);
-            EntityManager.DestroyEntity(buildingGhostQuad);
-            clicksCount = 0;
+            EntityManager.DestroyEntity(_buildingGhost);
+            EntityManager.DestroyEntity(_buildingGhostQuad);
+            _clicksCount = 0;
         }
     }
 }

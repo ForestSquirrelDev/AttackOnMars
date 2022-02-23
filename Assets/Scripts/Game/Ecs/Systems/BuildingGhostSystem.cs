@@ -4,27 +4,28 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using Utils;
-using Utils.Logger;
 
 namespace Game.Ecs.Systems {
     public class BuildingGhostSystem : ComponentSystem {
         public bool CanSpawn { get; private set; }
         
-        private Camera camera;
-        private PositioningQuadSystem quadSystem;
+        private Camera _camera;
+        private PositioningQuadSystem _quadSystem;
+        private GridKeeperSystem _gridKeeperSystem;
 
         protected override void OnCreate() {
-            camera = Camera.main;
-            quadSystem = World.GetExistingSystem<PositioningQuadSystem>();
+            _camera = Camera.main;
+            _quadSystem = World.GetExistingSystem<PositioningQuadSystem>();
+            _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
         }
 
         protected override void OnUpdate() {
             Entities.WithAll<Tag_BuildingGhost>().ForEach((ref Translation translation) => {
-                float3 mouse = InputUtility.MouseToWorld(camera);
-                float3 grid = BuildingGrid.WorldToGridCentered(mouse);
+                float3 mouse = InputUtility.MouseToWorld(_camera);
+                float3 grid = _gridKeeperSystem.buildingGrid.WorldToGridCentered(mouse);
                 translation.Value = grid;
-                foreach (var tile in quadSystem.GetPositionsInGrid()) {
-                    if (BuildingGrid.TileIsOccupied(new Vector2Int(tile.x, tile.y))) {
+                foreach (var tile in _quadSystem.GetPositionsInGrid()) {
+                    if (_gridKeeperSystem.buildingGrid.TileIsOccupied(new Vector2Int(tile.x, tile.y))) {
                         CanSpawn = false;
                         return;
                     }
