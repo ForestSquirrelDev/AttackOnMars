@@ -56,8 +56,9 @@ namespace Game.Ecs.Systems {
 
         private void GetOccupiedGlobalGridTiles() {
             int2 size = CalculateGridSize();
-            _positioningGrid = new PositioningGrid(size.x, size.y);
-            _positioningGrid.GetGrid(_localGridTiles);
+            _positioningGrid = new PositioningGrid();
+            _positioningGrid.FillGrid(size.x, size.y);
+            _localGridTiles.AddRange(_positioningGrid.positions);
             _positioningGrid.Dispose();
             FillWorldGrid();
             FillGlobalGrid();

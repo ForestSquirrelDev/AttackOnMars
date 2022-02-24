@@ -3,7 +3,7 @@ using Game.Ecs.Components.BufferElements;
 using Unity.Entities;
 
 namespace Game.Ecs.Systems {
-    public class AddbBuildingsToGridSystem : SystemBase {
+    public class AddBuildingsToGridSystem : SystemBase {
         private GridKeeperSystem _gridKeeperSystem;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
         
