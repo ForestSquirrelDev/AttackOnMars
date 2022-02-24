@@ -53,7 +53,6 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
             }
             _stopwatch.Stop();
             Debug.Log($"Seconds: {StopwatchExtensions.ToMetricTime(_stopwatch.ElapsedTicks, Seconds)}");
-            Debug.Log($"Memory: {System.GC.GetTotalMemory(true) * 0.000001}");
 
             _stopwatch.Reset();
         }
