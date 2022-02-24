@@ -27,14 +27,14 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
             InitGrid();
             var keeper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<GridKeeperSystem>();
             keeper.Init(this);
-            SampleHeights(ref keeper.buildingGrid);
+            SetGridSampledHeights(ref keeper.buildingGrid);
         }
 
         public void InitGrid() {
-            editorGrid.Init(Width, Height, CellSize, transform.localToWorldMatrix, transform.worldToLocalMatrix, TotalCellsCount);
+            editorGrid.EditorInit(Width, Height, CellSize, transform.localToWorldMatrix, transform.worldToLocalMatrix);
         }
 
-        private void SampleHeights(ref BuildingGrid grid) {
+        private void SetGridSampledHeights(ref BuildingGrid grid) {
             Bounds bounds = _terrain.terrainData.bounds;
             Debug.Log($"size: {bounds.size} min: {bounds.min} max : {bounds.max}");
             Rect rect = new Rect {

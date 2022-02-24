@@ -14,7 +14,7 @@ namespace Game.Ecs.Systems {
         private Matrix4x4 _gridOrigin;
         private LocalToWorld _localToWorld;
         private PositioningGrid _positioningGrid;
-        private List<Vector2Int> _localGridTiles = new List<Vector2Int>();
+        private List<int2> _localGridTiles = new List<int2>();
         private List<Vector3> _worldGridTiles = new List<Vector3>();
         private List<int2> _globalGridTiles = new List<int2>();
         private GridKeeperSystem _gridKeeperSystem;
@@ -42,7 +42,8 @@ namespace Game.Ecs.Systems {
         private void SetPositionsInGrid(LocalToWorld localToWorld, DynamicBuffer<Int2BufferElement> buffer) {
             this._localToWorld = localToWorld;
             Matrix4x4Extensions.AxesWiseMatrix(ref _transformCenter, localToWorld.Right, localToWorld.Forward, localToWorld.Up, localToWorld.Position);
-            InitGrid();
+            Matrix4x4Extensions.AxesWiseMatrix(ref _gridOrigin, _localToWorld.Right, _localToWorld.Forward, _localToWorld.Up,
+                _transformCenter.MultiplyPoint3x4(new Vector3(-0.5f, 0f, -0.5f)));
             GetOccupiedGlobalGridTiles();
             for (int i = 0; i < _globalGridTiles.Count; i++) {
                 if (buffer.Length >= _globalGridTiles.Count) {
@@ -54,22 +55,19 @@ namespace Game.Ecs.Systems {
         }
 
         private void GetOccupiedGlobalGridTiles() {
+            int2 size = CalculateGridSize();
+            _positioningGrid = new PositioningGrid(size.x, size.y);
             _positioningGrid.GetGrid(_localGridTiles);
+            _positioningGrid.Dispose();
             FillWorldGrid();
             FillGlobalGrid();
         }
-        
-        private void InitGrid() {
-            int2 size = CalculateGridSize();
-            ConstructGridOriginMatrix(new float3(-0.5f, 0f, -0.5f));
-            _positioningGrid = new PositioningGrid(size.x, size.y);
-        }
-        
+
         private void FillWorldGrid() {
             _worldGridTiles.Clear();
             Matrix4x4Extensions.ToUnitScale(ref _gridOrigin);
             foreach (var tile in _localGridTiles) {
-                Vector3 world = _gridOrigin.MultiplyPoint3x4(tile.ToVector3XZ() * _gridKeeperSystem.buildingGrid.CellSize);
+                Vector3 world = _gridOrigin.MultiplyPoint3x4(new Vector3(tile.x, 0, tile.y) * _gridKeeperSystem.buildingGrid.CellSize);
                 _worldGridTiles.Add(world);
             }
         }
@@ -99,12 +97,7 @@ namespace Game.Ecs.Systems {
 
             return new int2(width, height);
         }
-        
-        private void ConstructGridOriginMatrix(float3 gridPosition) {
-            Matrix4x4Extensions.AxesWiseMatrix(ref _gridOrigin, _localToWorld.Right, _localToWorld.Forward, _localToWorld.Up,
-                _transformCenter.MultiplyPoint3x4(gridPosition.ToVector4()));
-        }
-        
+
         [Conditional("UNITY_EDITOR")]
         public void OnDrawGizmos() {
             Gizmos.color = Color.green;

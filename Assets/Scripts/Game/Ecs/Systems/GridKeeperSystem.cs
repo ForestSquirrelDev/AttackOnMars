@@ -10,7 +10,7 @@ namespace Game.Ecs.Systems {
             buildingGrid = new BuildingGrid();
             Transform transform = gridManager.transform;
             buildingGrid.Init(gridManager.Width, gridManager.Height, gridManager.CellSize,
-                transform.localToWorldMatrix, transform.worldToLocalMatrix, gridManager.TotalCellsCount, true);
+                transform.localToWorldMatrix, transform.worldToLocalMatrix, gridManager.TotalCellsCount);
         }
         
         protected override void OnUpdate() {

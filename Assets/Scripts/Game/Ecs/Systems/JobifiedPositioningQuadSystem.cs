@@ -1,11 +1,11 @@
 using Game.Ecs.Components;
+using Game.Ecs.Components.BufferElements;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
@@ -15,11 +15,13 @@ namespace Game.Ecs.Systems {
         private EntityQueryDesc _quadsQueryDescription;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
         private GridKeeperSystem _gridKeeperSystem;
-        
+        private NativeArray<int2> int2s;
+
         protected override void OnCreate() {
             _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
             _quadsQueryDescription = new EntityQueryDesc {
-                All = new ComponentType[] { typeof(PositioningQuadComponent), typeof(Tag_BuildingPositioningQuad), typeof(LocalToWorld) }
+                All = new ComponentType[] { typeof(PositioningQuadComponent), typeof(Tag_BuildingPositioningQuad), typeof(LocalToWorld)},
+                None = new ComponentType[] {typeof(Tag_ReadyForGridQuad)}
             };
             _commandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         }
@@ -37,7 +39,7 @@ namespace Game.Ecs.Systems {
                 positioningQuadHandle = positioningQuadType,
                 ecb = ecb,
                 entityTypeHandle = entityTypeHandle,
-                buildingGrid = _gridKeeperSystem.buildingGrid
+                buildingGrid = _gridKeeperSystem.buildingGrid,
             };
             
             JobHandle handle = job.ScheduleParallel(_quadsQuery, Dependency);
@@ -54,11 +56,14 @@ namespace Game.Ecs.Systems {
             [ReadOnly] public EntityTypeHandle entityTypeHandle;
             [ReadOnly] public BuildingGrid buildingGrid;
             public EntityCommandBuffer.ParallelWriter ecb;
-        
+
             public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex) {
-                for (int i = 10000; i > 0; i--) {
-                    //ecb.Instantiate(0, chunk.GetNativeArray(entityTypeHandle)[0]);
-                    var c = CalculateGridSize();
+                NativeArray<Entity> entities = chunk.GetNativeArray(entityTypeHandle);
+                for (int i = 0; i < entities.Length; i++) {
+                    ecb.AddComponent<Tag_ReadyForGridQuad>(firstEntityIndex + i, entities[i]);
+                    ecb.AddBuffer<Int2BufferElement>(firstEntityIndex + i, entities[i]);
+                    ecb.SetBuffer<Int2BufferElement>(firstEntityIndex + 1, entities[i]);
+                    ecb.AppendToBuffer(firstEntityIndex + i, entities[i], new Int2BufferElement {value = CalculateGridSize()});
                 }
             }
         

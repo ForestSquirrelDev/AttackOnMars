@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using Game.Ecs.Components.BufferElements;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -20,18 +21,16 @@ namespace Game {
         private NativeHashMap<float3, float> _sampledHeights;
         private NativeHashMap<int2, Entity> _tiles;
         
-        public void Init(int gridWidth, int gridHeight, float gridCellSize, Matrix4x4 localToWorld, Matrix4x4 worldToLocal, int sampledHeightsCapacity, bool initUnsafeCollections = false) {
+        public void Init(int gridWidth, int gridHeight, float gridCellSize, Matrix4x4 localToWorld, Matrix4x4 worldToLocal, int sampledHeightsCapacity) {
             _width = gridWidth;
             _height = gridHeight;
             _cellSize = gridCellSize;
-            if (initUnsafeCollections) {
-                _tiles = new NativeHashMap<int2, Entity>(_width * _height, Allocator.Persistent);
-                _sampledHeights = new NativeHashMap<float3, float>(sampledHeightsCapacity, Allocator.Persistent);
-                for (int x = 0; x < _width; x++) {
-                    for (int y = 0; y < _height; y++) {
-                        int2 pos = new int2(x, y);
-                        _tiles.Add(pos, Entity.Null);
-                    }
+            _tiles = new NativeHashMap<int2, Entity>(_width * _height, Allocator.Persistent);
+            _sampledHeights = new NativeHashMap<float3, float>(sampledHeightsCapacity, Allocator.Persistent);
+            for (int x = 0; x < _width; x++) {
+                for (int y = 0; y < _height; y++) {
+                    int2 pos = new int2(x, y);
+                    _tiles.Add(pos, Entity.Null);
                 }
             }
             for (int i = 0; i <= 3; i++) {
@@ -85,12 +84,19 @@ namespace Game {
         public bool TileOutOfGrid(Vector2Int tile) {
             return tile.x < 0 || tile.x >= _width || tile.y < 0 || tile.y >= _height;
         }
-
-        [return: ReadOnly]
+        
         public void AddBuildingToGrid(IEnumerable<int2> tiles, Entity entity) {
             foreach (var tile in tiles) {
-                if (this._tiles.ContainsKey(tile)) {
-                    this._tiles[tile] = entity;
+                if (_tiles.ContainsKey(tile)) {
+                    _tiles[tile] = entity;
+                }
+            }
+        }
+        
+        public void AddBuildingToGrid(DynamicBuffer<Int2BufferElement> tiles, Entity entity) {
+            foreach (var tile in tiles) {
+                if (_tiles.ContainsKey(tile.value)) {
+                    _tiles[tile.value] = entity;
                 }
             }
         }
@@ -121,6 +127,17 @@ namespace Game {
         public void DebugTiles() {
             foreach (var tile in _tiles) {
                 Debug.Log($"key: {tile.Key}, value: {tile.Value}");
+            }
+        }
+        
+        [Conditional("UNITY_EDITOR")]
+        public void EditorInit(int gridWidth, int gridHeight, float gridCellSize, Matrix4x4 localToWorld, Matrix4x4 worldToLocal) {
+            _width = gridWidth;
+            _height = gridHeight;
+            _cellSize = gridCellSize;
+            for (int i = 0; i <= 3; i++) {
+                _localToWorld4x4[i] = localToWorld.GetColumn(i).ToFloat4();
+                _worldToLocal4x4[i] = worldToLocal.GetColumn(i).ToFloat4();
             }
         }
     }
