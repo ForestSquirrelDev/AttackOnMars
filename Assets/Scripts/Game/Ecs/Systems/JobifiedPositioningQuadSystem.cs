@@ -6,6 +6,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
@@ -14,7 +15,6 @@ namespace Game.Ecs.Systems {
         private EntityQueryDesc _quadsQueryDescription;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
         private GridKeeperSystem _gridKeeperSystem;
-        private NativeArray<int2> int2s;
 
         protected override void OnCreate() {
             _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
@@ -26,30 +26,23 @@ namespace Game.Ecs.Systems {
         }
         
         protected override void OnUpdate() {
-            var localToWorldType = GetComponentTypeHandle<LocalToWorld>(true);
-            var positioningQuadType = GetComponentTypeHandle<PositioningQuadComponent>();
-            var entityTypeHandle = GetEntityTypeHandle();
-            var ecb = _commandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-            _quadsQuery = EntityManager.CreateEntityQuery(_quadsQueryDescription);
-            
             UpdatePositionsJob job = new UpdatePositionsJob {
-                localToWorldHandle = localToWorldType,
-                positioningQuadHandle = positioningQuadType,
-                ecb = ecb,
-                entityTypeHandle = entityTypeHandle,
-                buildingGrid = _gridKeeperSystem.buildingGrid,
+                localToWorldHandle = GetComponentTypeHandle<LocalToWorld>(true),
+                ecb = _commandBufferSystem.CreateCommandBuffer().AsParallelWriter(),
+                entityTypeHandle = GetEntityTypeHandle(),
+                buildingGrid = _gridKeeperSystem.buildingGrid
             };
             
-            JobHandle handle = job.ScheduleParallel(_quadsQuery, Dependency);
+            JobHandle handle = job.Schedule(EntityManager.CreateEntityQuery(_quadsQueryDescription), Dependency);
             _commandBufferSystem.AddJobHandleForProducer(handle);
             
             Dependency = handle;
         }
-        
-        [BurstCompile]
+
+        // why put this small one-time 0.02ms operation into a job? for learning purposes, of course!
+        [BurstCompile(CompileSynchronously = true)]
         private struct UpdatePositionsJob : IJobChunk {
             [ReadOnly] public ComponentTypeHandle<LocalToWorld> localToWorldHandle;
-            [ReadOnly] public ComponentTypeHandle<PositioningQuadComponent> positioningQuadHandle;
             [ReadOnly] public EntityTypeHandle entityTypeHandle;
             [ReadOnly] public BuildingGrid buildingGrid;
             public EntityCommandBuffer.ParallelWriter ecb;
@@ -62,42 +55,49 @@ namespace Game.Ecs.Systems {
                     int sortKey = firstEntityIndex + i;
                     
                     //
+                    ecb.AddComponent<Tag_ReadyForGridQuad>(sortKey, entity);
+                    ecb.AddBuffer<Int2BufferElement>(sortKey, entity);
+                    
+                    //
                     LocalToWorld localToWorld = localToWorlds[i];
-                    float3x4 transformCenter = new float3x4 {
-                        [0] = localToWorld.Right,
-                        [1] = localToWorld.Forward,
-                        [2] = localToWorld.Up,
-                        [3] = localToWorld.Position
+                    float4x4 transformCenter = localToWorld.Value;
+                    (transformCenter[1], transformCenter[2]) = (transformCenter[2], transformCenter[1]);
+                    
+                    float4x4 gridOrigin = new float4x4 {
+                        [0] = math.normalize(transformCenter[0]),
+                        [1] = math.normalize(transformCenter[1]),
+                        [2] = math.normalize(transformCenter[2]),
+                        [3] = math.mul(transformCenter, new float4(-0.5f, 0f, -0.5f, 1f))
                     };
-
-                    float3x4 gridOrigin = new float3x4 {
-                        [0] = math.normalize(localToWorld.Right),
-                        [1] = math.normalize(localToWorld.Forward),
-                        [2] = math.normalize(localToWorld.Up),
-                        [3] = math.mul(transformCenter, new float4(-0.5f, 0f, -0.5f, 0f))
-                    };
-
+                    
                     //
                     int2 size = CalculateGridSize(transformCenter);
                     PositioningGrid positioningGrid = new PositioningGrid();
                     positioningGrid.FillGrid(size.x, size.y);
-                    
+
+                    for (int tile = 0; tile < positioningGrid.positions.Length; tile++) {
+                        int2 unitGridTile = positioningGrid.positions[tile];
+                        float4 world = math.mul(gridOrigin, new float4(unitGridTile.x * buildingGrid.CellSize, 0, unitGridTile.y * buildingGrid.CellSize, 1));
+                        Vector2Int buildingGridTile = buildingGrid.WorldToGridFloored(world.xyz);
+                        ecb.AppendToBuffer(sortKey, entity, new Int2BufferElement{value = new int2(buildingGridTile.x, buildingGridTile.y)});
+                    }
+
                     //
-                    ecb.AddComponent<Tag_ReadyForGridQuad>(sortKey, entity);
-                    ecb.AddBuffer<Int2BufferElement>(sortKey, entity);
-                    ecb.AppendToBuffer(sortKey, entity, new Int2BufferElement());
+                    positioningGrid.Dispose();
                 }
+                entities.Dispose();
+                localToWorlds.Dispose();
             }
         
-            private int2 CalculateGridSize(float3x4 transformCenter) {
-                float3 leftBottomCorner = math.mul(transformCenter, new float4(-0.5f, 0f, -0.5f, 0));
-                float3 leftTopCorner = transformCenter.MultiplyPoint3x4(new float4(-0.5f, 0, 0.5f, 0));
-                float3 rightBottomCorner = transformCenter.MultiplyPoint3x4(new float4(0.5f, 0f, -0.5f, 0));
-        
-                int2 leftBottomToGlobalGrid = buildingGrid.WorldToGridCeiled(leftBottomCorner).ToInt2();
-                int2 leftTopToGlobalGrid = buildingGrid.WorldToGridCeiled(leftTopCorner).ToInt2();
-                int2 rightBottomToGlobalGrid = buildingGrid.WorldToGridCeiled(rightBottomCorner).ToInt2();
-            
+            private int2 CalculateGridSize(float4x4 transformCenter) {
+                float4 leftBottomCorner = math.mul(transformCenter, new float4(-0.5f, 0f, -0.5f, 1));
+                float4 leftTopCorner = math.mul(transformCenter, new float4(-0.5f, 0, 0.5f, 1));
+                float4 rightBottomCorner = math.mul(transformCenter, new float4(0.5f, 0f, -0.5f, 1));
+
+                int2 leftBottomToGlobalGrid = buildingGrid.WorldToGridCeiled(leftBottomCorner.xyz).ToInt2();
+                int2 leftTopToGlobalGrid = buildingGrid.WorldToGridCeiled(leftTopCorner.xyz).ToInt2();
+                int2 rightBottomToGlobalGrid = buildingGrid.WorldToGridCeiled(rightBottomCorner.xyz).ToInt2();
+
                 int width = math.clamp(math.abs(rightBottomToGlobalGrid.x - leftBottomToGlobalGrid.x) + 1, 1, int.MaxValue);
                 int height = math.clamp(math.abs(leftTopToGlobalGrid.y - leftBottomToGlobalGrid.y) + 1, 1, int.MaxValue);
         

@@ -1,4 +1,5 @@
 using System;
+using Game.Ecs.BlobAssets;
 using Game.Ecs.Containers;
 using Unity.Entities;
 using UnityEngine;
@@ -6,8 +7,7 @@ using UnityEngine;
 namespace Game.Ecs.Monobehaviours {
     public class MonoBuildingsToEntitiesConverter : MonoBehaviour {
         public PreinstantiatePrefabData[] prefabDatas;
-        private EntityManager EntityManager => World.DefaultGameObjectInjectionWorld.EntityManager;
-        
+
         private void Start() {
             GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
             foreach (var prefabData in prefabDatas) {

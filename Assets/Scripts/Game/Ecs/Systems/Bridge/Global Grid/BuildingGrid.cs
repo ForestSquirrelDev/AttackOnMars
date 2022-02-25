@@ -33,10 +33,8 @@ namespace Game {
                     _tiles.Add(pos, Entity.Null);
                 }
             }
-            for (int i = 0; i <= 3; i++) {
-                _localToWorld4x4[i] = localToWorld.GetColumn(i).ToFloat4();
-                _worldToLocal4x4[i] = worldToLocal.GetColumn(i).ToFloat4();
-            }
+            _localToWorld4x4 = localToWorld;
+            _worldToLocal4x4 = worldToLocal;
         }
 
         public void SetSampledHeight(float3 world, float height) {

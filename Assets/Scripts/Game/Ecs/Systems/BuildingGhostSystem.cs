@@ -6,7 +6,7 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
-    public class BuildingGhostSystem : ComponentSystem {
+    public class BuildingGhostSystem : SystemBase {
         public bool CanSpawn { get; private set; }
         
         private Camera _camera;
@@ -31,7 +31,7 @@ namespace Game.Ecs.Systems {
                     }
                 }
                 CanSpawn = true;
-            });
+            }).WithoutBurst().Run();
         }
     }
 }

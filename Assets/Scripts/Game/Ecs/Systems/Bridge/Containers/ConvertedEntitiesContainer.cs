@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Game.Ecs.Monobehaviours;
+using Game.Ecs.BlobAssets;
 using static Game.Ecs.Monobehaviours.MonoBuildingsToEntitiesConverter;
 
 namespace Game.Ecs.Containers {
