@@ -32,7 +32,7 @@ namespace Game.Ecs.Systems {
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
                 if (positioningQuad.inited) return;
                 SetPositionsInGrid(localToWorld, buffer);
-                _gridKeeperSystem.buildingGrid.AddBuildingToGrid(_globalGridTiles, parent.Value);
+                //_gridKeeperSystem.buildingGrid.AddBuildingToGrid(_globalGridTiles, parent.Value);
                 positioningQuad.inited = true;
             });
         }

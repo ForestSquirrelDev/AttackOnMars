@@ -1,13 +1,14 @@
 {
-    "name": "Assembly_Main_Scripts.Editor",
+    "name": "Assembly_Main.Scripts.Game.Core",
     "rootNamespace": "",
     "references": [
-        "GUID:a0d325ab58303474ba23ef1fbde73e6e",
-        "GUID:f24cf67903b27ae498b3069ecc30cc11",
         "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:7b01f2bfdb36c8f48b2211ed257128e6",
         "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:50a89b921c404214cbdf4cb389b7c9d3"
+        "GUID:a5baed0c9693541a5bd947d336ec7659",
+        "GUID:a0d325ab58303474ba23ef1fbde73e6e",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:a078106bd0ee69b49a5dab04281b0fce",
+        "GUID:8819f35a0fc84499b990e90a4ca1911f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -3,11 +3,13 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Utils;
-using static Utils.StopwatchExtensions.TimeUnit;
-using Debug = UnityEngine.Debug;
 
 namespace Game.Ecs.Systems.Bridge.GlobalGrid {
+    /// <summary>
+    /// This script is in Systems assembly because it needs to be refactored. GridManager should not reference and init a system directly. Instead i should try and use some other
+    /// form of passing initialization data, perhaps Addresables system or scriptable objects. This script should probably be in Core assembly.
+    /// todo: untie GridManager.cs from GridKeeperSystem.cs
+    /// </summary>
     public class GridManager : MonoBehaviour {
         public int Width => _width;
         public int Height => _height;
@@ -36,7 +38,6 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
 
         private void SetGridSampledHeights(ref BuildingGrid grid) {
             Bounds bounds = _terrain.terrainData.bounds;
-            Debug.Log($"size: {bounds.size} min: {bounds.min} max : {bounds.max}");
             Rect rect = new Rect {
                 xMin = bounds.min.x,
                 yMin = bounds.min.z,
@@ -44,17 +45,12 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
                 yMax = bounds.max.z
             };
             TotalCellsCount = Mathf.CeilToInt(rect.size.x * rect.size.y / _cellSize);
-            _stopwatch.Start();
             for (int x = 0; x < rect.width; x += (int)_cellSize) {
                 for (int y = 0; y < rect.height; y += (int)_cellSize) {
                     float3 world = grid.WorldToGridCentered(new Vector3(x, 0, y), false);
                     grid.SetSampledHeight(world, _terrain.SampleHeight(world));
                 }
             }
-            _stopwatch.Stop();
-            Debug.Log($"Seconds: {StopwatchExtensions.ToMetricTime(_stopwatch.ElapsedTicks, Seconds)}");
-
-            _stopwatch.Reset();
         }
     }
 }

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Diagnostics;
-using Game.Ecs.Components.BufferElements;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -83,22 +81,14 @@ namespace Game {
             return tile.x < 0 || tile.x >= _width || tile.y < 0 || tile.y >= _height;
         }
         
-        public void AddBuildingToGrid(IEnumerable<int2> tiles, Entity entity) {
+        public void AddBuildingToGrid(NativeArray<int2> tiles, Entity entity) {
             foreach (var tile in tiles) {
                 if (_tiles.ContainsKey(tile)) {
                     _tiles[tile] = entity;
                 }
             }
         }
-        
-        public void AddBuildingToGrid(DynamicBuffer<Int2BufferElement> tiles, Entity entity) {
-            foreach (var tile in tiles) {
-                if (_tiles.ContainsKey(tile.value)) {
-                    _tiles[tile.value] = entity;
-                }
-            }
-        }
-        
+
         public bool InstantiateOnGrid(Vector3 inWorldPos, Entity entityIn, EntityManager manager, out Entity entityOut) {
             if (entityIn == Entity.Null) {
                 Debug.LogError("Can't instantiate as the entity is null");
@@ -106,15 +96,11 @@ namespace Game {
                 return false;
             }
             Vector2Int spawnTile = WorldToGridFloored(inWorldPos);
-            entityOut = InstantiateEcs(GridToWorldCentered(spawnTile), entityIn, manager);
+            entityOut = manager.Instantiate(entityIn);
+            manager.SetComponentData(entityOut, new Translation {Value = GridToWorldCentered(spawnTile)});
             return true;
         }
         
-        private Entity InstantiateEcs(Vector3 inWorldPos, Entity entity, EntityManager manager) {
-            Entity building = manager.Instantiate(entity);
-            manager.SetComponentData(building, new Translation {Value = inWorldPos});
-            return building;
-        }
 
         public void Dispose() {
             _tiles.Dispose();
