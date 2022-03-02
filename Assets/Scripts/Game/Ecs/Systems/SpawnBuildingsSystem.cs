@@ -17,6 +17,7 @@ namespace Game.Ecs.Systems {
         private GridKeeperSystem _gridKeeperSystem;
         
         protected override void OnCreate() {
+            //RequireSingletonForUpdate<ConvertedBuildingsData>();
             _camera = Camera.main;
             _ghostSystem = World.GetExistingSystem<BuildingGhostSystem>();
             _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();

@@ -9,6 +9,9 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
+    /// <summary>
+    /// This class is deprecated and should be deleted.
+    /// </summary>
     public class PositioningQuadSystem : ComponentSystem {
         private Matrix4x4 _transformCenter;
         private Matrix4x4 _gridOrigin;

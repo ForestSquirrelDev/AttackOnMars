@@ -1,7 +1,9 @@
-using Game.Ecs.BlobAssets;
 using Unity.Entities;
 
-public struct ConvertedBuildingData {
-    public Entity entity;
-    public BuildingType buildingType;
+namespace Game.Ecs.BlobAssets {
+    public struct ConvertedBuildingData {
+        public Entity building;
+        public Entity ghost;
+        public BuildingType buildingType;
+    }
 }
