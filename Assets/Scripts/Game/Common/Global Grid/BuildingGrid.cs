@@ -36,7 +36,7 @@ namespace Game {
         }
 
         public void SetSampledHeight(float3 world, float height) {
-            _sampledHeights.Add(world, height);
+            _sampledHeights[world] = height;
         }
 
         [return: ReadOnly]

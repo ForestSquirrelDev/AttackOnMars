@@ -33,10 +33,10 @@ namespace Game.Ecs.Systems {
             });
             Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
                 ref PositioningQuadComponent positioningQuad, ref Parent parent) => {
-                if (positioningQuad.inited) return;
+                //if (positioningQuad.inited) return;
                 SetPositionsInGrid(localToWorld, buffer);
                 //_gridKeeperSystem.buildingGrid.AddBuildingToGrid(_globalGridTiles, parent.Value);
-                positioningQuad.inited = true;
+                //positioningQuad.inited = true;
             });
         }
 

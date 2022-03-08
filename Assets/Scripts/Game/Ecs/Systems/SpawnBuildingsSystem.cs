@@ -8,7 +8,7 @@ using Utils;
 using static Game.InstantiatedBuildingsContainer;
 
 namespace Game.Ecs.Systems {
-    public class SpawnBuildingsSystem : ComponentSystem {
+    public class SpawnBuildingsSystem : SystemBase {
         private Entity _buildingGhost;
         private Entity _buildingGhostQuad;
         private BuildingGhostSystem _ghostSystem;
@@ -17,9 +17,8 @@ namespace Game.Ecs.Systems {
         private GridKeeperSystem _gridKeeperSystem;
         
         protected override void OnCreate() {
-            //RequireSingletonForUpdate<ConvertedBuildingsData>();
             _camera = Camera.main;
-            _ghostSystem = World.GetExistingSystem<BuildingGhostSystem>();
+            _ghostSystem = World.GetOrCreateSystem<BuildingGhostSystem>();
             _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
         }
 
@@ -45,7 +44,6 @@ namespace Game.Ecs.Systems {
             if (!_gridKeeperSystem.buildingGrid.InstantiateOnGrid(InputUtility.MouseToWorld(_camera),
                 ConvertedEntitiesContainer.entities[BuildingType.Turret].building, EntityManager, out Entity building)) return false;
             Entity positioningQuad = building.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
-            EntityManager.SetComponentData(building, new BuildingComponent {positioningQuad = EntityManager.GetComponentData<PositioningQuadComponent>(positioningQuad)});
             EntityManager.AddBuffer<Int2BufferElement>(positioningQuad);
             SpawnedBuilding spawnedBuilding = new SpawnedBuilding 
                 { buildingRoot = building, positioningQuad = positioningQuad };
