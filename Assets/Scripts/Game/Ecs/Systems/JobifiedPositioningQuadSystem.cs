@@ -11,7 +11,6 @@ using Utils;
 
 namespace Game.Ecs.Systems {
     public class JobifiedPositioningQuadSystem : SystemBase {
-        private EntityQuery _quadsQuery;
         private EntityQueryDesc _quadsQueryDescription;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
         private GridKeeperSystem _gridKeeperSystem;
@@ -27,10 +26,10 @@ namespace Game.Ecs.Systems {
         
         protected override void OnUpdate() {
             UpdatePositionsJob job = new UpdatePositionsJob {
-                localToWorldHandle = GetComponentTypeHandle<LocalToWorld>(true),
-                ecb = _commandBufferSystem.CreateCommandBuffer().AsParallelWriter(),
-                entityTypeHandle = GetEntityTypeHandle(),
-                buildingGrid = _gridKeeperSystem.buildingGrid
+                LocalToWorldHandle = GetComponentTypeHandle<LocalToWorld>(true),
+                Ecb = _commandBufferSystem.CreateCommandBuffer().AsParallelWriter(),
+                EntityTypeHandle = GetEntityTypeHandle(),
+                BuildingGrid = _gridKeeperSystem.buildingGrid
             };
             
             JobHandle handle = job.Schedule(EntityManager.CreateEntityQuery(_quadsQueryDescription), Dependency);
@@ -42,21 +41,21 @@ namespace Game.Ecs.Systems {
         // why put this small one-time 0.02ms operation into a job? for learning purposes, of course!
         [BurstCompile(CompileSynchronously = true)]
         private struct UpdatePositionsJob : IJobChunk {
-            [ReadOnly] public ComponentTypeHandle<LocalToWorld> localToWorldHandle;
-            [ReadOnly] public EntityTypeHandle entityTypeHandle;
-            [ReadOnly] public BuildingGrid buildingGrid;
-            public EntityCommandBuffer.ParallelWriter ecb;
+            [ReadOnly] public ComponentTypeHandle<LocalToWorld> LocalToWorldHandle;
+            [ReadOnly] public EntityTypeHandle EntityTypeHandle;
+            [ReadOnly] public BuildingGrid BuildingGrid;
+            public EntityCommandBuffer.ParallelWriter Ecb;
 
             public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex) {
-                NativeArray<Entity> entities = chunk.GetNativeArray(entityTypeHandle);
-                NativeArray<LocalToWorld> localToWorlds = chunk.GetNativeArray(localToWorldHandle);
+                NativeArray<Entity> entities = chunk.GetNativeArray(EntityTypeHandle);
+                NativeArray<LocalToWorld> localToWorlds = chunk.GetNativeArray(LocalToWorldHandle);
                 for (int i = 0; i < entities.Length; i++) {
                     Entity entity = entities[i];
                     int sortKey = firstEntityIndex + i;
                     
                     //
-                    ecb.AddComponent<Tag_ReadyForGridQuad>(sortKey, entity);
-                    ecb.AddBuffer<Int2BufferElement>(sortKey, entity);
+                    Ecb.AddComponent<Tag_ReadyForGridQuad>(sortKey, entity);
+                    Ecb.AddBuffer<Int2BufferElement>(sortKey, entity);
                     
                     //
                     LocalToWorld localToWorld = localToWorlds[i];
@@ -77,9 +76,9 @@ namespace Game.Ecs.Systems {
 
                     for (int tile = 0; tile < positioningGrid.positions.Length; tile++) {
                         int2 unitGridTile = positioningGrid.positions[tile];
-                        float4 world = math.mul(gridOrigin, new float4(unitGridTile.x * buildingGrid.CellSize, 0, unitGridTile.y * buildingGrid.CellSize, 1));
-                        Vector2Int buildingGridTile = buildingGrid.WorldToGridFloored(world.xyz);
-                        ecb.AppendToBuffer(sortKey, entity, new Int2BufferElement{value = new int2(buildingGridTile.x, buildingGridTile.y)});
+                        float4 world = math.mul(gridOrigin, new float4(unitGridTile.x * BuildingGrid.CellSize, 0, unitGridTile.y * BuildingGrid.CellSize, 1));
+                        Vector2Int buildingGridTile = BuildingGrid.WorldToGridFloored(world.xyz);
+                        Ecb.AppendToBuffer(sortKey, entity, new Int2BufferElement{value = new int2(buildingGridTile.x, buildingGridTile.y)});
                     }
 
                     //
@@ -94,9 +93,9 @@ namespace Game.Ecs.Systems {
                 float4 leftTopCorner = math.mul(transformCenter, new float4(-0.5f, 0, 0.5f, 1));
                 float4 rightBottomCorner = math.mul(transformCenter, new float4(0.5f, 0f, -0.5f, 1));
 
-                int2 leftBottomToGlobalGrid = buildingGrid.WorldToGridCeiled(leftBottomCorner.xyz).ToInt2();
-                int2 leftTopToGlobalGrid = buildingGrid.WorldToGridCeiled(leftTopCorner.xyz).ToInt2();
-                int2 rightBottomToGlobalGrid = buildingGrid.WorldToGridCeiled(rightBottomCorner.xyz).ToInt2();
+                int2 leftBottomToGlobalGrid = BuildingGrid.WorldToGridCeiled(leftBottomCorner.xyz).ToInt2();
+                int2 leftTopToGlobalGrid = BuildingGrid.WorldToGridCeiled(leftTopCorner.xyz).ToInt2();
+                int2 rightBottomToGlobalGrid = BuildingGrid.WorldToGridCeiled(rightBottomCorner.xyz).ToInt2();
 
                 int width = math.clamp(math.abs(rightBottomToGlobalGrid.x - leftBottomToGlobalGrid.x) + 1, 1, int.MaxValue);
                 int height = math.clamp(math.abs(leftTopToGlobalGrid.y - leftBottomToGlobalGrid.y) + 1, 1, int.MaxValue);
