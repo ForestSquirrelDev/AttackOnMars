@@ -51,7 +51,7 @@ namespace Game.Ecs.Systems {
                 NativeArray<LocalToWorld> localToWorlds = chunk.GetNativeArray(LocalToWorldHandle);
                 for (int i = 0; i < entities.Length; i++) {
                     Entity entity = entities[i];
-                    int sortKey = firstEntityIndex + i;
+                    int sortKey = firstEntityIndex + i + chunkIndex;
                     
                     //
                     Ecb.AddComponent<Tag_ReadyForGridQuad>(sortKey, entity);

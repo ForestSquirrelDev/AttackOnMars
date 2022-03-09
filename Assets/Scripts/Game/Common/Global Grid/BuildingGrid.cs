@@ -81,6 +81,28 @@ namespace Game {
             return tile.x < 0 || tile.x >= _width || tile.y < 0 || tile.y >= _height;
         }
         
+        /// <param name="rect">Expects rect with worldspace xMin, xMax, yMin, yMax</param>
+        [return: ReadOnly]
+        public bool IntersectsWithOccupiedTiles(Rect rect) {
+            Vector3 xzMin = new Vector3(rect.xMin, 0f, rect.yMin);
+            Vector3 xzMax = new Vector3(rect.xMax, 0f, rect.yMax);
+            
+            Vector2Int xzMinGrid = WorldToGridFloored(xzMin);
+            Vector2Int xzMaxGrid = WorldToGridFloored(xzMax);
+            rect.xMin = xzMinGrid.x;
+            rect.yMin = xzMinGrid.y;
+            rect.xMax = xzMaxGrid.x;
+            rect.yMax = xzMaxGrid.y;
+            Debug.Log($"xMin: {rect.xMin} zMin: {rect.yMin}, xMax: {rect.xMax}, zMax: {rect.yMax}");
+            for (int x = 0; x < (int)Mathf.Abs((rect.xMax - rect.xMin) + 1); x++)
+            {
+                for (int z = 0; z < (int)Mathf.Abs((rect.yMax - rect.yMin) + 1); z++) {
+                    if (TileIsOccupied(new Vector2Int(x, z))) return true;
+                }
+            }
+            return false;
+        }
+        
         public void AddBuildingToGrid(NativeArray<int2> tiles, Entity entity) {
             foreach (var tile in tiles) {
                 if (_tiles.ContainsKey(tile)) {

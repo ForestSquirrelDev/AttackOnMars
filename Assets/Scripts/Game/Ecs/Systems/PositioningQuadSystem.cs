@@ -28,7 +28,7 @@ namespace Game.Ecs.Systems {
 
         protected override void OnUpdate() {
             return;
-            Entities.WithAll<BuildingGhostPositioningQuadComponent>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld) => {
+            Entities.WithAll<Tag_BuildingGhostPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld) => {
                 SetPositionsInGrid(localToWorld, buffer);
             });
             Entities.WithAll<Tag_BuildingPositioningQuad>().ForEach((DynamicBuffer<Int2BufferElement> buffer, ref LocalToWorld localToWorld,
