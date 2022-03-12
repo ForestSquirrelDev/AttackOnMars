@@ -93,13 +93,13 @@ namespace Game {
             rect.yMin = xzMinGrid.y;
             rect.xMax = xzMaxGrid.x;
             rect.yMax = xzMaxGrid.y;
-            Debug.Log($"xMin: {rect.xMin} zMin: {rect.yMin}, xMax: {rect.xMax}, zMax: {rect.yMax}");
-            for (int x = 0; x < (int)Mathf.Abs((rect.xMax - rect.xMin) + 1); x++)
-            {
-                for (int z = 0; z < (int)Mathf.Abs((rect.yMax - rect.yMin) + 1); z++) {
+
+            for (int x = (int)rect.xMin; x <= rect.xMax; x++) {
+                for (int z = (int)rect.yMin; z <= rect.yMax; z++) {
                     if (TileIsOccupied(new Vector2Int(x, z))) return true;
                 }
             }
+            
             return false;
         }
         

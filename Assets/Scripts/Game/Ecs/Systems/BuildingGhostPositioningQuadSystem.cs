@@ -52,6 +52,7 @@ namespace Game.Ecs.Systems {
                 for (int i = 0; i < entities.Length; i++) {
                     Entity entity = entities[i];
                     float4x4 localToWorld = localToWorlds[i].Value;
+                    (localToWorld[1], localToWorld[2]) = (localToWorld[2], localToWorld[1]);
                     int sortKey = firstEntityIndex + i + chunkIndex;
                     
                     float4 xzMinWorld = math.mul(localToWorld, xzMin);
@@ -59,17 +60,15 @@ namespace Game.Ecs.Systems {
 
                     Rect rect = new Rect {
                         xMin = xzMinWorld.x,
-                        xMax = xzMaxWorld.x,
                         yMin = xzMinWorld.z,
+                        xMax = xzMaxWorld.x,
                         yMax = xzMaxWorld.z
                     };
-                    Debug.Log($"world - xMin: {rect.xMin} zMin: {rect.yMin}, xMax: {rect.xMax}, zMax: {rect.yMax}");
+
                     if (BuildingGrid.IntersectsWithOccupiedTiles(rect)) {
-                        Debug.Log("true");
                         Ecb.RemoveComponent<Tag_AvailableForPlacementGhostQuad>(sortKey, entity);
                     } 
                     else {
-                        Debug.Log("false");
                         Ecb.AddComponent<Tag_AvailableForPlacementGhostQuad>(sortKey, entity);
                     }
                 }
