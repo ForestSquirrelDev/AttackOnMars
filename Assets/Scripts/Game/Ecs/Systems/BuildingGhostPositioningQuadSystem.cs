@@ -9,7 +9,7 @@ using Unity.Transforms;
 using UnityEngine;
 
 namespace Game.Ecs.Systems {
-    public class BuildingGhostPositioningQuadSystem : SystemBase {
+    public partial class BuildingGhostPositioningQuadSystem : SystemBase {
         private GridKeeperSystem _gridKeeper;
         private EntityQueryDesc _quadsQueryDescription;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;

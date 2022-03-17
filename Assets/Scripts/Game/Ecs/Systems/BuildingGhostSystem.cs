@@ -6,9 +6,7 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
-    public class BuildingGhostSystem : SystemBase {
-        public bool CanSpawn { get; private set; }
-        
+    public partial class BuildingGhostSystem : SystemBase {
         private Camera _camera;
         private PositioningQuadSystem _quadSystem;
         private GridKeeperSystem _gridKeeperSystem;
@@ -26,11 +24,9 @@ namespace Game.Ecs.Systems {
                 translation.Value = grid;
                 foreach (var tile in _quadSystem.GetPositionsInGrid()) {
                     if (_gridKeeperSystem.buildingGrid.TileIsOccupied(new Vector2Int(tile.x, tile.y))) {
-                        CanSpawn = false;
                         return;
                     }
                 }
-                CanSpawn = true;
             }).WithoutBurst().Run();
         }
     }

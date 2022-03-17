@@ -104,7 +104,8 @@ namespace Game {
         }
         
         public void AddBuildingToGrid(NativeArray<int2> tiles, Entity entity) {
-            foreach (var tile in tiles) {
+            for (var i = 0; i < tiles.Length; i++) {
+                var tile = tiles[i];
                 if (_tiles.ContainsKey(tile)) {
                     _tiles[tile] = entity;
                 }
@@ -122,7 +123,6 @@ namespace Game {
             manager.SetComponentData(entityOut, new Translation {Value = GridToWorldCentered(spawnTile)});
             return true;
         }
-        
 
         public void Dispose() {
             _tiles.Dispose();
@@ -141,10 +141,8 @@ namespace Game {
             _width = gridWidth;
             _height = gridHeight;
             _cellSize = gridCellSize;
-            for (int i = 0; i <= 3; i++) {
-                _localToWorld4x4[i] = localToWorld.GetColumn(i).ToFloat4();
-                _worldToLocal4x4[i] = worldToLocal.GetColumn(i).ToFloat4();
-            }
+            _localToWorld4x4 = localToWorld;
+            _worldToLocal4x4 = worldToLocal;
         }
     }
 }

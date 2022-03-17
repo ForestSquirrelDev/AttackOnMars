@@ -10,7 +10,7 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
-    public class JobifiedPositioningQuadSystem : SystemBase {
+    public partial class JobifiedPositioningQuadSystem : SystemBase {
         private EntityQueryDesc _quadsQueryDescription;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
         private GridKeeperSystem _gridKeeperSystem;

@@ -1,6 +1,6 @@
 using System;
-using Game.Ecs.BlobAssets;
 using Game.Ecs.Containers;
+using Shared;
 using Unity.Entities;
 using UnityEngine;
 
@@ -13,7 +13,7 @@ namespace Game.Ecs.Monobehaviours {
             foreach (var prefabData in prefabDatas) {
                 Entity ghostEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.ghost, settings);
                 Entity buildingEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.prefab, settings);
-                ConvertedEntitiesContainer.entities.Add(prefabData.buildingType, 
+                ConvertedEntitiesContainer.Entities.Add(prefabData.buildingType, 
                     new ConvertedEntityPrefabData{building = buildingEntity, ghost = ghostEntity, buildingType = prefabData.buildingType});
             }
         }

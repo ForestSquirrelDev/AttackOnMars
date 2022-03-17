@@ -5,7 +5,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 namespace Game.Ecs.Systems {
-    public class AddBuildingsToGridSystem : SystemBase {
+    public partial class AddBuildingsToGridSystem : SystemBase {
         private GridKeeperSystem _gridKeeperSystem;
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
         
