@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using Game.Ecs.Components;
-using Game.Ecs.Components.BufferElements;
 using Game.Ecs.Components.Tags;
 using Game.Ecs.Containers;
 using Shared;
@@ -11,12 +8,13 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
-    public partial class SpawnBuildingSystem : SystemBase {
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
+    public partial class SpawnBuildingsSystem : SystemBase {
         private GridKeeperSystem _gridKeeperSystem;
         private Camera _camera;
         private EndSimulationEntityCommandBufferSystem _endSimulationEcb;
         
-        protected override void OnCreate() {
+        protected override void OnStartRunning() {
             _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
             _camera = Camera.main;
             _endSimulationEcb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
@@ -28,6 +26,7 @@ namespace Game.Ecs.Systems {
                 if (!Input.GetMouseButtonDown(0)) return;
                 TrySpawnBuilding(EntityManager.GetComponentData<BuildingGhostComponent>(parent.Value).BuildingType);
                 ecb.DestroyEntity(parent.Value);
+                SetSingleton(new SpawningGhostSingletonData{CanSpawn = true});
             }).WithStructuralChanges().WithoutBurst().Run();
         }
         

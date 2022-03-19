@@ -7,19 +7,20 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     public partial class SpawnBuildingGhostSystem : SystemBase {
-        private Entity _buildingGhost;
-        private Entity _buildingGhostQuad;
-
         protected override void OnUpdate() {
             if (!Input.GetMouseButtonDown(0)) return;
-            SpawnGhost();
+            
+            var singleton = GetSingleton<SpawningGhostSingletonData>();
+            if (singleton.CanSpawn) SpawnGhost();
         }
 
         private void SpawnGhost() {
-            _buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.Entities[BuildingType.Turret].ghost);
-            _buildingGhostQuad = _buildingGhost.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
-            EntityManager.AddBuffer<Int2BufferElement>(_buildingGhostQuad);
+            var buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.Entities[BuildingType.Turret].ghost);
+            var buildingGhostQuad = buildingGhost.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
+            EntityManager.AddBuffer<Int2BufferElement>(buildingGhostQuad);
+            SetSingleton(new SpawningGhostSingletonData{CanSpawn = false});
         }
     }
 }
