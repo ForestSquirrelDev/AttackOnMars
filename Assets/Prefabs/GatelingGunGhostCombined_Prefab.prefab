@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2643279913007890019}
   - component: {fileID: 1002013942368193158}
   - component: {fileID: -8169943916347723945}
+  - component: {fileID: -6051273908027521068}
   m_Layer: 0
   m_Name: GatelingGunGhostCombined_Prefab
   m_TagString: Untagged
@@ -96,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c1128c90190ff84591cdfda9183a790, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuildingType: 0
 --- !u!114 &-8169943916347723945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,6 +111,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildingType: 0
+--- !u!114 &-6051273908027521068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4055312367102847938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb4c086e80753f64f9b1fa4f8385e38b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value:
+    x: 0
+    y: 0
+    z: 0
+    w: 0
 --- !u!1 &5597663637383452901
 GameObject:
   m_ObjectHideFlags: 0

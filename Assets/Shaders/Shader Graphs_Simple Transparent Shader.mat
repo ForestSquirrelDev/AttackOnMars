@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Shader Graphs_Simple Transparent Shader
-  m_Shader: {fileID: -6465566751694194690, guid: 30fa68ce467463643a86b839ca0eb195, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: e0a9483289251b84186796fd48a0299e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -89,8 +89,10 @@ Material:
     - _SPECULAR_IOR: 1
     - _SPECULAR_ROUGHNESS: 0
     m_Colors:
+    - Color_1222bf8471a942e2afe323412b13d58d: {r: 0, g: 0, b: 0, a: 0}
     - _BASE_COLOR: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0, g: 0.6751156, b: 1, a: 1}
     - _EMISSION_COLOR: {r: 0, g: 1, b: 0, a: 1}
+    - _Emission_Color: {r: 0, g: 0, b: 1, a: 1}
     - _SPECULAR_COLOR: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

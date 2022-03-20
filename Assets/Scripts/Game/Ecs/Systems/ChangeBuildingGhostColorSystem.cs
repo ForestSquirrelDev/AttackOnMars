@@ -1,27 +1,26 @@
 using Game.Ecs.Components;
 using Game.Ecs.Components.Tags;
 using Unity.Entities;
-using Unity.Rendering;
+using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Game.Ecs.Systems {
     public partial class ChangeBuildingGhostColorSystem : SystemBase {
-        private static readonly int EmissionColor = Shader.PropertyToID("_EMISSION_COLOR");
+        private EndSimulationEntityCommandBufferSystem _endSimulationEcb;
 
-        protected override void OnUpdate() {
-            Entities.WithAll<Tag_AvailableForPlacementGhostQuad>().ForEach((ref Parent parent) => {
-                SetRenderMeshColor(parent.Value, Color.green);
-            }).WithoutBurst().Run();
-            
-            Entities.WithNone<Tag_AvailableForPlacementGhostQuad>().ForEach((Tag_BuildingGhostPositioningQuad ghostQuad, ref Parent parent) => {
-                SetRenderMeshColor(parent.Value, Color.red);
-            }).WithoutBurst().Run();
+        protected override void OnCreate() {
+            _endSimulationEcb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         }
 
-        private void SetRenderMeshColor(Entity ghost, Color color) {
-            RenderMesh renderMesh = EntityManager.GetSharedComponentData<RenderMesh>(ghost);
-            renderMesh.material.SetColor(EmissionColor, color);
+        protected override void OnUpdate() {
+            EntityCommandBuffer ecb = _endSimulationEcb.CreateCommandBuffer();
+            Entities.WithAll<Tag_AvailableForPlacementGhostQuad>().ForEach((ref Parent parent) => {
+                ecb.SetComponent(parent.Value, new BuildingGhostEmissionColorOverride { Value = new float4(0.0f, 1f, 0.0f, 1f) });
+            }).Schedule();
+
+            Entities.WithNone<Tag_AvailableForPlacementGhostQuad>().ForEach((Tag_BuildingGhostPositioningQuad ghostQuad, ref Parent parent) => {
+                ecb.SetComponent(parent.Value, new BuildingGhostEmissionColorOverride { Value = new float4(1f, 0.0f, 0.0f, 1f) });
+            }).Schedule();
         }
     }
 }

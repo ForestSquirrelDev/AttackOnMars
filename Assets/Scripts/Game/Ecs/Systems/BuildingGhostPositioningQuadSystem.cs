@@ -12,11 +12,11 @@ namespace Game.Ecs.Systems {
     public partial class BuildingGhostPositioningQuadSystem : SystemBase {
         private GridKeeperSystem _gridKeeper;
         private EntityQueryDesc _quadsQueryDescription;
-        private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
+        private EndInitializationEntityCommandBufferSystem _commandBufferSystem;
 
         protected override void OnCreate() {
             _gridKeeper = World.GetOrCreateSystem<GridKeeperSystem>();
-            _commandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            _commandBufferSystem = World.GetOrCreateSystem<EndInitializationEntityCommandBufferSystem>();
             _quadsQueryDescription = new EntityQueryDesc {
                 All = new ComponentType[] { typeof(Tag_BuildingGhostPositioningQuad), typeof(LocalToWorld)}
             };
