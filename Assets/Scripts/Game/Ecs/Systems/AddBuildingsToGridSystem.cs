@@ -20,7 +20,7 @@ namespace Game.Ecs.Systems {
                 NativeArray<int2> positionsInterpreted = new NativeArray<int2>(positions.Length, Allocator.Temp);
                 for (int i = 0; i < positions.Length; i++)
                     positionsInterpreted[i] = positions[i].value;
-                _gridKeeperSystem.buildingGrid.AddBuildingToGrid(positionsInterpreted, entity);
+                _gridKeeperSystem.BuildingGrid.AddBuildingToGrid(positionsInterpreted, entity);
                 positionsInterpreted.Dispose();
                 ecb.DestroyEntity(entity);
             }).WithoutBurst().Run();

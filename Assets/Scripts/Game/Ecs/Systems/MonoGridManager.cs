@@ -36,7 +36,7 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
             InitEditorGrid();
             var keeper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<GridKeeperSystem>();
             keeper.Init(transform, _width, _height, _cellSize, totalCellsCount);
-            SetGridSampledHeights(ref keeper.buildingGrid, terrainPerimeter);
+            SetGridSampledHeights(ref keeper.BuildingGrid, terrainPerimeter);
         }
 
         public void InitEditorGrid() {

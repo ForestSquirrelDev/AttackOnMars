@@ -29,7 +29,7 @@ namespace Game.Ecs.Systems {
                 LocalToWorldHandle = GetComponentTypeHandle<LocalToWorld>(true),
                 Ecb = _commandBufferSystem.CreateCommandBuffer().AsParallelWriter(),
                 EntityTypeHandle = GetEntityTypeHandle(),
-                BuildingGrid = _gridKeeperSystem.buildingGrid
+                BuildingGrid = _gridKeeperSystem.BuildingGrid
             };
             
             JobHandle handle = job.Schedule(EntityManager.CreateEntityQuery(_quadsQueryDescription), Dependency);

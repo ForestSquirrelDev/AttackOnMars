@@ -11,9 +11,7 @@ namespace Game.Ecs.Systems {
     public partial class SpawnBuildingGhostSystem : SystemBase {
         protected override void OnUpdate() {
             if (!Input.GetMouseButtonDown(0)) return;
-            
-            var singleton = GetSingleton<SpawningGhostSingletonData>();
-            if (singleton.CanSpawn) SpawnGhost();
+            if (GetSingleton<SpawningGhostSingletonData>().CanSpawn) SpawnGhost();
         }
 
         private void SpawnGhost() {

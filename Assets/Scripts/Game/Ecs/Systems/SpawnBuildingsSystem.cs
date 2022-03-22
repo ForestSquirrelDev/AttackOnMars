@@ -31,7 +31,7 @@ namespace Game.Ecs.Systems {
         }
         
         private void TrySpawnBuilding(BuildingType type) {
-            _gridKeeperSystem.buildingGrid.InstantiateOnGrid(InputUtility.MouseToWorld(_camera),
+            _gridKeeperSystem.BuildingGrid.InstantiateOnGrid(InputUtility.MouseToWorld(_camera),
                 ConvertedEntitiesContainer.Entities[type].building, EntityManager, out _);
         }
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace Utils {
                     return entityGroups[i].Value;
                 }
             }
-            Debug.LogWarning("Couldn't find entity with component of type" + nameof(T));
+            Debug.LogWarning("Couldn't find entity with component of type " + nameof(T));
             return Entity.Null;
         }
         
@@ -22,9 +23,20 @@ namespace Utils {
                     return entityGroups[i].Value;
                 }
             }
-            Debug.LogWarning("Couldn't find entity with component of type" + nameof(T));
+            Debug.LogWarning("Couldn't find entity with component of type " + nameof(T));
             componentData = null;
             return Entity.Null;
+        }
+
+        public static List<Entity> FindAllEntitiesWithComponent<T>(this Entity entity, EntityManager manager) where T : struct, IComponentData {
+            var entityGroups = manager.GetBuffer<LinkedEntityGroup>(entity);
+            var entitiesWithComponent = new List<Entity>();
+            for (int i = 0; i < entityGroups.Length; i++) {
+                if (manager.HasComponent<T>(entityGroups[i].Value)) {
+                    entitiesWithComponent.Add(entityGroups[i].Value);
+                }
+            }
+            return entitiesWithComponent;
         }
     }
 }

@@ -3,20 +3,17 @@ using UnityEngine;
 
 namespace Game.Ecs.Systems {
     public partial class GridKeeperSystem : SystemBase {
-        public BuildingGrid buildingGrid;
+        public BuildingGrid BuildingGrid;
 
         public void Init(Transform transform, int width, int height, float cellSize, int totalCellsCount) {
-            buildingGrid = new BuildingGrid();
-            buildingGrid.Init(width, height, cellSize,
+            BuildingGrid.Init(width, height, cellSize,
                 transform.localToWorldMatrix, transform.worldToLocalMatrix, totalCellsCount);
         }
         
-        protected override void OnUpdate() {
-
-        }
+        protected override void OnUpdate() { }
 
         protected override void OnDestroy() {
-            buildingGrid.Dispose();
+            BuildingGrid.Dispose();
         }
     }
 }

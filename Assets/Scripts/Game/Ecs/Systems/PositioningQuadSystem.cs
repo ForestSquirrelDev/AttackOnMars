@@ -71,7 +71,7 @@ namespace Game.Ecs.Systems {
             _worldGridTiles.Clear();
             Matrix4x4Extensions.ToUnitScale(ref _gridOrigin);
             foreach (var tile in _localGridTiles) {
-                Vector3 world = _gridOrigin.MultiplyPoint3x4(new Vector3(tile.x, 0, tile.y) * _gridKeeperSystem.buildingGrid.CellSize);
+                Vector3 world = _gridOrigin.MultiplyPoint3x4(new Vector3(tile.x, 0, tile.y) * _gridKeeperSystem.BuildingGrid.CellSize);
                 _worldGridTiles.Add(world);
             }
         }
@@ -79,7 +79,7 @@ namespace Game.Ecs.Systems {
         private void FillGlobalGrid() {
             _globalGridTiles.Clear();
             foreach (var tile in _worldGridTiles) {
-                _globalGridTiles.Add(_gridKeeperSystem.buildingGrid.WorldToGridFloored(tile).ToInt2());
+                _globalGridTiles.Add(_gridKeeperSystem.BuildingGrid.WorldToGridFloored(tile).ToInt2());
             }
         }
         
@@ -92,9 +92,9 @@ namespace Game.Ecs.Systems {
             leftTopCorner = _transformCenter.MultiplyPoint3x4(leftTopCorner);
             rightBottomCorner = _transformCenter.MultiplyPoint3x4(rightBottomCorner);
 
-            int2 leftBottomToGlobalGrid = _gridKeeperSystem.buildingGrid.WorldToGridCeiled(leftBottomCorner).ToInt2();
-            int2 leftTopToGlobalGrid = _gridKeeperSystem.buildingGrid.WorldToGridCeiled(leftTopCorner).ToInt2();
-            int2 rightBottomToGlobalGrid = _gridKeeperSystem.buildingGrid.WorldToGridCeiled(rightBottomCorner).ToInt2();
+            int2 leftBottomToGlobalGrid = _gridKeeperSystem.BuildingGrid.WorldToGridCeiled(leftBottomCorner).ToInt2();
+            int2 leftTopToGlobalGrid = _gridKeeperSystem.BuildingGrid.WorldToGridCeiled(leftTopCorner).ToInt2();
+            int2 rightBottomToGlobalGrid = _gridKeeperSystem.BuildingGrid.WorldToGridCeiled(rightBottomCorner).ToInt2();
             
             int width = math.clamp(math.abs(rightBottomToGlobalGrid.x - leftBottomToGlobalGrid.x) + 1, 1, int.MaxValue);
             int height = math.clamp(math.abs(leftTopToGlobalGrid.y - leftBottomToGlobalGrid.y) + 1, 1, int.MaxValue);
@@ -106,7 +106,7 @@ namespace Game.Ecs.Systems {
         public void OnDrawGizmos() {
             Gizmos.color = Color.green;
             foreach (var v in _worldGridTiles) {
-                Gizmos.DrawSphere(_gridKeeperSystem.buildingGrid.WorldToGridCentered(v), 0.5f);
+                Gizmos.DrawSphere(_gridKeeperSystem.BuildingGrid.WorldToGridCentered(v), 0.5f);
             }
             Gizmos.color = Color.red;
             Gizmos.DrawLine(_gridOrigin.GetColumn(3), _gridOrigin.GetColumn(3) + _gridOrigin.GetColumn(0));

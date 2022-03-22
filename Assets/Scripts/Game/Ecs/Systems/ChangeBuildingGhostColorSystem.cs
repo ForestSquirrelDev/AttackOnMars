@@ -18,7 +18,7 @@ namespace Game.Ecs.Systems {
                 ecb.SetComponent(parent.Value, new BuildingGhostEmissionColorOverride { Value = new float4(0.0f, 1f, 0.0f, 1f) });
             }).Schedule();
 
-            Entities.WithNone<Tag_AvailableForPlacementGhostQuad>().ForEach((Tag_BuildingGhostPositioningQuad ghostQuad, ref Parent parent) => {
+            Entities.WithNone<Tag_AvailableForPlacementGhostQuad>().ForEach((ref Parent parent, in Tag_BuildingGhostPositioningQuad ghostQuad) => {
                 ecb.SetComponent(parent.Value, new BuildingGhostEmissionColorOverride { Value = new float4(1f, 0.0f, 0.0f, 1f) });
             }).Schedule();
         }

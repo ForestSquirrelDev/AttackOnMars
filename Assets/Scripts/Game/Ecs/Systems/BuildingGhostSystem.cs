@@ -20,10 +20,10 @@ namespace Game.Ecs.Systems {
         protected override void OnUpdate() {
             Entities.WithAll<Tag_BuildingGhost>().ForEach((ref Translation translation) => {
                 float3 mouse = InputUtility.MouseToWorld(_camera);
-                float3 grid = _gridKeeperSystem.buildingGrid.WorldToGridCentered(mouse);
+                float3 grid = _gridKeeperSystem.BuildingGrid.WorldToGridCentered(mouse);
                 translation.Value = grid;
                 foreach (var tile in _quadSystem.GetPositionsInGrid()) {
-                    if (_gridKeeperSystem.buildingGrid.TileIsOccupied(new Vector2Int(tile.x, tile.y))) {
+                    if (_gridKeeperSystem.BuildingGrid.TileIsOccupied(new Vector2Int(tile.x, tile.y))) {
                         return;
                     }
                 }
