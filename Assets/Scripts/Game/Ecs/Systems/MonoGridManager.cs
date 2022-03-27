@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -15,9 +14,8 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
         public int Height => _height;
         public float CellSize => _cellSize;
         public Terrain Terrain => _terrain;
+        
         public BuildingGrid EditorGrid;
-
-        private Stopwatch _stopwatch = new Stopwatch();
 
         [FormerlySerializedAs("width")] [SerializeField] private int _width = 20;
         [FormerlySerializedAs("height")] [SerializeField] private int _height = 20;
@@ -36,6 +34,7 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
             InitEditorGrid();
             var keeper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<GridKeeperSystem>();
             keeper.Init(transform, _width, _height, _cellSize, totalCellsCount);
+            // todo: cleanup this mess. grid manager sets grid to system, and then... takes that grid from system it has just inited? oh no
             SetGridSampledHeights(ref keeper.BuildingGrid, terrainPerimeter);
         }
 
