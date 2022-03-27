@@ -8,14 +8,21 @@ namespace Game.Ecs.Monobehaviours {
     public class MonoBuildingsToEntitiesConverter : MonoBehaviour {
         public PreinstantiatePrefabData[] prefabDatas;
 
+        private BlobAssetStore _assetStore;
+
         private void Start() {
-            GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+            _assetStore = new BlobAssetStore();
+            GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, _assetStore);
             foreach (var prefabData in prefabDatas) {
                 Entity ghostEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.ghost, settings);
                 Entity buildingEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.prefab, settings);
                 ConvertedEntitiesContainer.Entities.Add(prefabData.buildingType, 
                     new ConvertedEntityPrefabData{building = buildingEntity, ghost = ghostEntity, buildingType = prefabData.buildingType});
             }
+        }
+
+        private void OnDestroy() {
+            _assetStore.Dispose();
         }
 
         [Serializable]

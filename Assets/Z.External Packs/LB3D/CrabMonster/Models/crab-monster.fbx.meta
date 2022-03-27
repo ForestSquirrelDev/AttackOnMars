@@ -1,362 +1,1064 @@
 fileFormatVersion: 2
 guid: 5779b1a41ccf45b45bfc238034373133
-timeCreated: 1512871555
-licenseType: Store
 ModelImporter:
-  serializedVersion: 22
-  fileIDToRecycleName:
-    100000: Arm_1_L
-    100002: Arm_1_R
-    100004: Arm_2_L
-    100006: Arm_2_R
-    100008: Arm_3_L
-    100010: Arm_3_R
-    100012: Armature
-    100014: Eyes
-    100016: Floor
-    100018: Floor_end
-    100020: Head
-    100022: Head_IK
-    100024: Head_IK_end
-    100026: Head_Look_IK
-    100028: Head_Look_IK_end
-    100030: Head_Target
-    100032: Head_Target_end
-    100034: Leg_B_1_L
-    100036: Leg_B_1_R
-    100038: Leg_B_2_L
-    100040: Leg_B_2_R
-    100042: Leg_B_3_L
-    100044: Leg_B_3_R
-    100046: Leg_B_4_L
-    100048: Leg_B_4_R
-    100050: Leg_B_5_L
-    100052: Leg_B_5_R
-    100054: Leg_B_Guide_L
-    100056: Leg_B_Guide_L_end
-    100058: Leg_B_Guide_R
-    100060: Leg_B_Guide_R_end
-    100062: Leg_B_IK_L
-    100064: Leg_B_IK_L_end
-    100066: Leg_B_IK_R
-    100068: Leg_B_IK_R_end
-    100070: Leg_F_1_L
-    100072: Leg_F_1_R
-    100074: Leg_F_3_L
-    100076: Leg_F_3_R
-    100078: Leg_F_4_L
-    100080: Leg_F_4_R
-    100082: Leg_F_5_L
-    100084: Leg_F_5_R
-    100086: Leg_F_6_L
-    100088: Leg_F_6_R
-    100090: Leg_F_Guide_L
-    100092: Leg_F_Guide_L_end
-    100094: Leg_F_Guide_R
-    100096: Leg_F_Guide_R_end
-    100098: Leg_F_IK_L
-    100100: Leg_F_IK_L_end
-    100102: Leg_F_IK_R
-    100104: Leg_F_IK_R_end
-    100106: Mandible_B_L
-    100108: Mandible_B_R
-    100110: Mandible_F_L
-    100112: Mandible_F_R
-    100114: Mandible_M_L
-    100116: Mandible_M_R
-    100118: Mouth_Movement_Even
-    100120: Mouth_Movement_Even_end
-    100122: Mouth_Movement_Odd
-    100124: Mouth_Movement_Odd_end
-    100126: Pincer_1_L
-    100128: Pincer_1_R
-    100130: Pincer_2_L
-    100132: Pincer_2_R
-    100134: Pincer_3_L
-    100136: Pincer_3_R
-    100138: Pincer_4_L
-    100140: Pincer_4_R
-    100142: Pincer_Claw_1_L
-    100144: Pincer_Claw_1_L_end
-    100146: Pincer_Claw_1_R
-    100148: Pincer_Claw_1_R_end
-    100150: Pincer_Claw_2_L
-    100152: Pincer_Claw_2_L_end
-    100154: Pincer_Claw_2_R
-    100156: Pincer_Claw_2_R_end
-    100158: Pincer_IK_L
-    100160: Pincer_IK_L_end
-    100162: Pincer_IK_R
-    100164: Pincer_IK_R_end
-    100166: Pincer_Target_L
-    100168: Pincer_Target_L_end
-    100170: Pincer_Target_R
-    100172: Pincer_Target_R_end
-    100174: //RootNode
-    100176: Rikayon
-    100178: Root
-    100180: Spike_Guide_L
-    100182: Spike_Guide_L_end
-    100184: Spike_Guide_R
-    100186: Spike_Guide_R_end
-    100188: Spike_IK_L
-    100190: Spike_IK_L_end
-    100192: Spike_IK_R
-    100194: Spike_IK_R_end
-    100196: Spike_L
-    100198: Spike_R
-    100200: Tail_1
-    100202: Tail_2
-    100204: Tail_2_end
-    100206: Thorax_1
-    100208: Thorax_2
-    100210: Thorax_3
-    100212: Tooth_B_IK_L
-    100214: Tooth_B_IK_L_end
-    100216: Tooth_B_IK_R
-    100218: Tooth_B_IK_R_end
-    100220: Tooth_B_L
-    100222: Tooth_B_R
-    100224: Tooth_B_Target_L
-    100226: Tooth_B_Target_L_end
-    100228: Tooth_B_Target_R
-    100230: Tooth_B_Target_R_end
-    100232: Tooth_F_IK_L
-    100234: Tooth_F_IK_L_end
-    100236: Tooth_F_IK_R
-    100238: Tooth_F_IK_R_end
-    100240: Tooth_F_L
-    100242: Tooth_F_R
-    100244: Tooth_F_Target_L
-    100246: Tooth_F_Target_L_end
-    100248: Tooth_F_Target_R
-    100250: Tooth_F_Target_R_end
-    100252: Tooth_M_IK_L
-    100254: Tooth_M_IK_L_end
-    100256: Tooth_M_IK_R
-    100258: Tooth_M_IK_R_end
-    100260: Tooth_M_L
-    100262: Tooth_M_R
-    100264: Tooth_M_Target_L
-    100266: Tooth_M_Target_L_end
-    100268: Tooth_M_Target_R
-    100270: Tooth_M_Target_R_end
-    100272: Rikayon_MeshPart0
-    100274: Rikayon_MeshPart1
-    100276: Rikayon_MeshPart10
-    100278: Rikayon_MeshPart2
-    100280: Rikayon_MeshPart3
-    100282: Rikayon_MeshPart4
-    100284: Rikayon_MeshPart5
-    100286: Rikayon_MeshPart6
-    100288: Rikayon_MeshPart7
-    100290: Rikayon_MeshPart8
-    100292: Rikayon_MeshPart9
-    400000: Arm_1_L
-    400002: Arm_1_R
-    400004: Arm_2_L
-    400006: Arm_2_R
-    400008: Arm_3_L
-    400010: Arm_3_R
-    400012: Armature
-    400014: Eyes
-    400016: Floor
-    400018: Floor_end
-    400020: Head
-    400022: Head_IK
-    400024: Head_IK_end
-    400026: Head_Look_IK
-    400028: Head_Look_IK_end
-    400030: Head_Target
-    400032: Head_Target_end
-    400034: Leg_B_1_L
-    400036: Leg_B_1_R
-    400038: Leg_B_2_L
-    400040: Leg_B_2_R
-    400042: Leg_B_3_L
-    400044: Leg_B_3_R
-    400046: Leg_B_4_L
-    400048: Leg_B_4_R
-    400050: Leg_B_5_L
-    400052: Leg_B_5_R
-    400054: Leg_B_Guide_L
-    400056: Leg_B_Guide_L_end
-    400058: Leg_B_Guide_R
-    400060: Leg_B_Guide_R_end
-    400062: Leg_B_IK_L
-    400064: Leg_B_IK_L_end
-    400066: Leg_B_IK_R
-    400068: Leg_B_IK_R_end
-    400070: Leg_F_1_L
-    400072: Leg_F_1_R
-    400074: Leg_F_3_L
-    400076: Leg_F_3_R
-    400078: Leg_F_4_L
-    400080: Leg_F_4_R
-    400082: Leg_F_5_L
-    400084: Leg_F_5_R
-    400086: Leg_F_6_L
-    400088: Leg_F_6_R
-    400090: Leg_F_Guide_L
-    400092: Leg_F_Guide_L_end
-    400094: Leg_F_Guide_R
-    400096: Leg_F_Guide_R_end
-    400098: Leg_F_IK_L
-    400100: Leg_F_IK_L_end
-    400102: Leg_F_IK_R
-    400104: Leg_F_IK_R_end
-    400106: Mandible_B_L
-    400108: Mandible_B_R
-    400110: Mandible_F_L
-    400112: Mandible_F_R
-    400114: Mandible_M_L
-    400116: Mandible_M_R
-    400118: Mouth_Movement_Even
-    400120: Mouth_Movement_Even_end
-    400122: Mouth_Movement_Odd
-    400124: Mouth_Movement_Odd_end
-    400126: Pincer_1_L
-    400128: Pincer_1_R
-    400130: Pincer_2_L
-    400132: Pincer_2_R
-    400134: Pincer_3_L
-    400136: Pincer_3_R
-    400138: Pincer_4_L
-    400140: Pincer_4_R
-    400142: Pincer_Claw_1_L
-    400144: Pincer_Claw_1_L_end
-    400146: Pincer_Claw_1_R
-    400148: Pincer_Claw_1_R_end
-    400150: Pincer_Claw_2_L
-    400152: Pincer_Claw_2_L_end
-    400154: Pincer_Claw_2_R
-    400156: Pincer_Claw_2_R_end
-    400158: Pincer_IK_L
-    400160: Pincer_IK_L_end
-    400162: Pincer_IK_R
-    400164: Pincer_IK_R_end
-    400166: Pincer_Target_L
-    400168: Pincer_Target_L_end
-    400170: Pincer_Target_R
-    400172: Pincer_Target_R_end
-    400174: //RootNode
-    400176: Rikayon
-    400178: Root
-    400180: Spike_Guide_L
-    400182: Spike_Guide_L_end
-    400184: Spike_Guide_R
-    400186: Spike_Guide_R_end
-    400188: Spike_IK_L
-    400190: Spike_IK_L_end
-    400192: Spike_IK_R
-    400194: Spike_IK_R_end
-    400196: Spike_L
-    400198: Spike_R
-    400200: Tail_1
-    400202: Tail_2
-    400204: Tail_2_end
-    400206: Thorax_1
-    400208: Thorax_2
-    400210: Thorax_3
-    400212: Tooth_B_IK_L
-    400214: Tooth_B_IK_L_end
-    400216: Tooth_B_IK_R
-    400218: Tooth_B_IK_R_end
-    400220: Tooth_B_L
-    400222: Tooth_B_R
-    400224: Tooth_B_Target_L
-    400226: Tooth_B_Target_L_end
-    400228: Tooth_B_Target_R
-    400230: Tooth_B_Target_R_end
-    400232: Tooth_F_IK_L
-    400234: Tooth_F_IK_L_end
-    400236: Tooth_F_IK_R
-    400238: Tooth_F_IK_R_end
-    400240: Tooth_F_L
-    400242: Tooth_F_R
-    400244: Tooth_F_Target_L
-    400246: Tooth_F_Target_L_end
-    400248: Tooth_F_Target_R
-    400250: Tooth_F_Target_R_end
-    400252: Tooth_M_IK_L
-    400254: Tooth_M_IK_L_end
-    400256: Tooth_M_IK_R
-    400258: Tooth_M_IK_R_end
-    400260: Tooth_M_L
-    400262: Tooth_M_R
-    400264: Tooth_M_Target_L
-    400266: Tooth_M_Target_L_end
-    400268: Tooth_M_Target_R
-    400270: Tooth_M_Target_R_end
-    400272: Rikayon_MeshPart0
-    400274: Rikayon_MeshPart1
-    400276: Rikayon_MeshPart10
-    400278: Rikayon_MeshPart2
-    400280: Rikayon_MeshPart3
-    400282: Rikayon_MeshPart4
-    400284: Rikayon_MeshPart5
-    400286: Rikayon_MeshPart6
-    400288: Rikayon_MeshPart7
-    400290: Rikayon_MeshPart8
-    400292: Rikayon_MeshPart9
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Rikayon
-    4300002: Eyes
-    4300004: Rikayon_MeshPart0
-    4300006: Rikayon_MeshPart1
-    4300008: Rikayon_MeshPart2
-    4300010: Rikayon_MeshPart3
-    4300012: Rikayon_MeshPart4
-    4300014: Rikayon_MeshPart5
-    4300016: Rikayon_MeshPart6
-    4300018: Rikayon_MeshPart7
-    4300020: Rikayon_MeshPart8
-    4300022: Rikayon_MeshPart9
-    4300024: Rikayon_MeshPart10
-    7400000: Rest_1
-    7400002: Fight_Idle_1
-    7400004: Armature|Attack_1
-    7400006: Armature|Fight_Idle_1
-    7400008: Armature|Rest
-    7400010: Armature|Rest_1
-    7400012: Armature|Walk_Cycle
-    7400014: Armature|Walk_Cycle_1
-    7400016: Armature|Walk_Cycle_2
-    7400018: Armature|Walk_Cycle_3
-    7400020: Armature|Run_Cycle_1
-    7400022: Armature|Sneak_Cycle_1
-    7400024: Armature|Attack_2
-    7400026: Armature|Attack_3
-    7400028: Armature|Abduct
-    7400030: Armature|Attack_4
-    7400032: Armature|Eat_Cycle_1
-    7400034: Armature|Take_Damage_1
-    7400036: Armature|Take_Damage_2
-    7400038: Armature|Take_Damage_3
-    7400040: Armature|Sleep
-    7400042: Armature|Roar_Screach
-    7400044: Armature|Intimidate
-    7400046: Armature|Intimidate_3
-    7400048: Armature|Intimidate_2
-    7400050: Armature|Intimidate_1
-    7400052: Die
-    7400054: Armature|Attack_5
-    7400056: Armature|Die
-    9500000: //RootNode
-    13700000: Eyes
-    13700002: Rikayon
-    13700004: Rikayon_MeshPart0
-    13700006: Rikayon_MeshPart1
-    13700008: Rikayon_MeshPart10
-    13700010: Rikayon_MeshPart2
-    13700012: Rikayon_MeshPart3
-    13700014: Rikayon_MeshPart4
-    13700016: Rikayon_MeshPart5
-    13700018: Rikayon_MeshPart6
-    13700020: Rikayon_MeshPart7
-    13700022: Rikayon_MeshPart8
-    13700024: Rikayon_MeshPart9
+  serializedVersion: 20200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Arm_1_L
+  - first:
+      1: 100002
+    second: Arm_1_R
+  - first:
+      1: 100004
+    second: Arm_2_L
+  - first:
+      1: 100006
+    second: Arm_2_R
+  - first:
+      1: 100008
+    second: Arm_3_L
+  - first:
+      1: 100010
+    second: Arm_3_R
+  - first:
+      1: 100012
+    second: Armature
+  - first:
+      1: 100014
+    second: Eyes
+  - first:
+      1: 100016
+    second: Floor
+  - first:
+      1: 100018
+    second: Floor_end
+  - first:
+      1: 100020
+    second: Head
+  - first:
+      1: 100022
+    second: Head_IK
+  - first:
+      1: 100024
+    second: Head_IK_end
+  - first:
+      1: 100026
+    second: Head_Look_IK
+  - first:
+      1: 100028
+    second: Head_Look_IK_end
+  - first:
+      1: 100030
+    second: Head_Target
+  - first:
+      1: 100032
+    second: Head_Target_end
+  - first:
+      1: 100034
+    second: Leg_B_1_L
+  - first:
+      1: 100036
+    second: Leg_B_1_R
+  - first:
+      1: 100038
+    second: Leg_B_2_L
+  - first:
+      1: 100040
+    second: Leg_B_2_R
+  - first:
+      1: 100042
+    second: Leg_B_3_L
+  - first:
+      1: 100044
+    second: Leg_B_3_R
+  - first:
+      1: 100046
+    second: Leg_B_4_L
+  - first:
+      1: 100048
+    second: Leg_B_4_R
+  - first:
+      1: 100050
+    second: Leg_B_5_L
+  - first:
+      1: 100052
+    second: Leg_B_5_R
+  - first:
+      1: 100054
+    second: Leg_B_Guide_L
+  - first:
+      1: 100056
+    second: Leg_B_Guide_L_end
+  - first:
+      1: 100058
+    second: Leg_B_Guide_R
+  - first:
+      1: 100060
+    second: Leg_B_Guide_R_end
+  - first:
+      1: 100062
+    second: Leg_B_IK_L
+  - first:
+      1: 100064
+    second: Leg_B_IK_L_end
+  - first:
+      1: 100066
+    second: Leg_B_IK_R
+  - first:
+      1: 100068
+    second: Leg_B_IK_R_end
+  - first:
+      1: 100070
+    second: Leg_F_1_L
+  - first:
+      1: 100072
+    second: Leg_F_1_R
+  - first:
+      1: 100074
+    second: Leg_F_3_L
+  - first:
+      1: 100076
+    second: Leg_F_3_R
+  - first:
+      1: 100078
+    second: Leg_F_4_L
+  - first:
+      1: 100080
+    second: Leg_F_4_R
+  - first:
+      1: 100082
+    second: Leg_F_5_L
+  - first:
+      1: 100084
+    second: Leg_F_5_R
+  - first:
+      1: 100086
+    second: Leg_F_6_L
+  - first:
+      1: 100088
+    second: Leg_F_6_R
+  - first:
+      1: 100090
+    second: Leg_F_Guide_L
+  - first:
+      1: 100092
+    second: Leg_F_Guide_L_end
+  - first:
+      1: 100094
+    second: Leg_F_Guide_R
+  - first:
+      1: 100096
+    second: Leg_F_Guide_R_end
+  - first:
+      1: 100098
+    second: Leg_F_IK_L
+  - first:
+      1: 100100
+    second: Leg_F_IK_L_end
+  - first:
+      1: 100102
+    second: Leg_F_IK_R
+  - first:
+      1: 100104
+    second: Leg_F_IK_R_end
+  - first:
+      1: 100106
+    second: Mandible_B_L
+  - first:
+      1: 100108
+    second: Mandible_B_R
+  - first:
+      1: 100110
+    second: Mandible_F_L
+  - first:
+      1: 100112
+    second: Mandible_F_R
+  - first:
+      1: 100114
+    second: Mandible_M_L
+  - first:
+      1: 100116
+    second: Mandible_M_R
+  - first:
+      1: 100118
+    second: Mouth_Movement_Even
+  - first:
+      1: 100120
+    second: Mouth_Movement_Even_end
+  - first:
+      1: 100122
+    second: Mouth_Movement_Odd
+  - first:
+      1: 100124
+    second: Mouth_Movement_Odd_end
+  - first:
+      1: 100126
+    second: Pincer_1_L
+  - first:
+      1: 100128
+    second: Pincer_1_R
+  - first:
+      1: 100130
+    second: Pincer_2_L
+  - first:
+      1: 100132
+    second: Pincer_2_R
+  - first:
+      1: 100134
+    second: Pincer_3_L
+  - first:
+      1: 100136
+    second: Pincer_3_R
+  - first:
+      1: 100138
+    second: Pincer_4_L
+  - first:
+      1: 100140
+    second: Pincer_4_R
+  - first:
+      1: 100142
+    second: Pincer_Claw_1_L
+  - first:
+      1: 100144
+    second: Pincer_Claw_1_L_end
+  - first:
+      1: 100146
+    second: Pincer_Claw_1_R
+  - first:
+      1: 100148
+    second: Pincer_Claw_1_R_end
+  - first:
+      1: 100150
+    second: Pincer_Claw_2_L
+  - first:
+      1: 100152
+    second: Pincer_Claw_2_L_end
+  - first:
+      1: 100154
+    second: Pincer_Claw_2_R
+  - first:
+      1: 100156
+    second: Pincer_Claw_2_R_end
+  - first:
+      1: 100158
+    second: Pincer_IK_L
+  - first:
+      1: 100160
+    second: Pincer_IK_L_end
+  - first:
+      1: 100162
+    second: Pincer_IK_R
+  - first:
+      1: 100164
+    second: Pincer_IK_R_end
+  - first:
+      1: 100166
+    second: Pincer_Target_L
+  - first:
+      1: 100168
+    second: Pincer_Target_L_end
+  - first:
+      1: 100170
+    second: Pincer_Target_R
+  - first:
+      1: 100172
+    second: Pincer_Target_R_end
+  - first:
+      1: 100174
+    second: //RootNode
+  - first:
+      1: 100176
+    second: Rikayon
+  - first:
+      1: 100178
+    second: Root
+  - first:
+      1: 100180
+    second: Spike_Guide_L
+  - first:
+      1: 100182
+    second: Spike_Guide_L_end
+  - first:
+      1: 100184
+    second: Spike_Guide_R
+  - first:
+      1: 100186
+    second: Spike_Guide_R_end
+  - first:
+      1: 100188
+    second: Spike_IK_L
+  - first:
+      1: 100190
+    second: Spike_IK_L_end
+  - first:
+      1: 100192
+    second: Spike_IK_R
+  - first:
+      1: 100194
+    second: Spike_IK_R_end
+  - first:
+      1: 100196
+    second: Spike_L
+  - first:
+      1: 100198
+    second: Spike_R
+  - first:
+      1: 100200
+    second: Tail_1
+  - first:
+      1: 100202
+    second: Tail_2
+  - first:
+      1: 100204
+    second: Tail_2_end
+  - first:
+      1: 100206
+    second: Thorax_1
+  - first:
+      1: 100208
+    second: Thorax_2
+  - first:
+      1: 100210
+    second: Thorax_3
+  - first:
+      1: 100212
+    second: Tooth_B_IK_L
+  - first:
+      1: 100214
+    second: Tooth_B_IK_L_end
+  - first:
+      1: 100216
+    second: Tooth_B_IK_R
+  - first:
+      1: 100218
+    second: Tooth_B_IK_R_end
+  - first:
+      1: 100220
+    second: Tooth_B_L
+  - first:
+      1: 100222
+    second: Tooth_B_R
+  - first:
+      1: 100224
+    second: Tooth_B_Target_L
+  - first:
+      1: 100226
+    second: Tooth_B_Target_L_end
+  - first:
+      1: 100228
+    second: Tooth_B_Target_R
+  - first:
+      1: 100230
+    second: Tooth_B_Target_R_end
+  - first:
+      1: 100232
+    second: Tooth_F_IK_L
+  - first:
+      1: 100234
+    second: Tooth_F_IK_L_end
+  - first:
+      1: 100236
+    second: Tooth_F_IK_R
+  - first:
+      1: 100238
+    second: Tooth_F_IK_R_end
+  - first:
+      1: 100240
+    second: Tooth_F_L
+  - first:
+      1: 100242
+    second: Tooth_F_R
+  - first:
+      1: 100244
+    second: Tooth_F_Target_L
+  - first:
+      1: 100246
+    second: Tooth_F_Target_L_end
+  - first:
+      1: 100248
+    second: Tooth_F_Target_R
+  - first:
+      1: 100250
+    second: Tooth_F_Target_R_end
+  - first:
+      1: 100252
+    second: Tooth_M_IK_L
+  - first:
+      1: 100254
+    second: Tooth_M_IK_L_end
+  - first:
+      1: 100256
+    second: Tooth_M_IK_R
+  - first:
+      1: 100258
+    second: Tooth_M_IK_R_end
+  - first:
+      1: 100260
+    second: Tooth_M_L
+  - first:
+      1: 100262
+    second: Tooth_M_R
+  - first:
+      1: 100264
+    second: Tooth_M_Target_L
+  - first:
+      1: 100266
+    second: Tooth_M_Target_L_end
+  - first:
+      1: 100268
+    second: Tooth_M_Target_R
+  - first:
+      1: 100270
+    second: Tooth_M_Target_R_end
+  - first:
+      1: 100272
+    second: Rikayon_MeshPart0
+  - first:
+      1: 100274
+    second: Rikayon_MeshPart1
+  - first:
+      1: 100276
+    second: Rikayon_MeshPart10
+  - first:
+      1: 100278
+    second: Rikayon_MeshPart2
+  - first:
+      1: 100280
+    second: Rikayon_MeshPart3
+  - first:
+      1: 100282
+    second: Rikayon_MeshPart4
+  - first:
+      1: 100284
+    second: Rikayon_MeshPart5
+  - first:
+      1: 100286
+    second: Rikayon_MeshPart6
+  - first:
+      1: 100288
+    second: Rikayon_MeshPart7
+  - first:
+      1: 100290
+    second: Rikayon_MeshPart8
+  - first:
+      1: 100292
+    second: Rikayon_MeshPart9
+  - first:
+      4: 400000
+    second: Arm_1_L
+  - first:
+      4: 400002
+    second: Arm_1_R
+  - first:
+      4: 400004
+    second: Arm_2_L
+  - first:
+      4: 400006
+    second: Arm_2_R
+  - first:
+      4: 400008
+    second: Arm_3_L
+  - first:
+      4: 400010
+    second: Arm_3_R
+  - first:
+      4: 400012
+    second: Armature
+  - first:
+      4: 400014
+    second: Eyes
+  - first:
+      4: 400016
+    second: Floor
+  - first:
+      4: 400018
+    second: Floor_end
+  - first:
+      4: 400020
+    second: Head
+  - first:
+      4: 400022
+    second: Head_IK
+  - first:
+      4: 400024
+    second: Head_IK_end
+  - first:
+      4: 400026
+    second: Head_Look_IK
+  - first:
+      4: 400028
+    second: Head_Look_IK_end
+  - first:
+      4: 400030
+    second: Head_Target
+  - first:
+      4: 400032
+    second: Head_Target_end
+  - first:
+      4: 400034
+    second: Leg_B_1_L
+  - first:
+      4: 400036
+    second: Leg_B_1_R
+  - first:
+      4: 400038
+    second: Leg_B_2_L
+  - first:
+      4: 400040
+    second: Leg_B_2_R
+  - first:
+      4: 400042
+    second: Leg_B_3_L
+  - first:
+      4: 400044
+    second: Leg_B_3_R
+  - first:
+      4: 400046
+    second: Leg_B_4_L
+  - first:
+      4: 400048
+    second: Leg_B_4_R
+  - first:
+      4: 400050
+    second: Leg_B_5_L
+  - first:
+      4: 400052
+    second: Leg_B_5_R
+  - first:
+      4: 400054
+    second: Leg_B_Guide_L
+  - first:
+      4: 400056
+    second: Leg_B_Guide_L_end
+  - first:
+      4: 400058
+    second: Leg_B_Guide_R
+  - first:
+      4: 400060
+    second: Leg_B_Guide_R_end
+  - first:
+      4: 400062
+    second: Leg_B_IK_L
+  - first:
+      4: 400064
+    second: Leg_B_IK_L_end
+  - first:
+      4: 400066
+    second: Leg_B_IK_R
+  - first:
+      4: 400068
+    second: Leg_B_IK_R_end
+  - first:
+      4: 400070
+    second: Leg_F_1_L
+  - first:
+      4: 400072
+    second: Leg_F_1_R
+  - first:
+      4: 400074
+    second: Leg_F_3_L
+  - first:
+      4: 400076
+    second: Leg_F_3_R
+  - first:
+      4: 400078
+    second: Leg_F_4_L
+  - first:
+      4: 400080
+    second: Leg_F_4_R
+  - first:
+      4: 400082
+    second: Leg_F_5_L
+  - first:
+      4: 400084
+    second: Leg_F_5_R
+  - first:
+      4: 400086
+    second: Leg_F_6_L
+  - first:
+      4: 400088
+    second: Leg_F_6_R
+  - first:
+      4: 400090
+    second: Leg_F_Guide_L
+  - first:
+      4: 400092
+    second: Leg_F_Guide_L_end
+  - first:
+      4: 400094
+    second: Leg_F_Guide_R
+  - first:
+      4: 400096
+    second: Leg_F_Guide_R_end
+  - first:
+      4: 400098
+    second: Leg_F_IK_L
+  - first:
+      4: 400100
+    second: Leg_F_IK_L_end
+  - first:
+      4: 400102
+    second: Leg_F_IK_R
+  - first:
+      4: 400104
+    second: Leg_F_IK_R_end
+  - first:
+      4: 400106
+    second: Mandible_B_L
+  - first:
+      4: 400108
+    second: Mandible_B_R
+  - first:
+      4: 400110
+    second: Mandible_F_L
+  - first:
+      4: 400112
+    second: Mandible_F_R
+  - first:
+      4: 400114
+    second: Mandible_M_L
+  - first:
+      4: 400116
+    second: Mandible_M_R
+  - first:
+      4: 400118
+    second: Mouth_Movement_Even
+  - first:
+      4: 400120
+    second: Mouth_Movement_Even_end
+  - first:
+      4: 400122
+    second: Mouth_Movement_Odd
+  - first:
+      4: 400124
+    second: Mouth_Movement_Odd_end
+  - first:
+      4: 400126
+    second: Pincer_1_L
+  - first:
+      4: 400128
+    second: Pincer_1_R
+  - first:
+      4: 400130
+    second: Pincer_2_L
+  - first:
+      4: 400132
+    second: Pincer_2_R
+  - first:
+      4: 400134
+    second: Pincer_3_L
+  - first:
+      4: 400136
+    second: Pincer_3_R
+  - first:
+      4: 400138
+    second: Pincer_4_L
+  - first:
+      4: 400140
+    second: Pincer_4_R
+  - first:
+      4: 400142
+    second: Pincer_Claw_1_L
+  - first:
+      4: 400144
+    second: Pincer_Claw_1_L_end
+  - first:
+      4: 400146
+    second: Pincer_Claw_1_R
+  - first:
+      4: 400148
+    second: Pincer_Claw_1_R_end
+  - first:
+      4: 400150
+    second: Pincer_Claw_2_L
+  - first:
+      4: 400152
+    second: Pincer_Claw_2_L_end
+  - first:
+      4: 400154
+    second: Pincer_Claw_2_R
+  - first:
+      4: 400156
+    second: Pincer_Claw_2_R_end
+  - first:
+      4: 400158
+    second: Pincer_IK_L
+  - first:
+      4: 400160
+    second: Pincer_IK_L_end
+  - first:
+      4: 400162
+    second: Pincer_IK_R
+  - first:
+      4: 400164
+    second: Pincer_IK_R_end
+  - first:
+      4: 400166
+    second: Pincer_Target_L
+  - first:
+      4: 400168
+    second: Pincer_Target_L_end
+  - first:
+      4: 400170
+    second: Pincer_Target_R
+  - first:
+      4: 400172
+    second: Pincer_Target_R_end
+  - first:
+      4: 400174
+    second: //RootNode
+  - first:
+      4: 400176
+    second: Rikayon
+  - first:
+      4: 400178
+    second: Root
+  - first:
+      4: 400180
+    second: Spike_Guide_L
+  - first:
+      4: 400182
+    second: Spike_Guide_L_end
+  - first:
+      4: 400184
+    second: Spike_Guide_R
+  - first:
+      4: 400186
+    second: Spike_Guide_R_end
+  - first:
+      4: 400188
+    second: Spike_IK_L
+  - first:
+      4: 400190
+    second: Spike_IK_L_end
+  - first:
+      4: 400192
+    second: Spike_IK_R
+  - first:
+      4: 400194
+    second: Spike_IK_R_end
+  - first:
+      4: 400196
+    second: Spike_L
+  - first:
+      4: 400198
+    second: Spike_R
+  - first:
+      4: 400200
+    second: Tail_1
+  - first:
+      4: 400202
+    second: Tail_2
+  - first:
+      4: 400204
+    second: Tail_2_end
+  - first:
+      4: 400206
+    second: Thorax_1
+  - first:
+      4: 400208
+    second: Thorax_2
+  - first:
+      4: 400210
+    second: Thorax_3
+  - first:
+      4: 400212
+    second: Tooth_B_IK_L
+  - first:
+      4: 400214
+    second: Tooth_B_IK_L_end
+  - first:
+      4: 400216
+    second: Tooth_B_IK_R
+  - first:
+      4: 400218
+    second: Tooth_B_IK_R_end
+  - first:
+      4: 400220
+    second: Tooth_B_L
+  - first:
+      4: 400222
+    second: Tooth_B_R
+  - first:
+      4: 400224
+    second: Tooth_B_Target_L
+  - first:
+      4: 400226
+    second: Tooth_B_Target_L_end
+  - first:
+      4: 400228
+    second: Tooth_B_Target_R
+  - first:
+      4: 400230
+    second: Tooth_B_Target_R_end
+  - first:
+      4: 400232
+    second: Tooth_F_IK_L
+  - first:
+      4: 400234
+    second: Tooth_F_IK_L_end
+  - first:
+      4: 400236
+    second: Tooth_F_IK_R
+  - first:
+      4: 400238
+    second: Tooth_F_IK_R_end
+  - first:
+      4: 400240
+    second: Tooth_F_L
+  - first:
+      4: 400242
+    second: Tooth_F_R
+  - first:
+      4: 400244
+    second: Tooth_F_Target_L
+  - first:
+      4: 400246
+    second: Tooth_F_Target_L_end
+  - first:
+      4: 400248
+    second: Tooth_F_Target_R
+  - first:
+      4: 400250
+    second: Tooth_F_Target_R_end
+  - first:
+      4: 400252
+    second: Tooth_M_IK_L
+  - first:
+      4: 400254
+    second: Tooth_M_IK_L_end
+  - first:
+      4: 400256
+    second: Tooth_M_IK_R
+  - first:
+      4: 400258
+    second: Tooth_M_IK_R_end
+  - first:
+      4: 400260
+    second: Tooth_M_L
+  - first:
+      4: 400262
+    second: Tooth_M_R
+  - first:
+      4: 400264
+    second: Tooth_M_Target_L
+  - first:
+      4: 400266
+    second: Tooth_M_Target_L_end
+  - first:
+      4: 400268
+    second: Tooth_M_Target_R
+  - first:
+      4: 400270
+    second: Tooth_M_Target_R_end
+  - first:
+      4: 400272
+    second: Rikayon_MeshPart0
+  - first:
+      4: 400274
+    second: Rikayon_MeshPart1
+  - first:
+      4: 400276
+    second: Rikayon_MeshPart10
+  - first:
+      4: 400278
+    second: Rikayon_MeshPart2
+  - first:
+      4: 400280
+    second: Rikayon_MeshPart3
+  - first:
+      4: 400282
+    second: Rikayon_MeshPart4
+  - first:
+      4: 400284
+    second: Rikayon_MeshPart5
+  - first:
+      4: 400286
+    second: Rikayon_MeshPart6
+  - first:
+      4: 400288
+    second: Rikayon_MeshPart7
+  - first:
+      4: 400290
+    second: Rikayon_MeshPart8
+  - first:
+      4: 400292
+    second: Rikayon_MeshPart9
+  - first:
+      23: 2300000
+    second: //RootNode
+  - first:
+      33: 3300000
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: Rikayon
+  - first:
+      43: 4300002
+    second: Eyes
+  - first:
+      43: 4300004
+    second: Rikayon_MeshPart0
+  - first:
+      43: 4300006
+    second: Rikayon_MeshPart1
+  - first:
+      43: 4300008
+    second: Rikayon_MeshPart2
+  - first:
+      43: 4300010
+    second: Rikayon_MeshPart3
+  - first:
+      43: 4300012
+    second: Rikayon_MeshPart4
+  - first:
+      43: 4300014
+    second: Rikayon_MeshPart5
+  - first:
+      43: 4300016
+    second: Rikayon_MeshPart6
+  - first:
+      43: 4300018
+    second: Rikayon_MeshPart7
+  - first:
+      43: 4300020
+    second: Rikayon_MeshPart8
+  - first:
+      43: 4300022
+    second: Rikayon_MeshPart9
+  - first:
+      43: 4300024
+    second: Rikayon_MeshPart10
+  - first:
+      74: 7400000
+    second: Rest_1
+  - first:
+      74: 7400002
+    second: Fight_Idle_1
+  - first:
+      74: 7400004
+    second: Armature|Attack_1
+  - first:
+      74: 7400006
+    second: Armature|Fight_Idle_1
+  - first:
+      74: 7400008
+    second: Armature|Rest
+  - first:
+      74: 7400010
+    second: Armature|Rest_1
+  - first:
+      74: 7400012
+    second: Armature|Walk_Cycle
+  - first:
+      74: 7400014
+    second: Armature|Walk_Cycle_1
+  - first:
+      74: 7400016
+    second: Armature|Walk_Cycle_2
+  - first:
+      74: 7400018
+    second: Armature|Walk_Cycle_3
+  - first:
+      74: 7400020
+    second: Armature|Run_Cycle_1
+  - first:
+      74: 7400022
+    second: Armature|Sneak_Cycle_1
+  - first:
+      74: 7400024
+    second: Armature|Attack_2
+  - first:
+      74: 7400026
+    second: Armature|Attack_3
+  - first:
+      74: 7400028
+    second: Armature|Abduct
+  - first:
+      74: 7400030
+    second: Armature|Attack_4
+  - first:
+      74: 7400032
+    second: Armature|Eat_Cycle_1
+  - first:
+      74: 7400034
+    second: Armature|Take_Damage_1
+  - first:
+      74: 7400036
+    second: Armature|Take_Damage_2
+  - first:
+      74: 7400038
+    second: Armature|Take_Damage_3
+  - first:
+      74: 7400040
+    second: Armature|Sleep
+  - first:
+      74: 7400042
+    second: Armature|Roar_Screach
+  - first:
+      74: 7400044
+    second: Armature|Intimidate
+  - first:
+      74: 7400046
+    second: Armature|Intimidate_3
+  - first:
+      74: 7400048
+    second: Armature|Intimidate_2
+  - first:
+      74: 7400050
+    second: Armature|Intimidate_1
+  - first:
+      74: 7400052
+    second: Die
+  - first:
+      74: 7400054
+    second: Armature|Attack_5
+  - first:
+      74: 7400056
+    second: Armature|Die
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Eyes
+  - first:
+      137: 13700002
+    second: Rikayon
+  - first:
+      137: 13700004
+    second: Rikayon_MeshPart0
+  - first:
+      137: 13700006
+    second: Rikayon_MeshPart1
+  - first:
+      137: 13700008
+    second: Rikayon_MeshPart10
+  - first:
+      137: 13700010
+    second: Rikayon_MeshPart2
+  - first:
+      137: 13700012
+    second: Rikayon_MeshPart3
+  - first:
+      137: 13700014
+    second: Rikayon_MeshPart4
+  - first:
+      137: 13700016
+    second: Rikayon_MeshPart5
+  - first:
+      137: 13700018
+    second: Rikayon_MeshPart6
+  - first:
+      137: 13700020
+    second: Rikayon_MeshPart7
+  - first:
+      137: 13700022
+    second: Rikayon_MeshPart8
+  - first:
+      137: 13700024
+    second: Rikayon_MeshPart9
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -369,7 +1071,7 @@ ModelImporter:
       name: Rikayon
     second: {fileID: 2100000, guid: e061968e56112fe4ca8c0ad3347c2a0d, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 0
@@ -386,6 +1088,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 0
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -397,6 +1100,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Rest_1
       takeName: Rest_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 120
       wrapMode: 0
@@ -425,6 +1129,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Fight_Idle_1
       takeName: Fight_Idle_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 40
       wrapMode: 0
@@ -453,6 +1158,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Attack_1
       takeName: Armature|Attack_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
@@ -481,6 +1187,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Fight_Idle_1
       takeName: Armature|Fight_Idle_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 60
       wrapMode: 0
@@ -509,6 +1216,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Rest
       takeName: Armature|Rest
+      internalID: 0
       firstFrame: 0
       lastFrame: 1
       wrapMode: 0
@@ -537,6 +1245,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Rest_1
       takeName: Armature|Rest_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 120
       wrapMode: 0
@@ -565,6 +1274,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Walk_Cycle_1
       takeName: Armature|Walk_Cycle_1
+      internalID: 0
       firstFrame: 1
       lastFrame: 30
       wrapMode: 0
@@ -593,6 +1303,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Walk_Cycle_2
       takeName: Armature|Walk_Cycle_2
+      internalID: 0
       firstFrame: 1
       lastFrame: 29
       wrapMode: 0
@@ -621,6 +1332,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Sneak_Cycle_1
       takeName: Armature|Sneak_Cycle_1
+      internalID: 0
       firstFrame: 1
       lastFrame: 59
       wrapMode: 0
@@ -649,6 +1361,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Attack_2
       takeName: Armature|Attack_2
+      internalID: 0
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
@@ -677,6 +1390,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Attack_3
       takeName: Armature|Attack_3
+      internalID: 0
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
@@ -705,6 +1419,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Attack_4
       takeName: Armature|Attack_4
+      internalID: 0
       firstFrame: 0
       lastFrame: 20
       wrapMode: 0
@@ -733,6 +1448,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Eat_Cycle_1
       takeName: Armature|Eat_Cycle_1
+      internalID: 0
       firstFrame: 1
       lastFrame: 119
       wrapMode: 0
@@ -761,6 +1477,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Take_Damage_1
       takeName: Armature|Take_Damage_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 24
       wrapMode: 0
@@ -789,6 +1506,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Take_Damage_2
       takeName: Armature|Take_Damage_2
+      internalID: 0
       firstFrame: 0
       lastFrame: 24
       wrapMode: 0
@@ -817,6 +1535,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Take_Damage_3
       takeName: Armature|Take_Damage_3
+      internalID: 0
       firstFrame: 0
       lastFrame: 24
       wrapMode: 0
@@ -845,6 +1564,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Sleep
       takeName: Armature|Sleep
+      internalID: 0
       firstFrame: 0
       lastFrame: 79
       wrapMode: 0
@@ -873,6 +1593,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Intimidate_3
       takeName: Armature|Intimidate_3
+      internalID: 0
       firstFrame: 0
       lastFrame: 160
       wrapMode: 0
@@ -901,6 +1622,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Intimidate_2
       takeName: Armature|Intimidate_2
+      internalID: 0
       firstFrame: 0
       lastFrame: 40
       wrapMode: 0
@@ -929,6 +1651,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Intimidate_1
       takeName: Armature|Intimidate_1
+      internalID: 0
       firstFrame: 0
       lastFrame: 77
       wrapMode: 0
@@ -957,6 +1680,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Die
       takeName: Armature|Die
+      internalID: 0
       firstFrame: 0
       lastFrame: 15
       wrapMode: 0
@@ -985,6 +1709,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|Attack_5
       takeName: Armature|Attack_5
+      internalID: 0
       firstFrame: 0
       lastFrame: 40
       wrapMode: 0
@@ -1016,19 +1741,31 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
@@ -1036,10 +1773,13 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -1049,14 +1789,17 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
