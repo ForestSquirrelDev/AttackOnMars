@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 504305657}
   - component: {fileID: 504305658}
   - component: {fileID: 3233276849124810493}
+  - component: {fileID: 5649639425531784656}
+  - component: {fileID: 8037972145320598203}
   m_Layer: 0
   m_Name: thc6
   m_TagString: Untagged
@@ -254,6 +256,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed0243a61c1e2b1468ccdae1e2643c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5649639425531784656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fa283d9aa3ad34f8b01272c621c704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ToPosition:
+    x: 0
+    y: 0
+    z: 0
+  FromPosition:
+    x: 0
+    y: 0
+    z: 0
+  RouteConstructed: 0
+  ReachedDestination: 0
+  UsingCachedPath: 0
+  WaypointDirection:
+    x: 0
+    y: 0
+    z: 0
+  Speed: 0
+  ReachedDistanceThreshold: 0
+  CurrentBufferIndex: 0
+--- !u!114 &8037972145320598203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5754b57d517ee8f449e03ab845016764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentPosition:
+    x: 0
+    y: 0
+    z: 0
+  DestinationDistanceAlongZAxis: 15
+  SpeedRange:
+    x: 1
+    y: 10
+  ReachedDistanceThreshold: 0.1
+  SpeedSeed: 1
 --- !u!1 &138000
 GameObject:
   m_ObjectHideFlags: 0

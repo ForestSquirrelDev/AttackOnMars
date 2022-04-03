@@ -4,7 +4,7 @@ using static Game.Ecs.Monobehaviours.MonoBuildingsToEntitiesConverter;
 
 namespace Game.Ecs.Containers {
     public static class ConvertedEntitiesContainer {
-        public static Dictionary<BuildingType, ConvertedEntityPrefabData> Entities 
+        public static readonly Dictionary<BuildingType, ConvertedEntityPrefabData> s_Entities 
             = new Dictionary<BuildingType, ConvertedEntityPrefabData>();
     }
 }

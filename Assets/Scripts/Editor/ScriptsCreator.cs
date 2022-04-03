@@ -16,5 +16,11 @@ namespace Editor {
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(
                 $"{s_templatesRoot}/C# IComponentDataAuthoring.txt", "NewComponentData.cs");
         }
+
+        [MenuItem("Assets/Create/C# ECS SystemBase", priority = 3)]
+        private static void CreateEcsSystem() {
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(
+            $"{s_templatesRoot}/C# ECS System Template.txt", "NewEcsSystem.cs");
+        }
     }
 }

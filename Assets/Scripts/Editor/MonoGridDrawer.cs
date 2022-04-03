@@ -13,7 +13,7 @@ namespace Editor {
         private Vector3 _parentPos;
         private List<Tuple<Vector3, Vector3>> _linePositions = new List<Tuple<Vector3, Vector3>>();
         
-        private void OnDrawGizmos() {
+        private void OnDrawGizmosSelected() {
             _manager ??= GetComponent<MonoGridManager>();
             if (_manager.Width != _width || _manager.Height != _height || _manager.CellSize != _cellSize || _manager.transform.position != _parentPos) {
                 if (!Application.isPlaying) _manager.InitEditorGrid();

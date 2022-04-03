@@ -15,7 +15,7 @@ namespace Game.Ecs.Systems {
         }
 
         private void SpawnGhost() {
-            var buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.Entities[BuildingType.Turret].ghost);
+            var buildingGhost = EntityManager.Instantiate(ConvertedEntitiesContainer.s_Entities[BuildingType.Turret].Ghost);
             var buildingGhostQuad = buildingGhost.ReverseFindEntityWithComponent<PositioningQuadComponent>(EntityManager);
             EntityManager.AddBuffer<Int2BufferElement>(buildingGhostQuad);
             SetSingleton(new SpawningGhostSingletonData{CanSpawn = false});

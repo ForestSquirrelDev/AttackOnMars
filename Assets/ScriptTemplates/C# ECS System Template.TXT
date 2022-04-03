@@ -1,0 +1,9 @@
+using Unity.Entities;
+
+namespace Game.Ecs.Systems.Spawners {
+    public partial class #SCRIPTNAME# : SystemBase {
+		protected override void OnUpdate() {
+		
+		}
+    }
+}
