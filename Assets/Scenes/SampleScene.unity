@@ -228,6 +228,7 @@ GameObject:
   m_Component:
   - component: {fileID: 206905626}
   - component: {fileID: 206905627}
+  - component: {fileID: 206905628}
   m_Layer: 0
   m_Name: EnemiesSingletonData
   m_TagString: Untagged
@@ -267,6 +268,19 @@ MonoBehaviour:
   MaxIterations: 0
   SpawnFrequency: 0
   UseCache: 0
+--- !u!114 &206905628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206905625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
 --- !u!1 &240268270
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,13 +436,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d30974bf68d61043b1572197db94cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SimulationType: 1
+  m_SimulationType: 2
   m_Gravity:
     x: -0
     y: -9.81
     z: -0
   m_SolverIterationCount: 4
-  m_EnableSolverStabilizationHeuristic: 1
+  m_EnableSolverStabilizationHeuristic: 0
   m_MultiThreaded: 1
   m_SynchronizeCollisionWorld: 0
 --- !u!4 &548895396
@@ -570,7 +584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8406c1053b5c3814d899c22901d0b370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 25
+  moveSpeed: 75
   zoomSpeed: 200
   rotationSpeed: 75
   shiftSpeedMultiplyer: 3
@@ -662,8 +676,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733337664}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -220.02295, y: 0.25517273, z: -282.20996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 113720268}
@@ -743,7 +757,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873730275}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -151.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -830,7 +844,7 @@ MonoBehaviour:
     Category30: 1
     Category31: 1
   groupIndex: 0
-  collisionMethod: 1
+  collisionMethod: 0
 --- !u!114 &873730280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1148,7 +1162,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 9.6, z: 7.2, w: -10.400001}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

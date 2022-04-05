@@ -21,9 +21,9 @@ namespace Game.Ecs.Systems {
         }
 
         protected override void OnUpdate() {
+            if (!Input.GetMouseButtonDown(0)) return;
             EntityCommandBuffer ecb = _endSimulationEcb.CreateCommandBuffer();
             Entities.WithAll<Tag_AvailableForPlacementGhostQuad>().ForEach((ref Parent parent) => {
-                if (!Input.GetMouseButtonDown(0)) return;
                 TrySpawnBuilding(EntityManager.GetComponentData<BuildingGhostComponent>(parent.Value).BuildingType);
                 ecb.DestroyEntity(parent.Value);
                 SetSingleton(new SpawningGhostSingletonData{CanSpawn = true});

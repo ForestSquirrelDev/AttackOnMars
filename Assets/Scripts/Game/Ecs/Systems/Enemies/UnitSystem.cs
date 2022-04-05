@@ -25,7 +25,6 @@ namespace Game.Ecs.Systems.Spawners {
         private int _maxNodesTraversePerUpdate;
 
         protected override void OnCreate() {
-            _enemiesSingletonData = GetSingleton<EnemiesSingletonData>();
             for (int i = 0; i < _enemiesSingletonData.MaxEntitiesRoutedPerFrame; i++) {
                 _resultingPaths.Add(new NativeList<float3>(1024, Allocator.Persistent));
                 _statusOutputs.Add(new NativeArray<int>(3, Allocator.Persistent));
@@ -33,7 +32,12 @@ namespace Game.Ecs.Systems.Spawners {
             _navMeshWorld = NavMeshWorld.GetDefaultWorld();
         }
 
+        protected override void OnStartRunning() {
+            _enemiesSingletonData = GetSingleton<EnemiesSingletonData>();
+        }
+
         protected override void OnUpdate() {
+            return;
             var enemiesData = GetSingleton<EnemiesSingletonData>();
             int maxNodesTraverse = _maxNodesTraversePerUpdate;
             int i = 0;

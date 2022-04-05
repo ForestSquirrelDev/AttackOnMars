@@ -15,7 +15,7 @@ namespace Game.Ecs.Systems.Spawners {
         protected override void OnUpdate() {
             var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
             
-            Entities.WithAll<Tag_Enemy>().WithBurst(synchronousCompilation: true).ForEach(
+            Entities.WithAll<Tag_Enemy>().WithNone<UnitComponent>().WithBurst(synchronousCompilation: false).ForEach(
             (int entityInQueryIndex, ref Entity entity, in UnitInitializerComponent initializerComponent, in LocalToWorld localToWorld) => {
                 ecb.AddComponent<UnitComponent>(entityInQueryIndex, entity);
                 ecb.AddBuffer<UnitBufferElement>(entityInQueryIndex, entity);
