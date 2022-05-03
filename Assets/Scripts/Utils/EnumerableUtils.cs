@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Utils {
@@ -37,6 +40,37 @@ namespace Utils {
                 }
             }
             return entitiesWithComponent;
+        }
+
+        [return: ReadOnly]
+        public static NativeList<T> Reverse<T>(this NativeList<T> oldList, Allocator allocator) where T : unmanaged {
+            var newList = new NativeList<T>(oldList.Length, allocator);
+            var crapCodeDefense = oldList.Length;
+            
+            while (oldList.Length > 0) {
+                var item = oldList[oldList.Length - 1];
+                oldList.RemoveAt(oldList.Length - 1);
+                newList.Add(item);
+                crapCodeDefense--;
+                if (crapCodeDefense < 0) {
+                    Debug.LogError("Infinite loop");
+                    break;
+                }
+            }
+
+            oldList.Dispose();
+            return newList;
+        }
+
+        public static T Pop<T>(this NativeList<T> list) where T : unmanaged {
+            if (list.IsEmpty) {
+                Debug.LogError("List is empty");
+                return default;
+            }
+            int index = list.Length - 1;
+            var item = list[index];
+            list.RemoveAt(index);
+            return item;
         }
     }
 }

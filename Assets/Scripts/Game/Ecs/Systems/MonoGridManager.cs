@@ -1,3 +1,4 @@
+using EasyButtons;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -40,6 +41,11 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
 
         public void InitEditorGrid() {
             EditorGrid.EditorInit(Width, Height, CellSize, transform.localToWorldMatrix, transform.worldToLocalMatrix);
+        }
+        
+        [Button]
+        public void Test() {
+            World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<GridKeeperSystem>().BuildingGrid.DebugTiles();
         }
 
         private void SetGridSampledHeights(ref BuildingGrid grid, Rect rect) {

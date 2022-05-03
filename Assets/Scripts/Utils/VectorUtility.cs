@@ -109,5 +109,10 @@ namespace Utils {
         public static float4 ToFloat4(this Vector3 v, float w = 0) {
             return new float4(v.x, v.y, v.z, w);
         }
+
+        [return: ReadOnly]
+        public static Vector3 MaxValue() {
+            return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        }
     }
 }

@@ -12,7 +12,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace Game.Ecs.Systems.Spawners {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-    public partial class EnemiesSpawnerSystem : SystemBase {
+    public partial class SpawnEnemiesSystem : SystemBase {
         private int _counter;
         private int _sortKey;
         private int _enemiesEnumCount;
@@ -33,7 +33,7 @@ namespace Game.Ecs.Systems.Spawners {
         }
 
         protected override void OnUpdate() {
-            if (_counter >= 5000) return;
+            if (_counter >= 1) return;
             _counter++;
             //if (_counter < 50) return;
             //_counter = 0;

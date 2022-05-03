@@ -53,11 +53,11 @@ namespace Game.Ecs.Systems {
                     Entity entity = entities[i];
                     int sortKey = firstEntityIndex + i + chunkIndex;
                     
-                    //
+                    // init
                     Ecb.AddComponent<Tag_ReadyForGridQuad>(sortKey, entity);
                     Ecb.AddBuffer<Int2BufferElement>(sortKey, entity);
                     
-                    //
+                    // create matrix4x4 with the origin left bottom corner of positioning quad mesh
                     LocalToWorld localToWorld = localToWorlds[i];
                     float4x4 transformCenter = localToWorld.Value;
                     (transformCenter[1], transformCenter[2]) = (transformCenter[2], transformCenter[1]);
@@ -69,19 +69,18 @@ namespace Game.Ecs.Systems {
                         [3] = math.mul(transformCenter, new float4(-0.5f, 0f, -0.5f, 1f))
                     };
                     
-                    //
+                    // setup positioning grid that's actually used to just track size of x/y size of grid (i.e. number of tiles) that building occupies
                     int2 size = CalculateGridSize(transformCenter);
                     PositioningGrid positioningGrid = new PositioningGrid();
                     positioningGrid.FillGrid(size.x, size.y);
 
-                    for (int tile = 0; tile < positioningGrid.positions.Length; tile++) {
-                        int2 unitGridTile = positioningGrid.positions[tile];
+                    // convert our plain grid with tiles of size 1 to actual game grid positions
+                    foreach (int2 unitGridTile in positioningGrid.positions) {
                         float4 world = math.mul(gridOrigin, new float4(unitGridTile.x * BuildingGrid.CellSize, 0, unitGridTile.y * BuildingGrid.CellSize, 1));
                         Vector2Int buildingGridTile = BuildingGrid.WorldToGridFloored(world.xyz);
                         Ecb.AppendToBuffer(sortKey, entity, new Int2BufferElement{value = new int2(buildingGridTile.x, buildingGridTile.y)});
                     }
-
-                    //
+                    
                     positioningGrid.Dispose();
                 }
                 entities.Dispose();

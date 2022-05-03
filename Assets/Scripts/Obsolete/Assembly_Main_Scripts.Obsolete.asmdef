@@ -1,11 +1,11 @@
 {
-    "name": "Assembly_Main_Scripts.Utils",
+    "name": "Assembly_Main_Scripts.Obsolete",
     "rootNamespace": "",
     "references": [
         "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:d1c2cf4268080964aa5945b44936b347",
-        "GUID:e0cd26848372d4e5c891c569017e11f1"
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:2665a8d13d1b3f18800f46e256720795",
+        "GUID:a0d325ab58303474ba23ef1fbde73e6e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
