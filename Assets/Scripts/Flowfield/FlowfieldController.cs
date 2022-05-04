@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using EasyButtons;
 using Unity.Collections;
@@ -7,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
+using Utils.Maths;
 
 namespace Flowfield {
     public class FlowfieldController : MonoBehaviour {
@@ -16,6 +18,8 @@ namespace Flowfield {
         [SerializeField] private float _gizmosSphereSize = 0.2f;
         [SerializeField] private Terrain _terrain;
         [SerializeField] private float _angleThreshold = 35f;
+        [SerializeField] private bool _debugNormals = true;
+        [SerializeField] private bool _debugCosts = true;
 
         private float3 _origin => transform.position;
 
@@ -23,7 +27,7 @@ namespace Flowfield {
             //debug
             if (Input.GetKeyDown(KeyCode.F)) {
                 var world = InputUtility.MouseToWorld(Camera.main, true);
-                CreateIntegrationField(world);
+                StartCoroutine(CreateIntegrationField(world));
             }
         }
 
@@ -42,7 +46,7 @@ namespace Flowfield {
                     var center = new float3(posX + _cellSize / 2, posY, posZ + _cellSize / 2);
                     
                     flowFieldCell.WorldPosition = position;
-                    flowFieldCell.Index = CalculateIndexFromInitialization(x, z);
+                    flowFieldCell.Index = CalculateIndexFromGrid(x, z);
                     flowFieldCell.WorldCenter = center;
                     flowFieldCell.Size = _cellSize;
                     flowFieldCell.GridPosition = new int2(x, z);
@@ -69,7 +73,7 @@ namespace Flowfield {
                 if (angleCenter > _angleThreshold || angleLeftBottom > _angleThreshold) {
                     baseCost = float.MaxValue;
                 } else {
-                    baseCost = GrowExponential(_terrain.SampleHeight(center));
+                    baseCost = _terrain.SampleHeight(center).GrowExponential(4f);
                 }
                 flowFieldCell.BaseCost = baseCost;
                 flowFieldCell.NormalCenter = normalCenter;
@@ -79,11 +83,12 @@ namespace Flowfield {
             return flowFieldCell;
         }
         
-        public void CreateIntegrationField(Vector3 end) {
+        private IEnumerator CreateIntegrationField(Vector3 end) {
             if (TileOutOfGrid(ToGrid(end), _gridSize.ToInt2())) {
-                return;
+                yield break;
             }
             var openList = new Queue<FlowfieldCell>();
+            var closedList = new NativeList<FlowfieldCell>(Allocator.Persistent);
             var endCell = _allCells[CalculateIndexFromWorld(end.x, end.z)];
             endCell.BaseCost = 0;
             endCell.BestCost = 0;
@@ -91,40 +96,76 @@ namespace Flowfield {
 
             while (openList.Count > 0) {
                 var currentCell = openList.Dequeue();
-                var neighbours = GetNeighbourOffsets();
-
+                var neighbours = FindNeighbours(currentCell, _allCells);
+                var validNeighbours = new NativeList<FlowfieldCell>(Allocator.Persistent);
                 for (var i = 0; i < neighbours.Length; i++) {
-                    var offset = neighbours[i];
-                    var neighbourPosition = new float3(currentCell.WorldPosition.x + offset.x, currentCell.WorldPosition.y, currentCell.WorldPosition.z + offset.y);
-                    if (TileOutOfGrid(ToGrid(neighbourPosition), _gridSize.ToInt2())) {
+                    var neighbour = neighbours[i];
+                    if (TileOutOfGrid(neighbour.GridPosition, _gridSize.ToInt2()) 
+                        || neighbour.BaseCost == float.MaxValue || closedList.Contains(neighbour)) {
                         continue;
                     }
-                    var neighbourIndex = CalculateIndexFromWorld(neighbourPosition.x, neighbourPosition.z);
-                    var neighbour = _allCells[neighbourIndex];
-                    if (neighbour.BaseCost == float.MaxValue) {
-                        continue;
-                    }
-
                     var totalCost = neighbour.BaseCost + currentCell.BestCost;
                     if (totalCost < neighbour.BestCost) {
                         neighbour.BestCost = totalCost;
-                        _allCells[neighbourIndex] = neighbour;
-                        openList.Enqueue(neighbour);
+                        _allCells[neighbour.Index] = neighbour;
+                        if (!openList.Contains(neighbour))
+                            openList.Enqueue(neighbour);
+                        closedList.Add(neighbour);
+                        validNeighbours.Add(neighbour);
                     }
+                    yield return new WaitForSeconds(0.001f);
                 }
-
+                
                 neighbours.Dispose();
             }
+
+            closedList.Dispose();
         }
 
-        private float GrowExponential(float value, float square = 3) {
-            return 2 * Mathf.Pow(value, square);
+        private int2 FindBestDirection(FlowfieldCell currentCell, NativeList<FlowfieldCell> validNeighbours) {
+            var bestCell = FindLowestCostCellSlow(validNeighbours);
+            // отнять вторую grid позицию от первой, чтобы получить вектор который смотрит в направлении второй клетки
+            // затем присвоить получившийся вектор currentCell
+            // ну а пока спать.
+            return new int2();
+        }
+
+        private FlowfieldCell FindLowestCostCellSlow(NativeList<FlowfieldCell> cells) {
+            var bestCell = new FlowfieldCell {
+                BestCost = float.MaxValue
+            };
+
+            for (var i = 0; i < cells.Length; i++) {
+                var currentCell = cells[i];
+                if (currentCell.BestCost < bestCell.BestCost) {
+                   bestCell = currentCell;
+                }
+            }
+            return bestCell;
+        }
+
+        private NativeArray<FlowfieldCell> FindNeighbours(FlowfieldCell currentCell, FlowfieldCell[] allCells) {
+            var neighbourOffsets = GetNeighbourOffsets();
+            var neighbours = new NativeArray<FlowfieldCell>(neighbourOffsets.Length, Allocator.Persistent);
+            
+            for (var i = 0; i < neighbourOffsets.Length; i++) {
+                var neighbourOffset = neighbourOffsets[i];
+                var neighbourGridPosition = new int2(currentCell.GridPosition.x + neighbourOffset.x, currentCell.GridPosition.y + neighbourOffset.y);
+                if (TileOutOfGrid(neighbourGridPosition, _gridSize.ToInt2()))
+                    continue;
+                var neighbourIndex = CalculateIndexFromGrid(neighbourGridPosition.x, neighbourGridPosition.y);
+                var neighbourCell = allCells[neighbourIndex];
+                neighbours[i] = neighbourCell;
+            }
+
+            neighbourOffsets.Dispose();
+            return neighbours;
         }
 
         private void OnDrawGizmos() {
             if (_allCells == null) return;
             foreach (var cell in _allCells) {
-                Gizmos.color = Color.green;
+                Gizmos.color = cell.BestCost == float.MaxValue ? Color.red : Color.green;
                 var rightBottom = new Vector3(cell.WorldPosition.x + _cellSize, cell.WorldPosition.y, cell.WorldPosition.z);
                 var rightTop = new Vector3(cell.WorldPosition.x + _cellSize, cell.WorldPosition.y, cell.WorldPosition.z + _cellSize);
                 var leftTop = new Vector3(cell.WorldPosition.x, cell.WorldPosition.y, cell.WorldPosition.z + _cellSize);
@@ -133,18 +174,22 @@ namespace Flowfield {
                 Gizmos.DrawLine(rightTop, leftTop);
                 Gizmos.DrawLine(leftTop, cell.WorldPosition);
 
-                if (cell.BaseCost == float.MaxValue) {
-                    Gizmos.color = Color.red;
-                } else {
-                    Gizmos.color = Color.blue;
+                if (_debugNormals) {
+                    if (cell.BaseCost == float.MaxValue) {
+                        Gizmos.color = Color.red;
+                    } else {
+                        Gizmos.color = Color.blue;
+                    }
+                    Gizmos.DrawLine(cell.WorldCenter, cell.WorldCenter + cell.NormalCenter * 5);
+                    Gizmos.DrawLine(cell.WorldPosition, cell.WorldPosition + cell.NormalEdge * 5);
                 }
-                Gizmos.DrawLine(cell.WorldCenter, cell.WorldCenter + cell.NormalCenter * 5);
-                Gizmos.DrawLine(cell.WorldPosition, cell.WorldPosition + cell.NormalEdge * 5);
 
-                Gizmos.color = Color.white;
+                if (_debugCosts) {
+                    Handles.color = Color.white;
 
-                var text = (cell.BaseCost == float.MaxValue || cell.BestCost == float.MaxValue) ? "MAX" : cell.BestCost.ToString("F");
-                Handles.Label(cell.WorldCenter, text);
+                    var text = (cell.BaseCost == float.MaxValue || cell.BestCost == float.MaxValue) ? "MAX" : StringUtility.ToKFormat(cell.BestCost);
+                    Handles.Label(cell.WorldCenter, text);
+                }
             }
         }
         
@@ -157,7 +202,7 @@ namespace Flowfield {
             return Convert.ToInt32(index);
         }
 
-        private int CalculateIndexFromInitialization(float x, float z) {
+        private int CalculateIndexFromGrid(float x, float z) {
             var max = Mathf.Max(_gridSize.x, _gridSize.y);
             var min = Mathf.Min(_gridSize.x, _gridSize.y);
             var index = (x * _gridSize.x + z) + ((max - min) * x);

@@ -17,7 +17,7 @@ namespace Utils {
             Debug.LogWarning("Couldn't find entity with component of type " + nameof(T));
             return Entity.Null;
         }
-        
+
         public static Entity ReverseFindEntityWithComponent<T>(this Entity entity, EntityManager manager, out IComponentData componentData) where T : struct, IComponentData {
             var entityGroups = manager.GetBuffer<LinkedEntityGroup>(entity);
             for (int i = entityGroups.Length - 1; i >= 0; i--) {
@@ -46,7 +46,7 @@ namespace Utils {
         public static NativeList<T> Reverse<T>(this NativeList<T> oldList, Allocator allocator) where T : unmanaged {
             var newList = new NativeList<T>(oldList.Length, allocator);
             var crapCodeDefense = oldList.Length;
-            
+
             while (oldList.Length > 0) {
                 var item = oldList[oldList.Length - 1];
                 oldList.RemoveAt(oldList.Length - 1);
@@ -71,6 +71,21 @@ namespace Utils {
             var item = list[index];
             list.RemoveAt(index);
             return item;
+        }
+
+        [return: ReadOnly]
+        public static float FindMinValueSlow(this NativeArray<float> list) {
+            if (list.Length == 0) {
+                throw new InvalidOperationException("Empty list");
+            }
+            float minValue = float.MaxValue;
+            for (var i = 0; i < list.Length; i++) {
+                float f = list[i];
+                if (f < minValue) {
+                    minValue = f;
+                }
+            }
+            return minValue;
         }
     }
 }

@@ -19,5 +19,9 @@ namespace Utils.Maths
         public static float ClampPos1ToMaxValue(this float f) {
             return Mathf.Clamp(f, 1f, float.MaxValue);
         }
+        
+        public static float GrowExponential(this float value, float square = 3) {
+            return 2 * Mathf.Pow(value, square);
+        }
     }
 }
