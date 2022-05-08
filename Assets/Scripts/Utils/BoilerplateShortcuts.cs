@@ -1,7 +1,5 @@
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
-using Utils;
 
 namespace Game.Ecs.Utils {
     public static class BoilerplateShortcuts {
@@ -9,6 +7,10 @@ namespace Game.Ecs.Utils {
             foreach (IComponentData component in components) {
                 manager.SetComponentData(entity, component);
             }
+        }
+
+        public static bool Approximately(this float f, float f2) {
+            return Mathf.Approximately(f, f2);
         }
     }
 }

@@ -2,8 +2,16 @@ using UnityEngine;
 
 namespace Utils.Maths
 {
-    public static class MathfUtility
-    {
+    public static class MathfUtility {
+        private static float s_halfMaxValueBacking = 0;
+        public static float HalfMaxValue {
+            get {
+                if (s_halfMaxValueBacking == 0)
+                    s_halfMaxValueBacking = float.MaxValue / 2;
+                return s_halfMaxValueBacking;
+            }
+        }
+
         public static float InverseRelationship(float constant, float mutable) {
             return constant / mutable;
         }
