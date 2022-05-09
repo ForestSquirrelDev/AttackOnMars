@@ -5,20 +5,15 @@ using UnityEngine;
 
 namespace Flowfield {
     public static class FlowfieldUtility {
-        public static int CalculateIndexFromWorld(float worldX, float worldZ, float3 origin, int2 gridSize, float cellSize) {
-            var gridPos = ToGrid(new float3(worldX, 0, worldZ), origin, cellSize);
-            var max = Mathf.Max(gridSize.x, gridSize.y);
-            var min = Mathf.Min(gridSize.x, gridSize.y);
-            var index = (gridPos.x * gridSize.x + gridPos.y) + ((max - min) * gridPos.x);
-          //  Debug.Log($"Calculate index. Gridpos: {gridPos}. Max: {max}. Min: {min}.Index: {index}.");
-            return Convert.ToInt32(index);
+        public static int CalculateIndexFromWorld(float3 world, float3 origin, int2 gridSize, float cellSize) {
+            var gridPos = ToGrid(new float3(world.x, 0, world.z), origin, cellSize);
+            return CalculateIndexFromGrid(gridPos, gridSize);
         }
 
         public static int CalculateIndexFromGrid(float x, float z, int2 gridSize) {
             var max = Mathf.Max(gridSize.x, gridSize.y);
             var min = Mathf.Min(gridSize.x, gridSize.y);
             var index = (x * gridSize.x + z) + ((max - min) * x);
-//            Debug.Log($"x/y: {x}/{z}. Min: {min}. Max: {max}. Index: {index}");
             return Convert.ToInt32(index);
         }
 
@@ -27,14 +22,15 @@ namespace Flowfield {
         }
 
         public static int2 ToGrid(float3 worldPos, float3 origin, float cellSize) {
-            var localPosition = worldPos - origin;
-            int x = Mathf.FloorToInt(localPosition.x / cellSize);
-            int z = Mathf.FloorToInt(localPosition.z / cellSize);
+            int x = Mathf.FloorToInt((worldPos.x - origin.x) / cellSize);
+            int z = Mathf.FloorToInt((worldPos.z - origin.z) / cellSize);
             return new int2(x, z);
         }
 
         public static float3 ToWorld(int2 gridPos, float3 origin, float cellSize) {
-            return new float3(gridPos.x * cellSize + origin.x, origin.y, gridPos.y * cellSize + origin.z);
+            float x = (gridPos.x + origin.x) * cellSize;
+            float z = (gridPos.y + origin.z) * cellSize;
+            return new float3(x, origin.y, z);
         }
 
         public static float3 FindCellCenter(float3 worldPos, float cellSize) {
@@ -57,5 +53,17 @@ namespace Flowfield {
         public static bool TileOutOfGrid(float2 gridPos, int2 gridSize) {
             return gridPos.x < 0 || gridPos.y < 0 || gridPos.x > gridSize.x - 1 || gridPos.y > gridSize.y - 1;
         }
+    }
+    
+    public struct FlowFieldRect {
+        public float XMax => X + Width;
+        public float XMin => X;
+        public float YMax => Y + Height;
+        public float YMin => Y;
+        
+        public float X;
+        public float Y;
+        public float Width;
+        public float Height;
     }
 }

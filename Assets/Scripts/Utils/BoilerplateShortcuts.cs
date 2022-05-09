@@ -12,5 +12,9 @@ namespace Game.Ecs.Utils {
         public static bool Approximately(this float f, float f2) {
             return Mathf.Approximately(f, f2);
         }
+
+        public static bool Approximately(this Vector3 v, Vector3 v2) {
+            return Mathf.Approximately(v.x, v2.x) && Mathf.Approximately(v.y, v2.y) && Mathf.Approximately(v.z, v2.z);
+        }
     }
 }
