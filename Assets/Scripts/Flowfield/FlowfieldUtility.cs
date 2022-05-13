@@ -55,6 +55,7 @@ namespace Flowfield {
         }
     }
     
+    [Serializable]
     public struct FlowFieldRect {
         public float XMax => X + Width;
         public float XMin => X;
