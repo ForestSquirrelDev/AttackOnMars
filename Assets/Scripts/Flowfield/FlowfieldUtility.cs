@@ -28,8 +28,8 @@ namespace Flowfield {
         }
 
         public static float3 ToWorld(int2 gridPos, float3 origin, float cellSize) {
-            float x = (gridPos.x + origin.x) * cellSize;
-            float z = (gridPos.y + origin.z) * cellSize;
+            float x = (gridPos.x * cellSize + origin.x);
+            float z = (gridPos.y * cellSize + origin.z);
             return new float3(x, origin.y, z);
         }
 
@@ -53,6 +53,10 @@ namespace Flowfield {
         public static bool TileOutOfGrid(float2 gridPos, int2 gridSize) {
             return gridPos.x < 0 || gridPos.y < 0 || gridPos.x > gridSize.x - 1 || gridPos.y > gridSize.y - 1;
         }
+
+        public static bool WorldOutOfGrid(float3 worldPos, FlowFieldRect parentCellRect) {
+            return worldPos.x < parentCellRect.XMin || worldPos.x > parentCellRect.XMax || worldPos.z < parentCellRect.YMin || worldPos.z > parentCellRect.YMax;
+        }
     }
     
     [Serializable]
@@ -64,7 +68,9 @@ namespace Flowfield {
         
         public float X;
         public float Y;
-        public float Width;
-        public float Height;
+        public int Width;
+        public int Height;
+
+        public int2 Size => new int2(Width, Height);
     }
 }

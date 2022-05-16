@@ -1,11 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Den.Tools;
 using EasyButtons;
 using Game.Ecs.Utils;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Entities;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -14,12 +12,19 @@ using static Flowfield.FlowfieldUtility;
 using Debug = UnityEngine.Debug;
 
 namespace Flowfield {
+    public readonly struct ChildCellsGenerationRequest {
+        public readonly int ParentCellIndex;
+
+        public ChildCellsGenerationRequest(int parentCellIndex) {
+            ParentCellIndex = parentCellIndex;
+        }
+    }
+
     public class FlowfieldController : MonoBehaviour {
         [SerializeField] private int2 _parentGridSizeOut;
         [SerializeField] private float _parentCellSize = 50f;
         [SerializeField] private float _tooBigHeightThreshold = 23f;
         [SerializeField] private float _smallCellSize = 6f;
-        [SerializeField] private FlowFieldCell[] _allCells;
         [SerializeField] private Terrain _terrain;
         [SerializeField] private float _angleThreshold = 35f;
         
@@ -32,57 +37,102 @@ namespace Flowfield {
         [SerializeField] private Transform _testEnemy;
         
         [SerializeField] private List<FlowFieldCell> _mergedCells = new List<FlowFieldCell>();
-        
+
+        private Queue<ChildCellsGenerationRequest> _pendingRequests = new Queue<ChildCellsGenerationRequest>();
+
         private float3 _parentGridOrigin => _terrain.transform.position;
 
         private Stopwatch _sw = new Stopwatch();
         private FlowFieldCell _currentCell;
         
-        private FlowFieldCell _targetCell;
+        private Vector3 _targetWorld;
         
         private void Update() {
             if (Input.GetKeyDown(KeyCode.F)) {
                 var world = InputUtility.MouseToWorld(Camera.main, true);
+                _targetWorld = world;
                 GenerateMergedGrid(_parentCellSize);
-                CreateIntegrationField(world, _parentGridOrigin, _parentCellSize, _parentGridSizeOut, _mergedCells);
-                CreateFlowField(_mergedCells, _parentGridSizeOut);
-                var targetIndex = CalculateIndexFromWorld(world, _parentGridOrigin, _parentGridSizeOut, _parentCellSize);
-                Debug.Log($"Target index: {targetIndex}");
-                _targetCell = _mergedCells[targetIndex];
+                var targetCell = _mergedCells[CalculateIndexFromWorld(world, _parentGridOrigin, _parentGridSizeOut, _parentCellSize)];
+                CreateIntegrationField(targetCell, _parentGridSizeOut, _mergedCells);
+                CreateFlowField(_mergedCells, _parentGridSizeOut, world);
             }
             if (Input.GetKeyDown(KeyCode.H)) {
                 var world = InputUtility.MouseToWorld(Camera.main, true);
                 var index = CalculateIndexFromWorld(world, _parentGridOrigin, _parentGridSizeOut, _parentCellSize);
                 var cell = _mergedCells[index];
-                GenerateChildGrid(cell, _smallCellSize, _mergedCells, _parentGridSizeOut);
+                GenerateChildGrid(world, cell, _smallCellSize, _mergedCells, _parentGridSizeOut);
             }
-            FindPath(_targetCell, _mergedCells, _testEnemy, _parentGridOrigin, _parentCellSize, _parentGridSizeOut);
+            FindPath(_targetWorld, _mergedCells, _testEnemy, _parentGridOrigin, _parentCellSize, _parentGridSizeOut);
         }
 
-        private void FindPath(FlowFieldCell targetCell, IList<FlowFieldCell> allCells, Transform enemy, float3 gridOrigin, float cellSize, int2 gridSize) {
-            if (targetCell == default) return;
-            var enemyGridPosition = ToGrid(enemy.position, gridOrigin, cellSize);
-            var arrived = enemyGridPosition.x == targetCell.GridPosition.x && enemyGridPosition.y == targetCell.GridPosition.y;
-            Debug.Log($"Enemy grid position: {enemyGridPosition}. Target grid position: {_targetCell}. arrived: {arrived}");
+        private void FixedUpdate() {
+            if (_targetWorld == default) return;
+            EnqueueChildCellsGenerationRequest(_testEnemy.position, _parentGridOrigin, _parentGridSizeOut, _parentCellSize);
+            ManageChildCellsGenerationRequests(_targetWorld, _smallCellSize, _pendingRequests, _mergedCells, _parentGridSizeOut);
+        }
+
+        private void EnqueueChildCellsGenerationRequest(Vector3 enemyPosition, float3 parentGridOrigin, int2 parentGridSize, float parentCellSize) {
+            var parentCellIndex = CalculateIndexFromWorld(enemyPosition, parentGridOrigin, parentGridSize, parentCellSize);
+            _pendingRequests.Enqueue(new ChildCellsGenerationRequest(parentCellIndex));
+        }
+
+        private void ManageChildCellsGenerationRequests(Vector3 targetWorldPosition, float childCellSize, Queue<ChildCellsGenerationRequest> requests, IList<FlowFieldCell> parentCells, int2 parentGridSize) {
+            if (requests.Count == 0) return;
+
+            for (int i = requests.Count - 1; i > 0; i--) {
+                var request = requests.Dequeue();
+                var requestedParentCell = parentCells[request.ParentCellIndex];
+                if (requestedParentCell.ChildCells != null && requestedParentCell.ChildCells.Count > 0) continue;
+                
+                GenerateChildGrid(targetWorldPosition, requestedParentCell, childCellSize, parentCells, parentGridSize);
+            }
+        }
+
+        private FlowFieldCell FindClosestCellToWorld(Vector3 worldTarget, FlowFieldCell parentCell, IList<FlowFieldCell> childCells, int2 childCellsGridSize, float3 childCellsOrigin, float childCellSize) {
+            var directionFromGridOriginToWorld = (worldTarget - (Vector3)childCellsOrigin).normalized * childCellSize;
+            FlowFieldCell bestCell = new FlowFieldCell();
+            float3 bestCellWorldPosition = parentCell.WorldPosition;
+            
+            var worldOutOfGrid = WorldOutOfGrid(worldTarget, parentCell.WorldRect);
+            while (!worldOutOfGrid) {
+                var bestCellIndex = CalculateIndexFromWorld(bestCellWorldPosition, parentCell.WorldPosition, childCellsGridSize, childCellSize);
+                bestCell = childCells[bestCellIndex];
+                
+                bestCellWorldPosition += (float3)directionFromGridOriginToWorld;
+                worldOutOfGrid = WorldOutOfGrid(bestCellWorldPosition, parentCell.WorldRect);
+            }
+
+            return bestCell;
+        }
+
+        private void FindPath(Vector3 target, IList<FlowFieldCell> allCells, Transform enemy, float3 gridOrigin, float cellSize, int2 gridSize) {
+            if (target == default) return;
+            var enemyPos = enemy.position;
+            var arrived = enemyPos.Approximately(target);
+            Debug.Log($"Target position: {target}. arrived: {arrived}");
             if (!arrived) {
-                var currentCellIndex = CalculateIndexFromGrid(enemyGridPosition, gridSize);
+                var currentCellIndex = CalculateIndexFromWorld(enemyPos, gridOrigin, gridSize, cellSize);
                 var currentCell = allCells[currentCellIndex];
                 var bestDirection = math.normalize(currentCell.BestDirection);
                 var worldDirection = new Vector3(bestDirection.x, 0, bestDirection.y);
                 enemy.position += worldDirection * 60f * Time.deltaTime;
-                Debug.Log($"Enemy grid pos: {currentCellIndex}. Current cell: {currentCell.GridPosition}. Best direction: {bestDirection}. World direction: {worldDirection}. Target cell: {_targetCell.ToString()}");
             }
         }
 
         [Button]
-        private void GenerateChildGrid(FlowFieldCell parentCell, float cellSize, IList<FlowFieldCell> allCells, int2 allCellsGridSize) {
+        private void GenerateChildGrid(Vector3 target, FlowFieldCell parentCell, float cellSize, IList<FlowFieldCell> parentCells, int2 parentCellsGridSize) {
             var gridSize = new int2(Mathf.FloorToInt(parentCell.WorldRect.Width / cellSize),
                 Mathf.FloorToInt(parentCell.WorldRect.Height / cellSize));
             var origin = parentCell.WorldPosition;
             parentCell.ChildCells = new List<FlowFieldCell>(gridSize.x * gridSize.y);
             var cells = parentCell.ChildCells;
             FillEmptyCells(cellSize, origin, gridSize, cells);
-            allCells[CalculateIndexFromGrid(parentCell.GridPosition, allCellsGridSize)] = parentCell;
+            
+            var bestCell = FindClosestCellToWorld(target, parentCell, parentCell.ChildCells, gridSize, parentCell.WorldPosition, cellSize);
+            CreateIntegrationField(bestCell, gridSize, parentCell.ChildCells);
+            CreateFlowField(parentCell.ChildCells, gridSize, target);
+            
+            parentCells[CalculateIndexFromGrid(parentCell.GridPosition, parentCellsGridSize)] = parentCell;
         }
 
         [Button]
@@ -111,8 +161,8 @@ namespace Flowfield {
                     var cellRect = new FlowFieldRect {
                         X = cell.WorldPosition.x,
                         Y = cell.WorldPosition.z,
-                        Height = cellSize,
-                        Width = cellSize
+                        Height = (int)cellSize,
+                        Width = (int)cellSize
                     };
                     cell.Size = cellSize;
                     cell.WorldRect = cellRect;
@@ -124,36 +174,27 @@ namespace Flowfield {
             }
         }
 
-        private void CreateIntegrationField(Vector3 targetWorldPosition, float3 gridOrigin, float cellSize, int2 gridSize, IList<FlowFieldCell> allCells) {
-            _sw.Start();
-            var endGridPos = ToGrid(targetWorldPosition, gridOrigin, cellSize);
-            if (TileOutOfGrid(endGridPos, gridSize)) {
+        private void CreateIntegrationField(FlowFieldCell targetCell, int2 gridSize, IList<FlowFieldCell> allCells) {
+            if (TileOutOfGrid(targetCell.GridPosition, gridSize)) {
                 return;
             }
             var openList = new Queue<FlowFieldCell>();
             var closedList = new List<FlowFieldCell>();
-            var index = CalculateIndexFromWorld(targetWorldPosition, gridOrigin, gridSize, cellSize);
-            var endCell = allCells[index];
-            Debug.Log($"End cell: {endCell}.");
-            endCell.BaseCost = 0;
-            endCell.BestCost = 0;
-            allCells[index] = endCell;
-            openList.Enqueue(endCell);
+            targetCell.BaseCost = 0;
+            targetCell.BestCost = 0;
+            allCells[CalculateIndexFromGrid(targetCell.GridPosition, gridSize)] = targetCell;
+            openList.Enqueue(targetCell);
 
             while (openList.Count > 0) {
                 var currentCell = openList.Dequeue();
                 var neighbours = FindNeighbours(currentCell, allCells, gridSize);
-                Debug.Log($"Lesgo. Current cell: {currentCell}");
                 for (var i = 0; i < neighbours.Count; i++) {
                     var neighbour = neighbours[i];
                     if (TileOutOfGrid(neighbour.GridPosition, gridSize) 
                         || neighbour.BaseCost == float.MaxValue || closedList.Contains(neighbour)) {
-                        Debug.Log($"Tile {neighbour} out of grid. Continue");
                         continue;
                     }
                     var totalCost = neighbour.BaseCost + currentCell.BestCost;
-                    Debug.Log($"Total cost: {totalCost}. Neighbour best cost: {neighbour.BestCost}. Better: {totalCost < neighbour.BestCost}" +
-                              $" Neighbours count: {neighbours.Count}. Openlist count: {openList.Count}.");
                     if (totalCost < neighbour.BestCost) {
                         neighbour.BestCost = totalCost;
                         var neighbourIndex = CalculateIndexFromGrid(neighbour.GridPosition, gridSize);
@@ -163,11 +204,6 @@ namespace Flowfield {
                     }
                 }
             }
-
-            _targetCell = endCell;
-            _sw.Stop();
-            Debug.Log($"Elapsed miliseconds: {_sw.ElapsedMilliseconds}");
-            _sw.Reset();
         }
         
         private float FindBaseCost(float3 worldCenter, float3 worldPosition) {
@@ -194,18 +230,25 @@ namespace Flowfield {
             return baseCost;
         }
 
-        private void CreateFlowField(IList<FlowFieldCell> allCells, int2 gridSize) {
+        private void CreateFlowField(IList<FlowFieldCell> allCells, int2 gridSize, Vector3 targetWorldPosition) {
             for (var i = 0; i < allCells.Count; i++) {
                 var cell = allCells[i];
-                var neighbours = FindNeighbours(cell, allCells, gridSize);
-                var bestDirection = FindBestDirection(cell, neighbours);
                 var index = CalculateIndexFromGrid(cell.GridPosition, gridSize);
-                cell.BestDirection = bestDirection;
+                
+                if (cell.BaseCost == 0 && cell.BestCost == 0) {
+                    var worldDirection = (targetWorldPosition - (Vector3)cell.WorldCenter).normalized;
+                    cell.BestDirection = new int2(Mathf.RoundToInt(worldDirection.x), Mathf.RoundToInt(worldDirection.z));
+                } else {
+                    var neighbours = FindNeighbours(cell, allCells, gridSize);
+                    var bestDirection = FindBestDirectionBasedOnCosts(cell, neighbours);
+                    cell.BestDirection = bestDirection;
+                }
+                
                 allCells[index] = cell;
             }
         }
 
-        private int2 FindBestDirection(FlowFieldCell currentCell, List<FlowFieldCell> validNeighbours) {
+        private int2 FindBestDirectionBasedOnCosts(FlowFieldCell currentCell, List<FlowFieldCell> validNeighbours) {
             var bestCell = FindLowestCostCellSlow(validNeighbours);
             return bestCell.GridPosition - currentCell.GridPosition;
         }
@@ -249,61 +292,30 @@ namespace Flowfield {
         #region gizmo
 
         private void OnDrawGizmos() {
-            if (_allCells == null) return;
-            if (_debugSmallGrids) {
-                foreach (var cell in _allCells) {
-                    Gizmos.color = cell.BestCost == float.MaxValue ? Color.red : Color.green;
-                    DrawSingleCell(cell, _smallCellSize);
-
-                    if (_debugNormals) {
-                        if (cell.BaseCost == float.MaxValue) {
-                            Gizmos.color = Color.red;
-                        } else {
-                            Gizmos.color = Color.blue;
-                        }
-                        // Gizmos.DrawLine(cell.WorldCenter, cell.WorldCenter + cell.NormalCenter * 5);
-                        // Gizmos.DrawLine(cell.WorldPosition, cell.WorldPosition + cell.NormalEdge * 5);
-                    }
-
-                    if (_debugCosts) {
-                        DrawCosts(cell);
-                    }
-
-                    if (_debugPositions) {
-                        var text = cell.GridPosition.ToString();
-                        Handles.Label(cell.WorldPosition, text);
-                    }
-
-                    if (_drawArrows && !(cell.BestDirection.x == 0 && cell.BestDirection.y == 0) && cell.BestCost != float.MaxValue) {
-                        DrawSingleArrow(cell);
-                    }
-                }
-            }
-            
             if (_debugParentGrid) {
                 foreach (var cell in _mergedCells) {
-                    DebugCell(cell);
+                    DebugCell(cell, 15f, 2.5f);
                 }       
             }
         }
         
-        private void DebugCell(FlowFieldCell cell) {
+        private void DebugCell(FlowFieldCell cell, float arrowLength, float arrowThickness) {
             Gizmos.color = cell.BaseCost.Approximately(float.MaxValue) ? Color.red : Color.green;
-            DrawSingleCell(cell, cell.Size.x, false);
+            DrawSingleCell(cell, cell.Size.x, true);
 
             if (_debugCosts) {
                 DrawCosts(cell);
             }
             if (_drawArrows && !(cell.BestDirection.x == 0 && cell.BestDirection.y == 0) && cell.BestCost != float.MaxValue) {
-                DrawSingleArrow(cell, 15f, 2.5f);
+                DrawSingleArrow(cell, arrowLength, arrowThickness);
             }
             if (_debugPositions) {
                 var text = cell.GridPosition.ToString();
                 Handles.Label(cell.WorldPosition, text);
             }
-            if (cell.ChildCells != null) {
+            if (cell.ChildCells != null && _debugSmallGrids) {
                 foreach (var childCell in cell.ChildCells) {
-                    DebugCell(childCell);
+                    DebugCell(childCell, 1f, 1f);
                 }
             }
         }
