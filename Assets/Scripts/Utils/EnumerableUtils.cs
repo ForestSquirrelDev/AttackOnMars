@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -86,6 +87,10 @@ namespace Utils {
                 }
             }
             return minValue;
+        }
+
+        public static bool IsOutOfRange(IList collection, int index) {
+            return index < 0 || index >= collection.Count;
         }
     }
 }

@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Game.Ecs.Utils;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Entities;
 using Unity.Mathematics;
 
 #pragma warning disable 660,661
@@ -15,11 +12,15 @@ namespace Flowfield {
         public float3 WorldCenter;
         public int2 GridPosition;
         public List<FlowFieldCell> ChildCells;
+        public int2 ChildGridSize;
         public float2 Size;
         public FlowFieldRect WorldRect;
         public float BaseCost;
         public float BestCost;
         public int2 BestDirection;
+        
+        // for gizmos
+        public bool IsBestChildCell;
 
         public bool Equals(FlowFieldCell other) {
             CompareParameters(this, other, out var gridPosEquals, out var worldPosEquals, out var bestCostEquals);
@@ -47,5 +48,7 @@ namespace Flowfield {
                              && cell1.WorldPosition.z.Approximately(cell2.WorldPosition.z);
             bestCostEquals = cell1.BestCost.Approximately(cell2.BestCost);
         }
+
+        public static FlowFieldCell Null => new FlowFieldCell();
     }
 }

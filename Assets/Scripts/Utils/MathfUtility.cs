@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Utils.Maths
@@ -30,6 +31,15 @@ namespace Utils.Maths
         
         public static float GrowExponential(this float value, float square = 3) {
             return 2 * Mathf.Pow(value, square);
+        }
+
+        public static float3 Normalize(this float3 value) {
+            var mag = value.Magnitude();
+            return new float3(value.x / mag, value.y / mag, value.z / mag);
+        }
+
+        public static float Magnitude(this float3 value) {
+            return Mathf.Sqrt(Mathf.Pow(value.x, 2) + Mathf.Pow(value.y, 2) + Mathf.Pow(value.z, 2));
         }
     }
 }

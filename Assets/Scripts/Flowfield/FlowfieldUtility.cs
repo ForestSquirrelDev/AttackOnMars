@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -56,6 +57,15 @@ namespace Flowfield {
 
         public static bool WorldOutOfGrid(float3 worldPos, FlowFieldRect parentCellRect) {
             return worldPos.x < parentCellRect.XMin || worldPos.x > parentCellRect.XMax || worldPos.z < parentCellRect.YMin || worldPos.z > parentCellRect.YMax;
+        }
+
+        public static bool WorldOutOfGrid(float3 worldPos, float3 origin, int2 gridSize, float cellSize) {
+            float2 worldMax = new float2(gridSize.x * cellSize, gridSize.y * cellSize);
+            return worldPos.x < origin.x || worldPos.x > worldMax.x || worldPos.z < origin.z || worldPos.z > worldMax.y;
+        }
+        
+        public static bool IsOutOfRange(IList<FlowFieldCell> collection, int index) {
+            return index < 0 || index >= collection.Count;
         }
     }
     
