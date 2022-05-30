@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Den.Tools;
 using EasyButtons;
 using Game.Ecs.Utils;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -36,11 +37,6 @@ namespace Flowfield {
         [SerializeField] private float _angleThreshold = 35f;
         [SerializeField] private float _enemySpeed = 30f;
         
-        [SerializeField] private bool _debugCosts = true;
-        [SerializeField] private bool _drawArrows = true;
-        [SerializeField] private bool _debugPositions;
-        [SerializeField] private bool _debugSmallGrids = true;
-        [SerializeField] private bool _debugParentGrid = true;
         [SerializeField] private Transform _testEnemy;
         
         [SerializeField] private List<FlowFieldCell> _mergedCells = new List<FlowFieldCell>();
@@ -151,7 +147,7 @@ namespace Flowfield {
                 
                 var position = enemy.position;
                 position += worldDirection * Time.deltaTime;
-                var height = _terrain.SampleHeight(position) + 7f;
+                var height = SampleHeightRaycast(position) + 7f;
                 position = new Vector3(position.x, height, position.z);
                 enemy.position = position;
             }
@@ -189,6 +185,7 @@ namespace Flowfield {
         private void GenerateMergedGrid(float cellSize) {
             var terrain = _terrain;
             var terrainRect = terrain.GetWorldRect();
+            Debug.Log($"{terrainRect}");
             var origin = terrain.transform.position;
             var w = Mathf.FloorToInt(terrainRect.width / cellSize);
             var h = Mathf.FloorToInt(terrainRect.height / cellSize);
@@ -338,72 +335,5 @@ namespace Flowfield {
             neighbourOffsets.Dispose();
             return neighbours;
         }
-        #region gizmo
-
-        private void OnDrawGizmos() {
-            if (_debugParentGrid) {
-                foreach (var cell in _mergedCells) {
-                    DebugCell(cell, 15f, 2.5f);
-                }       
-            }
-        }
-        
-        private void DebugCell(FlowFieldCell cell, float arrowLength, float arrowThickness) {
-            Gizmos.color = cell.BaseCost.Approximately(float.MaxValue) ? Color.red : Color.green;
-            DrawSingleCell(cell, cell.Size.x, true);
-
-            if (_debugCosts) {
-                DrawCosts(cell);
-            }
-            if (_drawArrows && !(cell.BestDirection.x == 0 && cell.BestDirection.y == 0) && cell.BestCost != float.MaxValue) {
-                DrawSingleArrow(cell, arrowLength, arrowThickness);
-            }
-            if (_debugPositions) {
-                var text = cell.GridPosition.ToString();
-                Handles.Label(cell.WorldPosition, text);
-            }
-            if (cell.ChildCells != null && _debugSmallGrids) {
-                foreach (var childCell in cell.ChildCells) {
-                    DebugCell(childCell, 1f, 1f);
-                }
-            }
-        }
-
-        private void DrawSingleArrow(FlowFieldCell cell, float length = 1f, float thickness = 1f) {
-            Handles.color = Color.cyan;
-            var arrowTip = new Vector3(cell.WorldCenter.x + cell.BestDirection.x * length, cell.WorldCenter.y, cell.WorldCenter.z + cell.BestDirection.y * length);
-            Handles.DrawLine(cell.WorldCenter, arrowTip, thickness);
-            var middle = ((Vector3)cell.WorldCenter + arrowTip) * 0.5f;
-            var AB = (Vector3)cell.WorldCenter - arrowTip;
-            var middleRight = Vector3.Cross(Vector3.down, AB).normalized * length / 3;
-            var middleLeft = Vector3.Cross(AB, Vector3.down).normalized * length / 3;
-            Handles.DrawLine(arrowTip, (Vector3)middle + middleRight, thickness);
-            Handles.DrawLine(arrowTip, (Vector3)middle + middleLeft, thickness);
-        }
-
-        private void DrawCosts(FlowFieldCell cell) {
-            Handles.color = Color.magenta;
-
-            var bestCost = "Best cost:" + ((cell.BaseCost == float.MaxValue || cell.BestCost == float.MaxValue) ? "MAX" : (cell.BestCost).ToString("0"));
-            var baseCost = "Base cost:" + (cell.BaseCost == float.MaxValue || cell.BestCost == float.MaxValue ? "MAX" : cell.BaseCost.ToString("0"));
-            Handles.Label(cell.WorldCenter, bestCost);
-            Handles.Label(cell.WorldPosition, baseCost);
-        }
-
-        private void DrawSingleCell(FlowFieldCell cell, float cellSize, bool takeHeightIntoAccount = true) {
-            if (cell.IsBestChildCell)
-                Gizmos.color = Color.magenta;
-            var height = takeHeightIntoAccount ? cell.WorldPosition.y : _terrain.transform.position.y;
-            cell.WorldPosition.y = height;
-            var rightBottom = new Vector3(cell.WorldPosition.x + cellSize, height, cell.WorldPosition.z);
-            var rightTop = new Vector3(cell.WorldPosition.x + cellSize, height, cell.WorldPosition.z + cellSize);
-            var leftTop = new Vector3(cell.WorldPosition.x, height, cell.WorldPosition.z + cellSize);
-            Gizmos.DrawLine(cell.WorldPosition, rightBottom);
-            Gizmos.DrawLine(rightBottom, rightTop);
-            Gizmos.DrawLine(rightTop, leftTop);
-            Gizmos.DrawLine(leftTop, cell.WorldPosition);
-        }
-
-        #endregion
     }
 }

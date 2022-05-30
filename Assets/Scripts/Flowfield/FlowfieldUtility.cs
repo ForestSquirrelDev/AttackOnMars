@@ -67,6 +67,21 @@ namespace Flowfield {
         public static bool IsOutOfRange(IList<FlowFieldCell> collection, int index) {
             return index < 0 || index >= collection.Count;
         }
+
+        public static float SampleHeightRaycast(float3 worldPosition) {
+            worldPosition.y += 10f;
+            var hitUpDown = Physics.Raycast(worldPosition, Vector3.down, out var downHitInfo, 10f);
+            if (hitUpDown) {
+                return downHitInfo.point.y;
+            }
+
+            var hitDownUp = Physics.Raycast(worldPosition, Vector3.up, out var upHitInfo, 10f);
+            if (hitDownUp) {
+                return upHitInfo.point.y;
+            }
+            
+            return -1;
+        }
     }
     
     [Serializable]

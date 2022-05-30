@@ -152,8 +152,10 @@ Transform:
   m_Children:
   - {fileID: 733337667}
   - {fileID: 206905626}
+  - {fileID: 1500218243}
+  - {fileID: 2006497288}
   m_Father: {fileID: 592202635}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &155414495
 GameObject:
@@ -345,7 +347,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &329450779
 GameObject:
@@ -417,6 +419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 419610987}
   - component: {fileID: 419610986}
+  - component: {fileID: 419610988}
   m_Layer: 0
   m_Name: FlowfieldTest
   m_TagString: Untagged
@@ -437,1065 +440,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parentGridSizeOut:
-    x: 6
-    y: 6
-  _parentCellSize: 200
+    x: -2147483648
+    y: -2147483648
+  _parentCellSize: 20
   _tooBigHeightThreshold: 21
   _smallCellSize: 10
   _terrain: {fileID: 873730277}
   _angleThreshold: 35
   _enemySpeed: 30
-  _debugCosts: 0
-  _drawArrows: 1
-  _debugPositions: 0
-  _debugSmallGrids: 1
-  _debugParentGrid: 1
   _testEnemy: {fileID: 1641852540}
-  _mergedCells:
-  - WorldPosition:
-      x: 0
-      y: 40.344257
-      z: 0
-    WorldCenter:
-      x: 100
-      y: 49.723495
-      z: 100
-    GridPosition:
-      x: 0
-      y: 0
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 0
-      Y: 0
-      Width: 200
-      Height: 200
-    BaseCost: 50.723495
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 0
-      y: 56.835747
-      z: 200
-    WorldCenter:
-      x: 100
-      y: 50.192272
-      z: 300
-    GridPosition:
-      x: 0
-      y: 1
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 0
-      Y: 200
-      Width: 200
-      Height: 200
-    BaseCost: 51.192272
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 0
-      y: 83.69895
-      z: 400
-    WorldCenter:
-      x: 100
-      y: 83.02143
-      z: 500
-    GridPosition:
-      x: 0
-      y: 2
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 0
-      Y: 400
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 0
-      y: 26.786303
-      z: 600
-    WorldCenter:
-      x: 100
-      y: 23.896723
-      z: 700
-    GridPosition:
-      x: 0
-      y: 3
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 0
-      Y: 600
-      Width: 200
-      Height: 200
-    BaseCost: 24.89672
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 0
-      y: 8.372091
-      z: 800
-    WorldCenter:
-      x: 100
-      y: 40.139168
-      z: 900
-    GridPosition:
-      x: 0
-      y: 4
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 0
-      Y: 800
-      Width: 200
-      Height: 200
-    BaseCost: 41.139168
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 0
-      y: 60.032936
-      z: 1000
-    WorldCenter:
-      x: 100
-      y: 38.304333
-      z: 1100
-    GridPosition:
-      x: 0
-      y: 5
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 0
-      Y: 1000
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 200
-      y: 16.103273
-      z: 0
-    WorldCenter:
-      x: 300
-      y: 29.664898
-      z: 100
-    GridPosition:
-      x: 1
-      y: 0
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 200
-      Y: 0
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 200
-      y: 62.318253
-      z: 200
-    WorldCenter:
-      x: 300
-      y: 42.43179
-      z: 300
-    GridPosition:
-      x: 1
-      y: 1
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 200
-      Y: 200
-      Width: 200
-      Height: 200
-    BaseCost: 43.43179
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 200
-      y: 51.393517
-      z: 400
-    WorldCenter:
-      x: 300
-      y: 46.58121
-      z: 500
-    GridPosition:
-      x: 1
-      y: 2
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 200
-      Y: 400
-      Width: 200
-      Height: 200
-    BaseCost: 47.581215
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 200
-      y: 38.871998
-      z: 600
-    WorldCenter:
-      x: 300
-      y: 20.311298
-      z: 700
-    GridPosition:
-      x: 1
-      y: 3
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 200
-      Y: 600
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 200
-      y: 24.724407
-      z: 800
-    WorldCenter:
-      x: 300
-      y: 22.76506
-      z: 900
-    GridPosition:
-      x: 1
-      y: 4
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 200
-      Y: 800
-      Width: 200
-      Height: 200
-    BaseCost: 23.76506
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 200
-      y: 39.490932
-      z: 1000
-    WorldCenter:
-      x: 300
-      y: 42.40982
-      z: 1100
-    GridPosition:
-      x: 1
-      y: 5
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 200
-      Y: 1000
-      Width: 200
-      Height: 200
-    BaseCost: 43.40982
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 400
-      y: 53.557957
-      z: 0
-    WorldCenter:
-      x: 500
-      y: 82.29261
-      z: 100
-    GridPosition:
-      x: 2
-      y: 0
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 400
-      Y: 0
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 400
-      y: 46.343163
-      z: 200
-    WorldCenter:
-      x: 500
-      y: 45.574074
-      z: 300
-    GridPosition:
-      x: 2
-      y: 1
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 400
-      Y: 200
-      Width: 200
-      Height: 200
-    BaseCost: 46.57406
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 400
-      y: 34.60172
-      z: 400
-    WorldCenter:
-      x: 500
-      y: 24.570591
-      z: 500
-    GridPosition:
-      x: 2
-      y: 2
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 400
-      Y: 400
-      Width: 200
-      Height: 200
-    BaseCost: 25.570595
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 400
-      y: 34.444233
-      z: 600
-    WorldCenter:
-      x: 500
-      y: 18.696209
-      z: 700
-    GridPosition:
-      x: 2
-      y: 3
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 400
-      Y: 600
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 400
-      y: 24.361847
-      z: 800
-    WorldCenter:
-      x: 500
-      y: 25.174877
-      z: 900
-    GridPosition:
-      x: 2
-      y: 4
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 400
-      Y: 800
-      Width: 200
-      Height: 200
-    BaseCost: 26.174873
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 400
-      y: 36.546417
-      z: 1000
-    WorldCenter:
-      x: 500
-      y: 47.21846
-      z: 1100
-    GridPosition:
-      x: 2
-      y: 5
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 400
-      Y: 1000
-      Width: 200
-      Height: 200
-    BaseCost: 48.21846
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 600
-      y: 59.05512
-      z: 0
-    WorldCenter:
-      x: 700
-      y: 34.70427
-      z: 100
-    GridPosition:
-      x: 3
-      y: 0
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 600
-      Y: 0
-      Width: 200
-      Height: 200
-    BaseCost: 35.70426
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 600
-      y: 40.648228
-      z: 200
-    WorldCenter:
-      x: 700
-      y: 18.406885
-      z: 300
-    GridPosition:
-      x: 3
-      y: 1
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 600
-      Y: 200
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 600
-      y: 37.883167
-      z: 400
-    WorldCenter:
-      x: 700
-      y: 16.048342
-      z: 500
-    GridPosition:
-      x: 3
-      y: 2
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 600
-      Y: 400
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 600
-      y: 22.688152
-      z: 600
-    WorldCenter:
-      x: 700
-      y: 22.069216
-      z: 700
-    GridPosition:
-      x: 3
-      y: 3
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 600
-      Y: 600
-      Width: 200
-      Height: 200
-    BaseCost: 23.069225
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 600
-      y: 19.417686
-      z: 800
-    WorldCenter:
-      x: 700
-      y: 19.267536
-      z: 900
-    GridPosition:
-      x: 3
-      y: 4
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 600
-      Y: 800
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 600
-      y: 37.703716
-      z: 1000
-    WorldCenter:
-      x: 700
-      y: 56.030045
-      z: 1100
-    GridPosition:
-      x: 3
-      y: 5
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 600
-      Y: 1000
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 800
-      y: 44.07252
-      z: 0
-    WorldCenter:
-      x: 900
-      y: 22.948177
-      z: 100
-    GridPosition:
-      x: 4
-      y: 0
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 800
-      Y: 0
-      Width: 200
-      Height: 200
-    BaseCost: 23.948177
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 800
-      y: 24.076174
-      z: 200
-    WorldCenter:
-      x: 900
-      y: 23.435268
-      z: 300
-    GridPosition:
-      x: 4
-      y: 1
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 800
-      Y: 200
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 800
-      y: 18.505768
-      z: 400
-    WorldCenter:
-      x: 900
-      y: 19.13935
-      z: 500
-    GridPosition:
-      x: 4
-      y: 2
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 800
-      Y: 400
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 800
-      y: 17.94177
-      z: 600
-    WorldCenter:
-      x: 900
-      y: 41.574818
-      z: 700
-    GridPosition:
-      x: 4
-      y: 3
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 800
-      Y: 600
-      Width: 200
-      Height: 200
-    BaseCost: 42.57477
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 800
-      y: 21.49789
-      z: 800
-    WorldCenter:
-      x: 900
-      y: 20.743454
-      z: 900
-    GridPosition:
-      x: 4
-      y: 4
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 800
-      Y: 800
-      Width: 200
-      Height: 200
-    BaseCost: 1
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 800
-      y: 36.67093
-      z: 1000
-    WorldCenter:
-      x: 900
-      y: 21.472258
-      z: 1100
-    GridPosition:
-      x: 4
-      y: 5
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 800
-      Y: 1000
-      Width: 200
-      Height: 200
-    BaseCost: 22.472258
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 1000
-      y: 54.125633
-      z: 0
-    WorldCenter:
-      x: 1100
-      y: 13.393147
-      z: 100
-    GridPosition:
-      x: 5
-      y: 0
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 1000
-      Y: 0
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 1000
-      y: 20.589636
-      z: 200
-    WorldCenter:
-      x: 1100
-      y: 48.932423
-      z: 300
-    GridPosition:
-      x: 5
-      y: 1
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 1000
-      Y: 200
-      Width: 200
-      Height: 200
-    BaseCost: 49.932426
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 1000
-      y: 32.975636
-      z: 400
-    WorldCenter:
-      x: 1100
-      y: 32.858448
-      z: 500
-    GridPosition:
-      x: 5
-      y: 2
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 1000
-      Y: 400
-      Width: 200
-      Height: 200
-    BaseCost: 33.858437
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 1000
-      y: 54.938667
-      z: 600
-    WorldCenter:
-      x: 1100
-      y: 33.37851
-      z: 700
-    GridPosition:
-      x: 5
-      y: 3
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 1000
-      Y: 600
-      Width: 200
-      Height: 200
-    BaseCost: 34.3785
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 1000
-      y: 75.39643
-      z: 800
-    WorldCenter:
-      x: 1100
-      y: 47.606667
-      z: 900
-    GridPosition:
-      x: 5
-      y: 4
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 1000
-      Y: 800
-      Width: 200
-      Height: 200
-    BaseCost: 3.4028235e+38
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
-  - WorldPosition:
-      x: 1000
-      y: 32.177273
-      z: 1000
-    WorldCenter:
-      x: 1100
-      y: 23.094671
-      z: 1100
-    GridPosition:
-      x: 5
-      y: 5
-    ChildCells: []
-    ChildGridSize:
-      x: 0
-      y: 0
-    Size:
-      x: 200
-      y: 200
-    WorldRect:
-      X: 1000
-      Y: 1000
-      Width: 200
-      Height: 200
-    BaseCost: 24.094671
-    BestCost: 3.4028235e+38
-    BestDirection:
-      x: 0
-      y: 0
-    IsBestChildCell: 0
+  _mergedCells: []
 --- !u!4 &419610987
 Transform:
   m_ObjectHideFlags: 0
@@ -1510,6 +464,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &419610988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419610985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61200852c8c1e4b4591d846d5a80bf2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _terrain: {fileID: 873730277}
+  _debugCosts: 0
+  _drawArrows: 1
+  _debugPositions: 0
+  _debugSmallGrids: 1
+  _debugParentGrid: 1
 --- !u!1 &548895394
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,11 +558,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 592202634}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 502.16446, y: 30.32145, z: 732.93585}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 329450781}
   - {fileID: 155414496}
+  - {fileID: 1604895517}
   - {fileID: 113720268}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -1641,7 +614,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &681122853
 GameObject:
@@ -1798,9 +771,7 @@ GameObject:
   - component: {fileID: 873730277}
   - component: {fileID: 873730276}
   - component: {fileID: 873730279}
-  - component: {fileID: 873730280}
   - component: {fileID: 873730281}
-  - component: {fileID: 873730282}
   m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
@@ -1864,7 +835,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &873730279
 MonoBehaviour:
@@ -1948,19 +919,6 @@ MonoBehaviour:
     Category31: 1
   groupIndex: 0
   collisionMethod: 0
---- !u!114 &873730280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873730275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionMode: 1
 --- !u!114 &873730281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2012,36 +970,6 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
---- !u!114 &873730282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 873730275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
-  m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 68c180e589e650e4b8dfb2d3e3127a3e, type: 2}
-  m_BuildHeightMesh: 0
 --- !u!1 &1090375173
 GameObject:
   m_ObjectHideFlags: 0
@@ -2073,6 +1001,94 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1500218242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1500218243}
+  - component: {fileID: 1500218244}
+  m_Layer: 0
+  m_Name: TerrainTransformData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1500218243
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500218242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 113720268}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1500218244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500218242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+--- !u!1 &1604895516
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1604895517}
+  - component: {fileID: 1604895518}
+  m_Layer: 0
+  m_Name: StripEcsFlowfield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1604895517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604895516}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 592202635}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1604895518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604895516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e528548b253ac4da52a704aa1fd03b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _terrainTransform: {fileID: 873730278}
 --- !u!1 &1641852536
 GameObject:
   m_ObjectHideFlags: 0
@@ -2272,6 +1288,63 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!1 &2006497287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2006497288}
+  - component: {fileID: 2006497290}
+  - component: {fileID: 2006497289}
+  m_Layer: 0
+  m_Name: FlowfieldSingletonData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2006497288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006497287}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 113720268}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2006497289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006497287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327266f49f58eeb4b965b8c4292f0d24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2006497290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006497287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,7 +1437,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 45, y: 130, z: 90}
 --- !u!114 &2138677394
 MonoBehaviour:
