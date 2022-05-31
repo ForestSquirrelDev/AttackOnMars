@@ -1,13 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using EasyButtons;
-using Flowfield;
 using Game.Ecs.Flowfield.Components;
 using Game.Ecs.Flowfield.Systems;
 using Game.Ecs.Utils;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEditor;
@@ -44,14 +42,12 @@ namespace Game.Ecs.Flowfield {
                      yield return new WaitForEndOfFrame();
                      continue;
                  }
-                 yield return WaitForFixedFramesCount(4);
-                 Debug.Log($"Yiled null");
+                 yield return WaitForFixedFramesCount(1);
                  _copiedResults.Clear();
                  foreach (var cell in _flowfieldCells) {
                      _copiedResults.Add(cell);
                  }
                  StartFillCellsJob();
-                 Debug.Log($"Start fill cells");
              }
          }
 
@@ -63,10 +59,10 @@ namespace Game.Ecs.Flowfield {
          
          private void StartFillCellsJob() {
              var fillDebugCellsJob = new FillCellsForDebugJob {
-                 FlowFieldCellsIn = _flowfieldManagerSystem.ParentFlowFieldCells,
+                 FlowFieldCellsIn = _flowfieldManagerSystem.ParentFlowFieldCells.AsParallelReader(),
                  FlowFieldCellsOut = _flowfieldCells
              };
-             _flowfieldManagerSystem.Schedule(fillDebugCellsJob, 4);
+             _flowfieldManagerSystem.ScheduleReadOnly(fillDebugCellsJob);
          }
 
          private void OnDrawGizmos() {
@@ -145,22 +141,20 @@ namespace Game.Ecs.Flowfield {
          }
          
          private struct FillCellsForDebugJob : IJob {
-             public NativeArray<FlowfieldCellComponent> FlowFieldCellsIn;
+             public UnsafeList<FlowfieldCellComponent>.ParallelReader FlowFieldCellsIn;
              public NativeList<FlowfieldCellComponent> FlowFieldCellsOut;
 
              public void Execute() {
                  for (var i = 0; i < FlowFieldCellsIn.Length; i++) {
-                     var cell = FlowFieldCellsIn[i];
-                     if (FlowFieldCellsOut.Length < FlowFieldCellsIn.Length) {
-                         FlowFieldCellsOut.Add(cell);
-                     } else {
-                         FlowFieldCellsOut[i] = cell;
-                     }
-                     for (int kekw = 0; kekw < 100; kekw++) {
-                         var perlinNoiseKekw = Mathf.PerlinNoise(i, Mathf.Sqrt(i));
+                     unsafe {
+                         var cell = FlowFieldCellsIn.Ptr[i];
+                         if (FlowFieldCellsOut.Length < FlowFieldCellsIn.Length) {
+                             FlowFieldCellsOut.Add(cell);
+                         } else {
+                             FlowFieldCellsOut[i] = cell;
+                         }
                      }
                  }
-                 Debug.Log($"Added debug cells. List count: {FlowFieldCellsOut.Length}");
              }
          }
     }

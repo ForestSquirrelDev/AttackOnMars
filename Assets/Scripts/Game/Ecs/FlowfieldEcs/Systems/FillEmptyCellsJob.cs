@@ -1,15 +1,14 @@
 ﻿using Flowfield;
 using Game.Ecs.Flowfield.Components;
 using Unity.Burst;
-using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Game.Ecs.Flowfield.Systems {
     [BurstCompile]
     public struct FillEmptyCellsJob : IJob {
-        public NativeArray<FlowfieldCellComponent> FlowFieldCells;
+        public UnsafeList<FlowfieldCellComponent>.ParallelWriter FlowFieldCellsWriter;
         public int2 GridSize;
         public float3 Origin;
         public float CellSize;
@@ -32,11 +31,10 @@ namespace Game.Ecs.Flowfield.Systems {
                     cell.Size = CellSize;
                     cell.WorldRect = cellRect;
                     cell.BestCost = float.MaxValue;
-                    FlowFieldCells[i] = cell;
+                    FlowFieldCellsWriter.AddNoResize(cell);
                     i++;
                 }
             }
-            Debug.Log($"Filled cells.");
         }
     }
 }

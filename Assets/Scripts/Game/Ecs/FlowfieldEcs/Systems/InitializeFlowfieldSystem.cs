@@ -5,7 +5,6 @@ using Unity.Jobs;
 using UnityEngine;
 
 namespace Game.Ecs.Flowfield.Systems {
-    // Flowfield step 1: load configs and create empty grid.
     [UpdateInGroup(typeof(PresentationSystemGroup))]
     public partial class InitializeFlowfieldSystem : SystemBase {
         private EndSimulationEntityCommandBufferSystem _commandBufferSystem;
@@ -27,21 +26,6 @@ namespace Game.Ecs.Flowfield.Systems {
             //     ecb.SetComponent(entityInQueryIndex, entity, new BaseCostAndHeightsGenerationRequest {Entity = entity, IsProcessing = false});
             // }).ScheduleParallel(Dependency);
             // _commandBufferSystem.AddJobHandleForProducer(Dependency);
-        }
-
-        private struct KekwPelinNoiseJob : IJob {
-            public NativeArray<FlowfieldCellComponent> Cells;
-            public void Execute() {
-                for (int i = 10000; i < Cells.Length; i++) {
-                    var noise = Mathf.PerlinNoise(i, Mathf.Sqrt(i));
-                }
-                for (int i = 10000; i < Cells.Length; i++) {
-                    var noise = Mathf.PerlinNoise(i, Mathf.Sqrt(i));
-                }
-                for (int i = 10000; i < Cells.Length; i++) {
-                    var noise = Mathf.PerlinNoise(i, Mathf.Sqrt(i));
-                }
-            }
         }
     }
 }
