@@ -21,7 +21,7 @@ namespace Game.Ecs.Systems.Spawners {
 
         public unsafe JobHandle Schedule(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             // проблема: основной поток выполняется раньше чем заполняется unsafe list
-            var cellsCount = writer.ListData->Length;
+            var cellsCount = writer.ListData->Capacity;
             Debug.Log($"Writer length: {cellsCount}");
             
             var cellsOriginRaycastCommands = new NativeArray<RaycastCommand>(cellsCount, Allocator.TempJob);

@@ -70,10 +70,8 @@ namespace Game.Ecs.Flowfield {
          private void OnDrawGizmos() {
              if (!Application.isPlaying || !_flowfieldManagerSystem.Initialized) return;
              if (_debugParentGrid) {
-                 Debug.Log($"Copied results length: {_copiedResults.Count}");
                  foreach (var cell in _copiedResults) {
                      DebugCell(cell, 15f, 2.5f, true);
-                     Debug.Log($"Draw cell: {cell.WorldPosition}");
                  }       
              }
          }

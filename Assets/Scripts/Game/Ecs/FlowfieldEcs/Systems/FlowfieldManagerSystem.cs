@@ -45,15 +45,11 @@ namespace Game.Ecs.Flowfield.Systems {
             
             ParentFlowFieldCells = new UnsafeList<FlowfieldCellComponent>(parentGridSize.x * parentGridSize.y, Allocator.Persistent);
             ChildCells = new NativeList<UnsafeList<FlowfieldCellComponent>>(ParentFlowFieldCells.Length, Allocator.Persistent);
-
-            var addToListJob = new AddToUnsafeListJob(ParentFlowFieldCells.AsParallelReader(), ParentFlowFieldCells.AsParallelWriter()).Schedule();
-            var writeToListJob = new WriteToUnsafeListJob(ParentFlowFieldCells.AsParallelReader(), ParentFlowFieldCells.AsParallelWriter()).Schedule(addToListJob);
-            var printMessageJob = new PrintMessageJob { Writer = ParentFlowFieldCells.AsParallelWriter() }.Schedule(writeToListJob);
-            var fillEmptyCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldConfig.ParentCellSize, parentGridSize, terrainPosition, ParentFlowFieldCells.AsParallelWriter(), printMessageJob);
+            
+            var fillEmptyCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldConfig.ParentCellSize, parentGridSize, terrainPosition, ParentFlowFieldCells.AsParallelWriter(), default(JobHandle));
             var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(ParentFlowFieldCells.AsParallelWriter(), fillEmptyCellsJob);
-            // _emptyCellsGenerationSubSystem.EnqueueCellsGenerationRequest(
-            //     new EmptyCellsGenerationSubSystem.EmptyCellsGenerationRequest(_flowfieldConfig.ParentCellSize, terrainPosition, parentGridSize, ParentFlowFieldCells));
-
+            var longLongDebugJob = new LongLongJob(2000).Schedule(fillHeightsJob);
+            
             Initialized = true;
         }
 

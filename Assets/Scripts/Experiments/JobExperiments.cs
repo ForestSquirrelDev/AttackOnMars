@@ -6,20 +6,24 @@ using UnityEngine;
 
 namespace Experiments {
     public struct LongLongJob : IJob {
-        private int i;
+        private int _i;
+
+        public LongLongJob(int i) {
+            _i = i;
+        }
+        
         public void Execute() {
-            i = 10000;
-            for (int j = 0; j < i; j++) {
-                var PerlinNoiseKekw = Mathf.PerlinNoise(i, j);
-                for (int k = 0; k < i; k++) {
-                    var PerlinNoiseKekw1 = Mathf.PerlinNoise(i, j);
-                    for (int kekw = 0; kekw < i; kekw++) {
-                        var PerlinNoiseKekw2 = Mathf.PerlinNoise(i, j);
-                        i++;
+            for (int i = 0; i < _i; i++) {
+                var PerlinNoiseKekw = Mathf.PerlinNoise(_i, i);
+                for (int k = 0; k < _i; k++) {
+                    var PerlinNoiseKekw1 = Mathf.PerlinNoise(_i, i);
+                    for (int kekw = 0; kekw < _i; kekw++) {
+                        var PerlinNoiseKekw2 = Mathf.PerlinNoise(_i, i);
+                        _i++;
                     }
                 }
             }
-            Debug.Log($"Executed long long job");
+            Debug.Log($"Wow bro that was a long job. Hope you not get tired waiting.");
         }
     }
     public struct AddToUnsafeListJob : IJob {
