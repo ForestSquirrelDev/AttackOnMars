@@ -476,6 +476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrain: {fileID: 873730277}
+  _initializeOnStart: 1
   _debugCosts: 0
   _drawArrows: 1
   _debugPositions: 0

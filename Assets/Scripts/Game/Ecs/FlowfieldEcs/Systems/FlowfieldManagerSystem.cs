@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using Experiments;
 using Game.Ecs.Flowfield.Components;
 using Game.Ecs.Flowfield.Configs;
+using Game.Ecs.Systems.Spawners;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
@@ -19,16 +21,20 @@ namespace Game.Ecs.Flowfield.Systems {
         public NativeList<UnsafeList<FlowfieldCellComponent>> ChildCells;
         
         private FlowfieldJobDependenciesHandler _jobDependenciesHandler;
-        private EmptyCellsGenerationSystem _emptyCellsGenerationSystem;
+        private EmptyCellsGenerationSubSystem _emptyCellsGenerationSubSystem;
+        private FindBaseCostAndHeightsSubSystem _findBaseCostAndHeightsSubSystem;
 
         private FlowfieldConfig _flowfieldConfig;
         private TerrainData _terrainData;
 
         protected override void OnCreate() {
             _jobDependenciesHandler = new FlowfieldJobDependenciesHandler();
-            _emptyCellsGenerationSystem = new EmptyCellsGenerationSystem(_jobDependenciesHandler);
+            _findBaseCostAndHeightsSubSystem = new FindBaseCostAndHeightsSubSystem(_jobDependenciesHandler);
+            _emptyCellsGenerationSubSystem = new EmptyCellsGenerationSubSystem(_jobDependenciesHandler, _findBaseCostAndHeightsSubSystem);
+            
             _jobDependenciesHandler.OnCreate();
-            _emptyCellsGenerationSystem.OnCreate();
+            _emptyCellsGenerationSubSystem.OnCreate();
+            _findBaseCostAndHeightsSubSystem.OnCreate();
         }
 
         public async void Awake(Transform terrainTransform) {
@@ -39,26 +45,32 @@ namespace Game.Ecs.Flowfield.Systems {
             
             ParentFlowFieldCells = new UnsafeList<FlowfieldCellComponent>(parentGridSize.x * parentGridSize.y, Allocator.Persistent);
             ChildCells = new NativeList<UnsafeList<FlowfieldCellComponent>>(ParentFlowFieldCells.Length, Allocator.Persistent);
-            
-            _emptyCellsGenerationSystem.EnqueueCellsGenerationRequest(
-                new EmptyCellsGenerationSystem.EmptyCellsGenerationRequest(_flowfieldConfig.ParentCellSize, terrainPosition, parentGridSize, 
-                    ParentFlowFieldCells.AsParallelWriter()));
+
+            var addToListJob = new AddToUnsafeListJob(ParentFlowFieldCells.AsParallelReader(), ParentFlowFieldCells.AsParallelWriter()).Schedule();
+            var writeToListJob = new WriteToUnsafeListJob(ParentFlowFieldCells.AsParallelReader(), ParentFlowFieldCells.AsParallelWriter()).Schedule(addToListJob);
+            var printMessageJob = new PrintMessageJob { Writer = ParentFlowFieldCells.AsParallelWriter() }.Schedule(writeToListJob);
+            var fillEmptyCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldConfig.ParentCellSize, parentGridSize, terrainPosition, ParentFlowFieldCells.AsParallelWriter(), printMessageJob);
+            var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(ParentFlowFieldCells.AsParallelWriter(), fillEmptyCellsJob);
+            // _emptyCellsGenerationSubSystem.EnqueueCellsGenerationRequest(
+            //     new EmptyCellsGenerationSubSystem.EmptyCellsGenerationRequest(_flowfieldConfig.ParentCellSize, terrainPosition, parentGridSize, ParentFlowFieldCells));
 
             Initialized = true;
         }
 
         protected override void OnUpdate() {
             _jobDependenciesHandler.OnUpdate();
-            _emptyCellsGenerationSystem.OnUpdate();
-            if (Input.GetKeyDown(KeyCode.I)) {
-                Debug.Log($"{ParentFlowFieldCells.Length}. Is created: {ParentFlowFieldCells.IsCreated}");
+            _emptyCellsGenerationSubSystem.OnUpdate();
+            _findBaseCostAndHeightsSubSystem.OnUpdate();
+
+            if (Input.GetKeyDown(KeyCode.D)) {
+                ShowDebugInfo();
             }
         }
 
         protected override void OnDestroy() {
             _jobDependenciesHandler.OnDestroy();
-            _emptyCellsGenerationSystem.OnDestroy();
-            ParentFlowFieldCells.Clear();
+            _emptyCellsGenerationSubSystem.OnDestroy();
+            _findBaseCostAndHeightsSubSystem.OnDestroy();
             ParentFlowFieldCells.Dispose();
             ChildCells.Dispose();
             Debug.Log($"Parent cells count: {ParentFlowFieldCells.Length} Is created: {ParentFlowFieldCells.IsCreated}");
@@ -92,6 +104,13 @@ namespace Game.Ecs.Flowfield.Systems {
         private int2 FindParentGridSize(Vector3 terrainPosition, TerrainData terrainData, FlowfieldConfig config) {
             var terrainRect = TerrainUtility.GetWorldRect(terrainPosition.x, terrainPosition.z, terrainData.size.x, terrainData.size.z);
             return new int2(terrainRect.width / config.ParentCellSize);
+        }
+
+        private void ShowDebugInfo() {
+            Debug.Log($"FlowFieldManagerystem. Parent cells: count: {ParentFlowFieldCells.Length}. Is created: {ParentFlowFieldCells.IsCreated}. All parent cells:");
+            foreach (var cell in ParentFlowFieldCells) {
+                Debug.Log($"World pos: {cell.WorldPosition}");
+            }
         }
     }
 }

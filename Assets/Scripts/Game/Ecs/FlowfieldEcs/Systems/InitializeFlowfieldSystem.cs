@@ -1,8 +1,4 @@
-using Game.Ecs.Flowfield.Components;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Jobs;
-using UnityEngine;
 
 namespace Game.Ecs.Flowfield.Systems {
     [UpdateInGroup(typeof(PresentationSystemGroup))]

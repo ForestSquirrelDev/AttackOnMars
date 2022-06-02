@@ -14,7 +14,8 @@ using UnityEngine;
 namespace Game.Ecs.Flowfield {
     public class FlowfieldGizmosDrawer : MonoBehaviour {
         [SerializeField] private Terrain _terrain;
-        
+
+        [SerializeField] private bool _initializeOnStart = true;
         [SerializeField] private bool _debugCosts = true;
         [SerializeField] private bool _drawArrows = true;
         [SerializeField] private bool _debugPositions;
@@ -32,7 +33,8 @@ namespace Game.Ecs.Flowfield {
 
          [Button]
          private void Start() {
-             StartCoroutine(UpdateCellsRoutine());
+             if (_initializeOnStart)
+                StartCoroutine(UpdateCellsRoutine());
          }
 
          private IEnumerator UpdateCellsRoutine() {
@@ -68,8 +70,10 @@ namespace Game.Ecs.Flowfield {
          private void OnDrawGizmos() {
              if (!Application.isPlaying || !_flowfieldManagerSystem.Initialized) return;
              if (_debugParentGrid) {
+                 Debug.Log($"Copied results length: {_copiedResults.Count}");
                  foreach (var cell in _copiedResults) {
                      DebugCell(cell, 15f, 2.5f, true);
+                     Debug.Log($"Draw cell: {cell.WorldPosition}");
                  }       
              }
          }

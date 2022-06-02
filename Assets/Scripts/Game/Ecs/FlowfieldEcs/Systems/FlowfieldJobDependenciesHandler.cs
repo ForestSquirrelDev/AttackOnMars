@@ -65,9 +65,9 @@ namespace Game.Ecs.Flowfield.Systems {
             }
         }
 
-        public JobHandle ScheduleReadWrite<T>(T readWriteFlowfieldJob, int framesLifetime = 4) where T : struct, IJob {
+        public JobHandle ScheduleReadWrite<T>(T readWriteFlowfieldJob, int framesLifetime = 4, JobHandle dependenciesIn = default) where T : struct, IJob {
             var dependencies = GetDependenciesForReadWrite();
-            var combinedDependencies = JobHandle.CombineDependencies(dependencies);
+            var combinedDependencies = JobHandle.CombineDependencies(JobHandle.CombineDependencies(dependencies), dependenciesIn);
             var handle = readWriteFlowfieldJob.Schedule(combinedDependencies);
             _readWriteFlowfieldDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
             dependencies.Dispose();
@@ -81,6 +81,10 @@ namespace Game.Ecs.Flowfield.Systems {
             _readonlyFlowfieldDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
             dependencies.Dispose();
             return handle;
+        }
+        
+        public JobHandle ScheduleNonPooled<T>(T readOnlyFlowfieldJob, JobHandle depenenciesIn) where T : struct, IJob {
+            return readOnlyFlowfieldJob.Schedule(depenenciesIn);
         }
 
         public void CompleteAll() {
