@@ -14,16 +14,7 @@ namespace Game.Ecs.Flowfield.Systems {
         public EmptyCellsGenerationSubSystem(FlowfieldJobDependenciesHandler dependenciesHandler, FindBaseCostAndHeightsSubSystem findBaseCostAndHeightsSubSystem) {
             _jobDependenciesHandler = dependenciesHandler;
         }
-
-        public void OnCreate() {
-        }
         
-        public void OnUpdate() {
-        }
-
-        public void OnDestroy() {
-        }
-
         public JobHandle Schedule(float cellSize, int2 gridSize, float3 origin, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var fillEmptyCellsJob = new FillEmptyCellsJob(writer, gridSize, origin, cellSize);
             return _jobDependenciesHandler.ScheduleNonPooled(fillEmptyCellsJob, inputDeps);
@@ -32,9 +23,9 @@ namespace Game.Ecs.Flowfield.Systems {
         [BurstCompile]
         private struct FillEmptyCellsJob : IJob {
             private UnsafeList<FlowfieldCellComponent>.ParallelWriter _cellsWriter;
-            public int2 _gridSize;
-            public float3 _origin;
-            public float _cellSize;
+            private int2 _gridSize;
+            private float3 _origin;
+            private float _cellSize;
 
             public FillEmptyCellsJob(UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, int2 gridSize, float3 origin, float cellSize) {
                 _cellsWriter = cellsWriter;
