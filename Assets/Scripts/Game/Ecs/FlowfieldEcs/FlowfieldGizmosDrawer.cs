@@ -82,7 +82,7 @@ namespace Game.Ecs.Flowfield {
 
          private void DebugCell(FlowfieldCellComponent cell, float arrowLength, float arrowThickness, bool isParentCell) {
              Gizmos.color = cell.BaseCost.Approximately(float.MaxValue) ? Color.red : Color.green;
-             DrawSingleCellSimple(cell, isParentCell ? 5f : 2f, true);
+             DrawSingleCell(cell, cell.Size, true);
         
              if (_debugCosts) {
                  DrawCosts(cell);

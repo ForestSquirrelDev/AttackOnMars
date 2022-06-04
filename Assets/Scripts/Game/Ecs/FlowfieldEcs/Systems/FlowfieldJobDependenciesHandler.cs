@@ -83,8 +83,8 @@ namespace Game.Ecs.Flowfield.Systems {
             return handle;
         }
         
-        public JobHandle ScheduleNonPooled<T>(T readOnlyFlowfieldJob, JobHandle depenenciesIn) where T : struct, IJob {
-            return readOnlyFlowfieldJob.Schedule(depenenciesIn);
+        public JobHandle ScheduleNonPooled<T>(T job, JobHandle depenenciesIn) where T : struct, IJob {
+            return job.Schedule(depenenciesIn);
         }
 
         public void CompleteAll() {

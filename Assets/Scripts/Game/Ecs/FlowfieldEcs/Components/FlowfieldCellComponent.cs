@@ -1,8 +1,7 @@
 using System;
 using Flowfield;
 using Game.Ecs.Utils;
-using Unity.Collections;
-using Unity.Entities;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 
 namespace Game.Ecs.Flowfield.Components {
@@ -18,10 +17,15 @@ namespace Game.Ecs.Flowfield.Components {
         public float BaseCost;
         public float BestCost;
         public int2 BestDirection;
+        public UnsafeList<FlowfieldCellComponent> ChildCells;
 
         // for gizmos
         public bool IsBestChildCell;
 
+        public void Dispose() {
+            ChildCells.Dispose();
+        }
+        
         public bool Equals(FlowfieldCellComponent other) {
             CompareParameters(this, other, out var gridPosEquals, out var worldPosEquals, out var bestCostEquals);
             return gridPosEquals && worldPosEquals && bestCostEquals;

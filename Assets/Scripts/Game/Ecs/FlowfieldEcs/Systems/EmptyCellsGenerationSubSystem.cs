@@ -2,6 +2,7 @@
 using Game.Ecs.Flowfield.Components;
 using Game.Ecs.Systems.Spawners;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -51,7 +52,7 @@ namespace Game.Ecs.Flowfield.Systems {
                         cell.Size = _cellSize;
                         cell.WorldRect = cellRect;
                         cell.BestCost = float.MaxValue;
-                        _cellsWriter.ListData->AddNoResize(cell);
+                        _cellsWriter.ListData->Add(cell);
                     }
                 }
             }

@@ -100,8 +100,8 @@ namespace Game.Ecs.Systems.Spawners {
 
             private float FindBaseCost(float3 cellCenterWorld, Vector3 centerNormal, Vector3 originNormal, float unwalkableAngleThreshold, float heightThreshold) {
                 var angleCenter = Vector3.Angle(Vector3.up, centerNormal);
-                var angleLeftBottom = Vector3.Angle(Vector3.up, originNormal);
-                if (angleCenter > unwalkableAngleThreshold || angleLeftBottom > unwalkableAngleThreshold) {
+                var angleOrigin = Vector3.Angle(Vector3.up, originNormal);
+                if (angleCenter > unwalkableAngleThreshold || angleOrigin > unwalkableAngleThreshold) {
                     return float.MaxValue;
                 } 
                 else {

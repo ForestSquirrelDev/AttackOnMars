@@ -1055,6 +1055,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1604895517}
   - component: {fileID: 1604895518}
+  - component: {fileID: 1604895519}
   m_Layer: 0
   m_Name: StripEcsFlowfield
   m_TagString: Untagged
@@ -1089,6 +1090,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrainTransform: {fileID: 873730278}
+--- !u!114 &1604895519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604895516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5170493187f005418d869ffb9e93cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _debugCurrentTarget:
+    x: 477
+    y: 70
+    z: 556
 --- !u!1 &1641852536
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,7 +1182,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1641852536}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 1129, y: 70, z: 1134.3}
+  m_LocalPosition: {x: 477, y: 70, z: 556.2}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
