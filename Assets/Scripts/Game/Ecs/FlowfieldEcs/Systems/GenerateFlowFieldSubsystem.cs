@@ -40,9 +40,10 @@ namespace Game.Ecs.Flowfield.Systems {
                     if (cell.BaseCost == 0 && cell.BestCost == 0) {
                         var worldDirection = math.normalize(_targetWorldPosition - cell.WorldCenter);
                         cell.BestDirection = new int2(Mathf.RoundToInt(worldDirection.x), Mathf.RoundToInt(worldDirection.z));
+                        cell.IsBestChildCell = true;
                     } else {
                         var neighbours = FindNeighbours(cell, _writer, _gridSize);
-                        var bestDirection = FindBestDirectionBasedOnCosts(cell, neighbours);
+                        var bestDirection = FindBestDirectionBasedOnCosts(cell, neighbours, _writer, _gridSize);
                         cell.BestDirection = bestDirection;
                     }
                 
@@ -68,7 +69,8 @@ namespace Game.Ecs.Flowfield.Systems {
                 return neighbours;
             }
             
-            private int2 FindBestDirectionBasedOnCosts(FlowfieldCellComponent currentCell, NativeList<FlowfieldCellComponent> validNeighbours) {
+            private unsafe int2 FindBestDirectionBasedOnCosts(FlowfieldCellComponent currentCell, NativeList<FlowfieldCellComponent> validNeighbours,
+                UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize) {
                 var bestCell = FindLowestCostCellSlow(validNeighbours);
                 return bestCell.GridPosition - currentCell.GridPosition;
             }

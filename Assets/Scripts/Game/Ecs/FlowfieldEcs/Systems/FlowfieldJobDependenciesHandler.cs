@@ -1,4 +1,6 @@
 ﻿using Unity.Collections;
+using Unity.Entities;
+using Unity.Entities.CodeGeneratedJobForEach;
 using Unity.Jobs;
 
 namespace Game.Ecs.Flowfield.Systems {
@@ -73,6 +75,15 @@ namespace Game.Ecs.Flowfield.Systems {
             dependencies.Dispose();
             return handle;
         }
+        
+        public JobHandle ScheduleReadWrite(ForEachLambdaJobDescription readWriteFlowfieldJob, int framesLifetime = 4, JobHandle dependenciesIn = default) {
+            var dependencies = GetDependenciesForReadWrite();
+            var combinedDependencies = JobHandle.CombineDependencies(JobHandle.CombineDependencies(dependencies), dependenciesIn);
+            var handle = readWriteFlowfieldJob.Schedule(combinedDependencies);
+            _readWriteFlowfieldDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
+            dependencies.Dispose();
+            return handle;
+        }
 
         public JobHandle ScheduleReadOnly<T>(T readOnlyFlowfieldJob, int framesLifetime = 1) where T : struct, IJob {
             var dependencies = GetDependenciesForReadOnly();
@@ -94,6 +105,17 @@ namespace Game.Ecs.Flowfield.Systems {
             foreach (var deps in _readonlyFlowfieldDependencies) {
                 deps.Complete();
             }
+        }
+
+        public JobHandle GetCombinedReadWriteDependencies() {
+            var deps = GetDependenciesForReadWrite();
+            var combinedDependencies = JobHandle.CombineDependencies(deps);
+            deps.Dispose();
+            return combinedDependencies;
+        }
+
+        public void AddExternalReadWriteDependency(JobHandle dependency, int framesLifetime = 4) {
+            _readWriteFlowfieldDependencies.Add(new FrameBoundJobHandle(dependency, framesLifetime));
         }
 
         private NativeArray<JobHandle> GetDependenciesForReadWrite() {

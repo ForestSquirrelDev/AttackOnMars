@@ -6,6 +6,7 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Game.Ecs.Flowfield.Systems {
     // Flowfield step 1. Create grid of empty cells.
@@ -18,7 +19,7 @@ namespace Game.Ecs.Flowfield.Systems {
         
         public JobHandle Schedule(float cellSize, int2 gridSize, float3 origin, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var fillEmptyCellsJob = new FillEmptyCellsJob(writer, gridSize, origin, cellSize);
-            return _jobDependenciesHandler.ScheduleNonPooled(fillEmptyCellsJob, inputDeps);
+            return _jobDependenciesHandler.ScheduleReadWrite(fillEmptyCellsJob, 4, inputDeps);
         }
 
         [BurstCompile]
@@ -52,9 +53,10 @@ namespace Game.Ecs.Flowfield.Systems {
                         cell.Size = _cellSize;
                         cell.WorldRect = cellRect;
                         cell.BestCost = float.MaxValue;
-                        _cellsWriter.ListData->Add(cell);
+                        _cellsWriter.ListData->AddNoResize(cell);
                     }
                 }
+                Debug.Log($"Added cells. Length: {_cellsWriter.ListData->Length}");
             }
         }
     }

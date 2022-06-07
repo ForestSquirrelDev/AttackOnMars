@@ -114,7 +114,7 @@ namespace Flowfield {
         }
 
         private FlowFieldCell FindClosestCellToNextBestCell(FlowFieldCell bestDirectionParentCell, FlowFieldCell parentCell, IList<FlowFieldCell> childCells, int2 childCellsGridSize, float childCellSize) {
-            var directionFromGridOriginToBestParentCell = math.normalize(bestDirectionParentCell.WorldCenter - parentCell.WorldCenter)* childCellSize;
+            var directionFromGridOriginToBestParentCell = math.normalize(bestDirectionParentCell.WorldCenter - parentCell.WorldCenter) * childCellSize;
             FlowFieldCell bestChildCell = new FlowFieldCell();
             float3 bestCellWorldPosition = parentCell.WorldCenter;
             

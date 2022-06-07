@@ -16,7 +16,7 @@ namespace Game.Ecs.Flowfield.Systems {
 
         public JobHandle Schedule(float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var integrationFieldJob = new CreateIntegrationFieldJob(targetWorld, gridSize, writer);
-            return _dependenciesHandler.ScheduleNonPooled(integrationFieldJob, inputDeps);
+            return _dependenciesHandler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
         }
         
         [BurstCompile]

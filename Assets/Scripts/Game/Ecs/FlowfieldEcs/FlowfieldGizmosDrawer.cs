@@ -80,7 +80,7 @@ namespace Game.Ecs.Flowfield {
              _flowfieldCells.Dispose();
          }
 
-         private void DebugCell(FlowfieldCellComponent cell, float arrowLength, float arrowThickness, bool isParentCell) {
+         private unsafe void DebugCell(FlowfieldCellComponent cell, float arrowLength, float arrowThickness, bool isParentCell) {
              Gizmos.color = cell.BaseCost.Approximately(float.MaxValue) ? Color.red : Color.green;
              DrawSingleCell(cell, cell.Size, true);
         
@@ -94,11 +94,11 @@ namespace Game.Ecs.Flowfield {
                  var text = cell.GridPosition.ToString();
                  Handles.Label(cell.WorldPosition, text);
              }
-             // if (cell.ChildCells != null && _debugSmallGrids) {
-             //     foreach (var childCell in cell.ChildCells) {
-             //         DebugCell(childCell, 1f, 1f);
-             //     }
-             // }
+             if (cell.ChildCells.Length > 0 && _debugSmallGrids) {
+                 foreach (var childCell in cell.ChildCells) {
+                     DebugCell(childCell, 1f, 1f, false);
+                 }
+             }
          }
         
          private void DrawSingleArrow(FlowfieldCellComponent cell, float length = 1f, float thickness = 1f) {
@@ -130,7 +130,7 @@ namespace Game.Ecs.Flowfield {
         
          private void DrawSingleCell(FlowfieldCellComponent cell, float cellSize, bool takeHeightIntoAccount = true) {
              if (cell.IsBestChildCell)
-                 Gizmos.color = Color.magenta;
+                 Gizmos.color = Color.cyan;
              var height = takeHeightIntoAccount ? cell.WorldPosition.y : _terrain.transform.position.y;
              cell.WorldPosition.y = height;
              var rightBottom = new Vector3(cell.WorldPosition.x + cellSize, height, cell.WorldPosition.z);

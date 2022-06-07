@@ -1,5 +1,6 @@
 using System;
 using Game.Ecs.Components.BlobAssetsData;
+using Game.Ecs.Components.Tags;
 using Shared;
 using Unity.Burst;
 using Unity.Collections;
@@ -33,29 +34,35 @@ namespace Game.Ecs.Systems.Spawners {
         }
 
         protected override void OnUpdate() {
-            if (_counter >= 1) return;
-            _counter++;
-            //if (_counter < 50) return;
-            //_counter = 0;
+            if (Input.GetKeyDown(KeyCode.F1)) {
+                _counter = 0;
+                Entities.WithAll<Tag_Enemy>().ForEach((ref Entity e) => {
+                    EntityManager.DestroyEntity(e);
+                }).WithStructuralChanges().WithoutBurst().Run();
+            }
+            if (_counter > 500) return;
             _sortKey++;
+
+            for (int i = 0; i < 1; i++) {
+                float3 translation = new float3 {
+                    x = _positionRandomizer.NextFloat(0f, 1665f),
+                    y = 90,
+                    z = _positionRandomizer.NextFloat(0f, 1800f)
+                };
+                var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
+                var spawnEnemiesJob = new SpawnEnemyJob {
+                    EnemiesReference = _reference,
+                    Ecb = ecb,
+                    EnemyType = (EnemyType)_enemyTypeRandomizer.NextInt(0, _enemiesEnumCount),
+                    SortKey = _sortKey, 
+                    InitialPos = translation
+                };
             
-            float3 translation = new float3 {
-                x = _positionRandomizer.NextFloat(400f, 665f),
-                y = 90,
-                z = _positionRandomizer.NextFloat(600f, 800f)
-            };
-            var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
-            var spawnEnemiesJob = new SpawnEnemyJob {
-                EnemiesReference = _reference,
-                Ecb = ecb,
-                EnemyType = (EnemyType)_enemyTypeRandomizer.NextInt(0, _enemiesEnumCount),
-                SortKey = _sortKey, 
-                InitialPos = translation
-            };
-            
-            var handle = spawnEnemiesJob.Schedule();
-            _ecb.AddJobHandleForProducer(handle);
-            Dependency = handle;
+                var handle = spawnEnemiesJob.Schedule();
+                _ecb.AddJobHandleForProducer(handle);
+                Dependency = handle;
+                _counter++;
+            }
         }
         
         [BurstCompile]
