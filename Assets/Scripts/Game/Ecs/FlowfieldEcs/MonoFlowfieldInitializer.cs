@@ -8,14 +8,11 @@ namespace Game.Ecs.Flowfield {
         [SerializeField] private Transform _terrainTransform;
         
         private World World => World.DefaultGameObjectInjectionWorld;
+        private FlowfieldManagerSystem _flowfieldManagerSystem => World.GetOrCreateSystem<FlowfieldManagerSystem>();
 
-        private void Awake() {
-            var flowfieldManagerSystem = World.GetOrCreateSystem<FlowfieldManagerSystem>();
-            flowfieldManagerSystem.Awake(_terrainTransform);
-        }
-
-        private void Start() {
-            World.GetExistingSystem<FlowfieldManagerSystem>().Start();
+        private async void Awake() {
+            await _flowfieldManagerSystem.Awake();
+            _flowfieldManagerSystem.Init(_terrainTransform);
         }
     }
 }

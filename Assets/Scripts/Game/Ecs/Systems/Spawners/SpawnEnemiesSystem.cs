@@ -40,7 +40,7 @@ namespace Game.Ecs.Systems.Spawners {
                     EntityManager.DestroyEntity(e);
                 }).WithStructuralChanges().WithoutBurst().Run();
             }
-            if (_counter > 500) return;
+            if (_counter > 5) return;
             _sortKey++;
 
             for (int i = 0; i < 1; i++) {

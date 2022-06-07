@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FlowfieldConfig
   m_EditorClassIdentifier: 
   ParentCellSize: 50
-  ChildCellSize: 10
+  ChildCellSize: 2
   CostHeightThreshold: 21
   UnwalkableAngleThreshold: 35

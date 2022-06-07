@@ -31,8 +31,10 @@ namespace Game.Ecs.Flowfield.Systems {
         private FlowfieldConfig _flowfieldConfig;
         private FlowfieldRuntimeData _flowfieldRuntimeData;
         private TerrainData _terrainData;
-
-        protected override void OnCreate() {
+        
+        public async Task Awake() {
+            _flowfieldConfig = await LoadFlowfieldConfig();
+            _terrainData = await LoadTerrainData();
             _jobDependenciesHandler = new FlowfieldJobDependenciesHandler();
             _findBaseCostAndHeightsSubSystem = new FindBaseCostAndHeightsSubSystem(_jobDependenciesHandler);
             _emptyCellsGenerationSubSystem = new EmptyCellsGenerationSubSystem(_jobDependenciesHandler, _findBaseCostAndHeightsSubSystem);
@@ -47,9 +49,7 @@ namespace Game.Ecs.Flowfield.Systems {
             _childCellsGenerationSubsystem.OnCreate();
         }
 
-        public async void Awake(Transform terrainTransform) {
-            _flowfieldConfig = await LoadFlowfieldConfig();
-            _terrainData = await LoadTerrainData();
+        public void Init(Transform terrainTransform) {
             var terrainPosition = terrainTransform.position;
             var parentGridSize = FindParentGridSize(terrainPosition, _terrainData, _flowfieldConfig);
             var childGridSize = new int2(Mathf.FloorToInt(_flowfieldConfig.ParentCellSize / _flowfieldConfig.ChildCellSize),
@@ -74,10 +74,6 @@ namespace Game.Ecs.Flowfield.Systems {
             var createChildListsJob = _jobDependenciesHandler.ScheduleReadWrite(new CreateChildNativeListsJob(ParentFlowFieldCells.AsParallelWriter(), _flowfieldConfig.ChildCellSize), dependenciesIn: fillHeightsJob);
             
             Initialized = true;
-        }
-
-        public void Start() {
-            
         }
 
         protected override void OnUpdate() {
