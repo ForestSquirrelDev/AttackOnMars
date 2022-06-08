@@ -1,4 +1,4 @@
-using Game.Ecs.Flowfield.Components;
+using Game.Ecs.Components.Pathfinding;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;

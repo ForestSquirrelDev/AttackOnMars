@@ -7,13 +7,15 @@
         "GUID:734d92eba21c94caba915361bd5ac177",
         "GUID:7b01f2bfdb36c8f48b2211ed257128e6",
         "GUID:d8b63aba1907145bea998dd612889d6b",
-        "GUID:50a89b921c404214cbdf4cb389b7c9d3"
+        "GUID:50a89b921c404214cbdf4cb389b7c9d3",
+        "GUID:5e1a1adb03e27cc479fab8f1f448cb9b",
+        "GUID:e0cd26848372d4e5c891c569017e11f1"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

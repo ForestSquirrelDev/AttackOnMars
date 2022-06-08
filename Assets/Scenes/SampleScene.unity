@@ -408,80 +408,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de39c3ac9cbc7514fb81f34706931fe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &419610985
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 419610987}
-  - component: {fileID: 419610986}
-  - component: {fileID: 419610988}
-  m_Layer: 0
-  m_Name: FlowfieldTest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &419610986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419610985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8635f772ebe45ec44bc57c7ef63f475e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _parentGridSizeOut:
-    x: -2147483648
-    y: -2147483648
-  _parentCellSize: 20
-  _tooBigHeightThreshold: 21
-  _smallCellSize: 10
-  _terrain: {fileID: 873730277}
-  _angleThreshold: 35
-  _enemySpeed: 30
-  _testEnemy: {fileID: 1641852540}
-  _mergedCells: []
---- !u!4 &419610987
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419610985}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 695.6, y: 15.73, z: 437.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &419610988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419610985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61200852c8c1e4b4591d846d5a80bf2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _terrain: {fileID: 873730277}
-  _initializeOnStart: 1
-  _debugCosts: 0
-  _drawArrows: 1
-  _debugPositions: 0
-  _debugSmallGrids: 1
-  _debugParentGrid: 1
 --- !u!1 &548895394
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +996,7 @@ GameObject:
   - component: {fileID: 1604895517}
   - component: {fileID: 1604895518}
   - component: {fileID: 1604895519}
+  - component: {fileID: 1604895520}
   m_Layer: 0
   m_Name: StripEcsFlowfield
   m_TagString: Untagged
@@ -1120,6 +1047,25 @@ MonoBehaviour:
     x: 477
     y: 70
     z: 556
+--- !u!114 &1604895520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604895516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61200852c8c1e4b4591d846d5a80bf2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _terrain: {fileID: 873730277}
+  _initializeOnStart: 1
+  _debugCosts: 0
+  _drawArrows: 1
+  _debugPositions: 0
+  _debugSmallGrids: 1
+  _debugParentGrid: 1
 --- !u!1 &1641852536
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,7 +1146,7 @@ Transform:
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1687258581
 GameObject:
