@@ -9,14 +9,14 @@ using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
     [BurstCompile]
-    public struct FindClosestToBestParentCellJob : IJob {
+    public struct FindTargetCellJob : IJob {
         private int _currentParentCellIndex;
         private float3 _worldTarget;
         private NativeArray<FlowfieldCellComponent> _bestCellOut;
         private UnsafeList<FlowfieldCellComponent>.ParallelWriter _parentCellsWriter;
         private FlowfieldRuntimeData _runtimeData;
 
-        public unsafe FindClosestToBestParentCellJob(int parentCellIndex, float3 worldTarget, NativeArray<FlowfieldCellComponent> bestCellOut, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter, FlowfieldRuntimeData runtimeData) {
+        public unsafe FindTargetCellJob(int parentCellIndex, float3 worldTarget, NativeArray<FlowfieldCellComponent> bestCellOut, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter, FlowfieldRuntimeData runtimeData) {
             _currentParentCellIndex = parentCellIndex;
             _worldTarget = worldTarget;
             _bestCellOut = bestCellOut;

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentCellSize: 55
   ChildCellSize: 5
-  CostHeightThreshold: 21
+  CostHeightThreshold: 0
   UnwalkableAngleThreshold: 35

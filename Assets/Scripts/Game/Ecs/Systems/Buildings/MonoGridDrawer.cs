@@ -7,6 +7,8 @@ using Utils;
 
 namespace Editor {
     public class MonoGridDrawer : MonoBehaviour {
+        [SerializeField] private bool _drawGrid = true;
+        
         private MonoGridManager _manager;
         private int _width, _height;
         private float _cellSize;
@@ -14,6 +16,7 @@ namespace Editor {
         private List<Tuple<Vector3, Vector3>> _linePositions = new List<Tuple<Vector3, Vector3>>();
         
         private void OnDrawGizmos() {
+            if (!_drawGrid) return;
             _manager ??= GetComponent<MonoGridManager>();
             if (_manager.Width != _width || _manager.Height != _height || _manager.CellSize != _cellSize || _manager.transform.position != _parentPos) {
                 if (!Application.isPlaying) _manager.InitEditorGrid();

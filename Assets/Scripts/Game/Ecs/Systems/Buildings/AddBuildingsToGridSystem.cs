@@ -15,13 +15,13 @@ namespace Game.Ecs.Systems {
         }
 
         protected override void OnUpdate() {
-            Entities.WithAll<Tag_ReadyForGridQuad>().ForEach((DynamicBuffer<Int2BufferElement> positions, ref Entity entity) => {
+            Entities.WithAll<Tag_ReadyForGridQuad>().ForEach((DynamicBuffer<Int2BufferElement> positionsBuffer, ref Entity entity) => {
                 var ecb = _commandBufferSystem.CreateCommandBuffer();
-                NativeArray<int2> positionsInterpreted = new NativeArray<int2>(positions.Length, Allocator.Temp);
-                for (int i = 0; i < positions.Length; i++)
-                    positionsInterpreted[i] = positions[i].value;
-                _gridKeeperSystem.BuildingGrid.AddBuildingToGrid(positionsInterpreted, entity);
-                positionsInterpreted.Dispose();
+                var positionValues = new NativeArray<int2>(positionsBuffer.Length, Allocator.Temp);
+                for (int i = 0; i < positionsBuffer.Length; i++)
+                    positionValues[i] = positionsBuffer[i].value;
+                _gridKeeperSystem.BuildingGrid.AddBuildingToGrid(positionValues, entity);
+                positionValues.Dispose();
                 ecb.DestroyEntity(entity);
             }).WithoutBurst().Run();
         }

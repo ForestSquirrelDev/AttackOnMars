@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Game.Ecs.Systems {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial class MoveEnemiesSystem : SystemBase {
-        private const float _xzDelta = 0.02f;
+        private const float _xzDelta = 0.1f;
         private const float _yDelta = 0.2f;
         
         protected override void OnUpdate() {

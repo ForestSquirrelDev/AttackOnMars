@@ -86,7 +86,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                     currentParentCell.WorldPosition, cellsToAdd, _jobDependenciesHandler.GetCombinedReadWriteDependencies());
                 
                 
-                var findClosestToBestParentCellJob = new FindClosestToBestParentCellJob(arrayIndex, MonoHivemind.Instance.CurrentTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
+                var findClosestToBestParentCellJob = new FindTargetCellJob(arrayIndex, MonoHivemind.Instance.CurrentTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
                 var closestCellHandle = _jobDependenciesHandler.ScheduleReadWrite(findClosestToBestParentCellJob, dependenciesIn: generateCellsJob);
 
                 var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, closestCellHandle, _flowfieldRuntimeData.UnwalkableAngleThreshold,
