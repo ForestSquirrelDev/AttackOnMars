@@ -3,13 +3,14 @@ using Game.Ecs.Systems.Pathfinding.Mono;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
-    public class ManageChildCellsGenerationRequestsSystem {
+    public partial class ManageChildCellsGenerationRequestsSystem : SystemBase {
         public NativeHashMap<int2, ChildCellsGenerationRequest> Requests;
 
         private UnsafeList<FlowfieldCellComponent>.ParallelWriter _parentCells;
@@ -22,19 +23,18 @@ namespace Game.Ecs.Systems.Pathfinding {
 
         private int2 _parentGridSize;
         private FlowfieldRuntimeData _flowfieldRuntimeData;
-
-        public ManageChildCellsGenerationRequestsSystem(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCells,
+        private bool _initialized;
+        
+        public void Construct(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCells,
             EmptyCellsGenerationSubSystem emptyCellsGenerationSubSystem, FindBaseCostAndHeightsSubSystem findBaseCostAndHeightsSubSystem,
-            GenerateIntegrationFieldSubsystem generateIntegrationFieldSubsystem, GenerateFlowFieldSubsystem generateFlowFieldSubsystem) {
+            GenerateIntegrationFieldSubsystem generateIntegrationFieldSubsystem, GenerateFlowFieldSubsystem generateFlowFieldSubsystem, int2 gridSize, FlowfieldRuntimeData runtimeData) {
             _jobDependenciesHandler = dependenciesHandler;
             _emptyCellsGenerationSubSystem = emptyCellsGenerationSubSystem;
             _findBaseCostAndHeightsSubSystem = findBaseCostAndHeightsSubSystem;
             _generateIntegrationFieldSubsystem = generateIntegrationFieldSubsystem;
             _generateFlowFieldSubsystem = generateFlowFieldSubsystem;
             _parentCells = parentCells;
-        }
-
-        public void Construct(int2 gridSize, FlowfieldRuntimeData runtimeData) {
+            
             _parentGridSize = gridSize;
             _flowfieldRuntimeData = runtimeData;
             Requests = new NativeHashMap<int2, ChildCellsGenerationRequest>(gridSize.x * gridSize.y, Allocator.Persistent);
@@ -44,13 +44,17 @@ namespace Game.Ecs.Systems.Pathfinding {
                     Requests[gridPos] = new ChildCellsGenerationRequest(gridPos, 0);
                 }
             }
+            _initialized = true;
         }
 
-        public unsafe void OnUpdate() {
+        public void OnUpdateManual() {
+            if (!_initialized) return;
             ClearUnusedCells(Requests);
             GenerateRequestedCells(Requests);
             DecrementRequestsLifetime(Requests);
         }
+        
+        protected override unsafe void OnUpdate() { }
 
         private void DecrementRequestsLifetime(NativeHashMap<int2, ChildCellsGenerationRequest> requests) {
             foreach (var request in requests) {
@@ -72,6 +76,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
 
         private unsafe void GenerateRequestedCells(NativeHashMap<int2, ChildCellsGenerationRequest> requests) {
+            var hivemindTarget = GetSingleton<CurrentHivemindTargetSingleton>().Value;
             foreach (var request in requests) {
                 if (request.Value.FramesLifetime <= 0) continue;
 
@@ -84,9 +89,8 @@ namespace Game.Ecs.Systems.Pathfinding {
                 
                 var generateCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldRuntimeData.ChildCellSize, _flowfieldRuntimeData.ChildGridSize,
                     currentParentCell.WorldPosition, cellsToAdd, _jobDependenciesHandler.GetCombinedReadWriteDependencies());
-                
-                
-                var findClosestToBestParentCellJob = new FindTargetCellJob(arrayIndex, MonoHivemind.Instance.CurrentTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
+
+                var findClosestToBestParentCellJob = new FindTargetCellJob(arrayIndex, hivemindTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
                 var closestCellHandle = _jobDependenciesHandler.ScheduleReadWrite(findClosestToBestParentCellJob, dependenciesIn: generateCellsJob);
 
                 var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, closestCellHandle, _flowfieldRuntimeData.UnwalkableAngleThreshold,
@@ -100,7 +104,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             }
         }
 
-        public void OnDestroy() {
+        protected override void OnDestroy() {
             Requests.Dispose();
         }
 

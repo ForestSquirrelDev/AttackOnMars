@@ -2,12 +2,12 @@ using Unity.Entities;
 using UnityEngine;
 
 namespace Game.Ecs.Hybrid.Conversion {
-    public class ConvertElonBaseToEntity : MonoBehaviour {
+    public class ConvertElonBaseToEntity : GameObjectsConverterBase {
         [SerializeField] private GameObject _base;
 
         private BlobAssetStore _assetStore;
         
-        private void Start() {
+        public override void Convert() {
             _assetStore = new BlobAssetStore();
             var conversionSettings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, _assetStore);
             var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(_base, conversionSettings);

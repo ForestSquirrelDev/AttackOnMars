@@ -90,6 +90,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5718641347937730421}
+  - component: {fileID: 7810110918301957678}
   m_Layer: 0
   m_Name: ElonMuskBase
   m_TagString: Untagged
@@ -115,6 +116,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7810110918301957678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5715360934450542271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8dc3da4a9b069246bd8b698103af5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5715360934814410923
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +297,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5718641344903857389}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 2.4961316e-15, y: 104.52832, z: 2.732943e-15}
 --- !u!33 &5703732696611103709
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -689,7 +702,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5718641344903857389}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 2.4961316e-15, y: 104.52832, z: 2.732943e-15}
 --- !u!33 &5703732688321948283
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -951,7 +964,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5718641344903857389}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 39.999985, y: -0.0000056396093, z: -104.52838}
 --- !u!33 &5703732694591898055
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1032,7 +1045,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5718641344903857389}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 39.999985, y: -0.0000056396093, z: -104.52838}
 --- !u!33 &5703732696464976101
 MeshFilter:
   m_ObjectHideFlags: 0

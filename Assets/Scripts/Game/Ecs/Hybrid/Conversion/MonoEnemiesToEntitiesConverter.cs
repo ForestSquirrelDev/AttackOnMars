@@ -6,17 +6,13 @@ using Unity.Entities;
 using UnityEngine;
 
 namespace Game.Ecs.Hybrid.Conversion {
-    public class MonoEnemiesToEntitiesConverter : MonoBehaviour {
+    public class MonoEnemiesToEntitiesConverter : GameObjectsConverterBase {
         [SerializeField] private PreinstantiatePrefabData[] _prefabDatas;
     
-        private World _world;
+        private World _world => World.DefaultGameObjectInjectionWorld;
         private BlobAssetStore _blobAssetStore;
 
-        private void Awake() {
-            _world = World.DefaultGameObjectInjectionWorld;
-        }
-
-        private void Start() {
+        public override void Convert() {
             _blobAssetStore = new BlobAssetStore();
             var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, _blobAssetStore);
             var blobBuilder = new BlobBuilder(Allocator.Temp);

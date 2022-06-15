@@ -1,22 +1,20 @@
 using System;
 using Game.Ecs.Containers;
+using Game.Ecs.Hybrid.Conversion;
 using Shared;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Game.Ecs.Monobehaviours {
-    public class MonoBuildingsToEntitiesConverter : MonoBehaviour {
+    public class MonoBuildingsToEntitiesConverter : GameObjectsConverterBase {
         [FormerlySerializedAs("prefabDatas"), SerializeField] private PreinstantiatePrefabData[] _prefabDatas;
 
         private World _world;
         private BlobAssetStore _blobAssetStore;
 
-        private void Awake() {
+        public override void Convert() {
             _world = World.DefaultGameObjectInjectionWorld;
-        }
-
-        private void Start() {
             _blobAssetStore = new BlobAssetStore();
             GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, _blobAssetStore);
             foreach (var prefabData in _prefabDatas) {

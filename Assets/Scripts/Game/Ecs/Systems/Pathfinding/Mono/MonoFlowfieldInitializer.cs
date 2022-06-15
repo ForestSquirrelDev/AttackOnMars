@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Game.Ecs.Systems.Pathfinding.Mono {
     // Flowfield step 0: call initializer from monobehaviour class.
-    public class MonoFlowfieldInitializer : MonoBehaviour {
+    public class MonoFlowfieldInitializer : GameManagerBase {
         [SerializeField] private Transform _terrainTransform;
         
         private World World => World.DefaultGameObjectInjectionWorld;
         private FlowfieldManagerSystem _flowfieldManagerSystem => World.GetOrCreateSystem<FlowfieldManagerSystem>();
 
-        private async void Awake() {
-            await _flowfieldManagerSystem.Awake();
+        public override async void OnAwake() {
+            await _flowfieldManagerSystem.LoadConfigsAsync();
             _flowfieldManagerSystem.Init(_terrainTransform);
         }
     }

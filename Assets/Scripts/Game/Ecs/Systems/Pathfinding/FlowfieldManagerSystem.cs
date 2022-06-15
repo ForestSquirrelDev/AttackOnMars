@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Game.AddressableConfigs;
 using Game.Ecs.Components.Pathfinding;
-using Game.Ecs.Systems.Pathfinding.Mono;
 using Game.Ecs.Systems.Spawners;
 using Unity.Burst;
 using Unity.Collections;
@@ -33,11 +32,19 @@ namespace Game.Ecs.Systems.Pathfinding {
         private FlowfieldRuntimeData _flowfieldRuntimeData;
         private TerrainData _terrainData;
         
-        public async Task Awake() {
+        public async Task LoadConfigsAsync() {
             _flowfieldConfig = await LoadFlowfieldConfig();
             _terrainData = await LoadTerrainData();
+        }
+
+        public void Init(Transform terrainTransform) {
             GetSubsystems();
             CallSubsystemsOnCreate();
+            _flowfieldRuntimeData = CreateFlowfieldRuntimeData(terrainTransform);
+            ParentFlowFieldCells = new UnsafeList<FlowfieldCellComponent>(_flowfieldRuntimeData.ParentGridSize.x * _flowfieldRuntimeData.ParentGridSize.y, Allocator.Persistent);
+            InjectSubsystemsDependencies();
+            InitializeParentGrid();
+            Initialized = true;
         }
         
         private void GetSubsystems() {
@@ -46,22 +53,13 @@ namespace Game.Ecs.Systems.Pathfinding {
             _emptyCellsGenerationSubSystem = new EmptyCellsGenerationSubSystem(_jobDependenciesHandler, _findBaseCostAndHeightsSubSystem);
             _generateIntegrationFieldSubsystem = new GenerateIntegrationFieldSubsystem(_jobDependenciesHandler);
             _generateFlowFieldSubsystem = new GenerateFlowFieldSubsystem(_jobDependenciesHandler);
-            _childCellsGenerationSubsystem = new ManageChildCellsGenerationRequestsSystem(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
-                _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem);
+            _childCellsGenerationSubsystem = World.GetOrCreateSystem<ManageChildCellsGenerationRequestsSystem>();
             _detectEnemiesSystem = World.GetOrCreateSystem<DetectEnemiesAndScheduleChildCellsSystem>();
             _assignBestDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestDirectionToEnemiesSystem>();
         }
         
         private void CallSubsystemsOnCreate() {
             _jobDependenciesHandler.OnCreate();
-        }
-
-        public void Init(Transform terrainTransform) {
-            _flowfieldRuntimeData = CreateFlowfieldRuntimeData(terrainTransform);
-            ParentFlowFieldCells = new UnsafeList<FlowfieldCellComponent>(_flowfieldRuntimeData.ParentGridSize.x * _flowfieldRuntimeData.ParentGridSize.y, Allocator.Persistent);
-            InjectSubsystemsDependencies();
-            InitializeParentGrid();
-            Initialized = true;
         }
         
         private FlowfieldRuntimeData CreateFlowfieldRuntimeData(Transform terrainTransform) {
@@ -76,11 +74,13 @@ namespace Game.Ecs.Systems.Pathfinding {
         
         private void InjectSubsystemsDependencies() {
             _detectEnemiesSystem.Construct(_jobDependenciesHandler, _flowfieldRuntimeData, _childCellsGenerationSubsystem);
-            _childCellsGenerationSubsystem.Construct(_flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
+            _childCellsGenerationSubsystem.Construct(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
+                _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
             _assignBestDirectionToEnemiesSystem.Construct(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
         }
         
         private void InitializeParentGrid() {
+            var currentTarget = GetSingleton<CurrentHivemindTargetSingleton>().Value;
             var fillEmptyCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldConfig.ParentCellSize, _flowfieldRuntimeData.ParentGridSize,
                 _flowfieldRuntimeData.ParentGridOrigin, ParentFlowFieldCells.AsParallelWriter(), default(JobHandle));
             
@@ -88,10 +88,10 @@ namespace Game.Ecs.Systems.Pathfinding {
                 _flowfieldConfig.UnwalkableAngleThreshold, _flowfieldConfig.CostHeightThreshold);
             
             var createIntegrationFieldJob = _generateIntegrationFieldSubsystem.Schedule(
-                _flowfieldRuntimeData.ParentGridOrigin, MonoHivemind.Instance.CurrentTarget, _flowfieldRuntimeData.ParentGridSize, ParentFlowFieldCells.AsParallelWriter(), fillHeightsJob);
+                _flowfieldRuntimeData.ParentGridOrigin, currentTarget, _flowfieldRuntimeData.ParentGridSize, ParentFlowFieldCells.AsParallelWriter(), fillHeightsJob);
             
             var createFlowfieldJob = _generateFlowFieldSubsystem.Schedule(
-                MonoHivemind.Instance.CurrentTarget, _flowfieldRuntimeData.ParentGridSize, ParentFlowFieldCells.AsParallelWriter(),  createIntegrationFieldJob);
+                currentTarget, _flowfieldRuntimeData.ParentGridSize, ParentFlowFieldCells.AsParallelWriter(),  createIntegrationFieldJob);
             
             var createChildListsJob = _jobDependenciesHandler.ScheduleReadWrite(
                 new CreateChildNativeListsJob(ParentFlowFieldCells.AsParallelWriter(), _flowfieldConfig.ChildCellSize), dependenciesIn: createFlowfieldJob);
@@ -100,7 +100,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         protected override void OnUpdate() {
             if (!Initialized) return;
             _jobDependenciesHandler.OnUpdate();
-            _childCellsGenerationSubsystem.OnUpdate();
+            _childCellsGenerationSubsystem.OnUpdateManual();
 
             if (Input.GetKeyDown(KeyCode.I)) {
                 ShowDebugInfo();
@@ -109,7 +109,6 @@ namespace Game.Ecs.Systems.Pathfinding {
 
         protected override void OnDestroy() {
             _jobDependenciesHandler.OnDestroy();
-            _childCellsGenerationSubsystem.OnDestroy();
             foreach (var cell in ParentFlowFieldCells) {
                 cell.Dispose();
             }

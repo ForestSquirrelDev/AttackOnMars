@@ -10,7 +10,7 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
     /// form of passing initialization data, perhaps Addresables system or scriptable objects. This script should probably be in Core assembly.
     /// todo: untie GridManager.cs from GridKeeperSystem.cs
     /// </summary>
-    public class MonoGridManager : MonoBehaviour {
+    public class MonoGridManager : GameManagerBase {
         public int Width => _width;
         public int Height => _height;
         public float CellSize => _cellSize;
@@ -23,7 +23,7 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
         [FormerlySerializedAs("cellSize")] [SerializeField] private float _cellSize = 3;
         [FormerlySerializedAs("terrain")] [SerializeField] private Terrain _terrain;
 
-        private void Awake() { 
+        public override void OnAwake() { 
             Bounds bounds = _terrain.terrainData.bounds;
             Rect terrainPerimeter = new Rect {
                 xMin = bounds.min.x,
