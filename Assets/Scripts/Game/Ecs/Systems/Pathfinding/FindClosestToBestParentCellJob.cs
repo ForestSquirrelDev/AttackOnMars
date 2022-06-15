@@ -80,6 +80,9 @@ namespace Game.Ecs.Systems.Pathfinding {
                     Debug.LogError($"FindClosestToBestParentCellJob.Infinite loop");
                     break;
                 }
+                if (currentParentCell.IsBestCell) {
+                    break;
+                }
             }
 
             //Debug.Log($"Final. Child cell pos: {bestChildCell.WorldPosition}. Grid pos: {bestChildCell.GridPosition} + {bestChildCell.WorldCenter}");
