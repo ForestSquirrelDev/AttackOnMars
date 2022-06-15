@@ -1,5 +1,6 @@
 using System;
 using Game.Ecs.Utils;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using Utils.Pathfinding;
@@ -17,13 +18,19 @@ namespace Game.Ecs.Components.Pathfinding {
         public float BaseCost;
         public float BestCost;
         public int2 BestDirection;
-        public UnsafeList<FlowfieldCellComponent> ChildCells;
+        public UnsafeList<FlowfieldCellComponent>.ParallelWriter ChildCells => _childCells.AsParallelWriter();
+        
+        private UnsafeList<FlowfieldCellComponent> _childCells;
 
         // for gizmos
-        public bool IsBestChildCell;
+        public bool IsBestCell;
 
+        public void InitChildCells(int capacity, Allocator allocator) {
+            _childCells = new UnsafeList<FlowfieldCellComponent>(capacity, allocator);
+        }
+        
         public void Dispose() {
-            ChildCells.Dispose();
+            _childCells.Dispose();
         }
         
         public bool Equals(FlowfieldCellComponent other) {

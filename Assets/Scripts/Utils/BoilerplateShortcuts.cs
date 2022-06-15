@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Game.Ecs.Utils {
@@ -15,6 +16,10 @@ namespace Game.Ecs.Utils {
 
         public static bool Approximately(this Vector3 v, Vector3 v2) {
             return Mathf.Approximately(v.x, v2.x) && Mathf.Approximately(v.y, v2.y) && Mathf.Approximately(v.z, v2.z);
+        }
+
+        public static float3 Invalid() {
+            return new float3(-123123, -123123, -123123);
         }
     }
 }

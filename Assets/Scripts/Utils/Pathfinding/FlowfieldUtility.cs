@@ -6,7 +6,8 @@ using UnityEngine;
 namespace Utils.Pathfinding {
     public static class FlowfieldUtility {
         public static int CalculateIndexFromWorld(float3 world, float3 origin, int2 gridSize, float cellSize) {
-            var gridPos = ToGrid(new float3(world.x, 0, world.z), origin, cellSize);
+            var gridPos = ToGrid(world, origin, cellSize);
+//            Debug.Log($"###############World: {world}. Origin: {origin}. Gridsize: {gridSize}. Cellsize: {cellSize}. Togrid: {gridPos}");
             return CalculateIndexFromGrid(gridPos, gridSize);
         }
 
@@ -50,7 +51,7 @@ namespace Utils.Pathfinding {
             return offsets;
         }
         
-        public static bool TileOutOfGrid(float2 gridPos, int2 gridSize) {
+        public static bool TileOutOfGrid(int2 gridPos, int2 gridSize) {
             return gridPos.x < 0 || gridPos.y < 0 || gridPos.x > gridSize.x - 1 || gridPos.y > gridSize.y - 1;
         }
 
@@ -59,10 +60,10 @@ namespace Utils.Pathfinding {
         }
 
         public static bool WorldOutOfGrid(float3 worldPos, float3 origin, int2 gridSize, float cellSize) {
-            float2 worldMax = new float2(gridSize.x * cellSize, gridSize.y * cellSize);
-            return worldPos.x < origin.x || worldPos.x > worldMax.x || worldPos.z < origin.z || worldPos.z > worldMax.y;
+            var toGrid = ToGrid(worldPos, origin, cellSize);
+            return toGrid.x < 0 || toGrid.x >= gridSize.x || toGrid.y < 0 || toGrid.y >= gridSize.y;
         }
-        
+
         public static bool IsOutOfRange(int collectionCount, int index) {
             return index < 0 || index >= collectionCount;
         }

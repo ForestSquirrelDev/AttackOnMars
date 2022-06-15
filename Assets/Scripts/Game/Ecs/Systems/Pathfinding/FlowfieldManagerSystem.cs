@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Game.AddressableConfigs;
 using Game.Ecs.Components.Pathfinding;
+using Game.Ecs.Systems.Pathfinding.Mono;
 using Game.Ecs.Systems.Spawners;
 using Unity.Burst;
 using Unity.Collections;
@@ -26,6 +27,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private GenerateFlowFieldSubsystem _generateFlowFieldSubsystem;
         private DetectEnemiesAndScheduleChildCellsSystem _detectEnemiesSystem;
         private ManageChildCellsGenerationRequestsSystem _childCellsGenerationSubsystem;
+        private AssignBestDirectionToEnemiesSystem _assignBestDirectionToEnemiesSystem;
 
         private FlowfieldConfig _flowfieldConfig;
         private FlowfieldRuntimeData _flowfieldRuntimeData;
@@ -47,6 +49,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _childCellsGenerationSubsystem = new ManageChildCellsGenerationRequestsSystem(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem);
             _detectEnemiesSystem = World.GetOrCreateSystem<DetectEnemiesAndScheduleChildCellsSystem>();
+            _assignBestDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestDirectionToEnemiesSystem>();
         }
         
         private void CallSubsystemsOnCreate() {
@@ -74,14 +77,24 @@ namespace Game.Ecs.Systems.Pathfinding {
         private void InjectSubsystemsDependencies() {
             _detectEnemiesSystem.Construct(_jobDependenciesHandler, _flowfieldRuntimeData, _childCellsGenerationSubsystem);
             _childCellsGenerationSubsystem.Construct(_flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
+            _assignBestDirectionToEnemiesSystem.Construct(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
         }
         
         private void InitializeParentGrid() {
             var fillEmptyCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldConfig.ParentCellSize, _flowfieldRuntimeData.ParentGridSize,
                 _flowfieldRuntimeData.ParentGridOrigin, ParentFlowFieldCells.AsParallelWriter(), default(JobHandle));
+            
             var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData.ParentGridSize, fillEmptyCellsJob,
                 _flowfieldConfig.UnwalkableAngleThreshold, _flowfieldConfig.CostHeightThreshold);
-            var createChildListsJob = _jobDependenciesHandler.ScheduleReadWrite(new CreateChildNativeListsJob(ParentFlowFieldCells.AsParallelWriter(), _flowfieldConfig.ChildCellSize), dependenciesIn: fillHeightsJob);
+            
+            var createIntegrationFieldJob = _generateIntegrationFieldSubsystem.Schedule(
+                _flowfieldRuntimeData.ParentGridOrigin, MonoHivemind.Instance.CurrentTarget, _flowfieldRuntimeData.ParentGridSize, ParentFlowFieldCells.AsParallelWriter(), fillHeightsJob);
+            
+            var createFlowfieldJob = _generateFlowFieldSubsystem.Schedule(
+                MonoHivemind.Instance.CurrentTarget, _flowfieldRuntimeData.ParentGridSize, ParentFlowFieldCells.AsParallelWriter(),  createIntegrationFieldJob);
+            
+            var createChildListsJob = _jobDependenciesHandler.ScheduleReadWrite(
+                new CreateChildNativeListsJob(ParentFlowFieldCells.AsParallelWriter(), _flowfieldConfig.ChildCellSize), dependenciesIn: createFlowfieldJob);
         }
         
         protected override void OnUpdate() {
@@ -129,22 +142,22 @@ namespace Game.Ecs.Systems.Pathfinding {
             return new int2(terrainRect.width / config.ParentCellSize);
         }
 
-        private void ShowDebugInfo() {
+        private unsafe void ShowDebugInfo() {
             Debug.Log($"FlowFieldManagerystem. Parent cells: count: {ParentFlowFieldCells.Length}. Is created: {ParentFlowFieldCells.IsCreated}. All parent cells:");
             int i = 0;
             foreach (var cell in ParentFlowFieldCells) {
-                Debug.Log($"Cell {i}. World pos: {cell.WorldPosition}. Base cost: {cell.BaseCost}. Child cells capacity: {cell.ChildCells.Capacity}." +
+                Debug.Log($"Cell {i}. World pos: {cell.WorldPosition}. Base cost: {cell.BaseCost}. Child cells capacity: {cell.ChildCells.ListData->Capacity}." +
                           $"\nBest cost: {cell.BestCost}. " +
                           $"Best direction: {cell.BestDirection}");
                 i++;
             }
-            Debug.Log($"Child cells is created: {ParentFlowFieldCells[0].ChildCells.IsCreated}");
             for (var index = 0; index < ParentFlowFieldCells.Length; index++) {
                 var cell = ParentFlowFieldCells[index];
                 var childCells = cell.ChildCells;
-                for (int j = 0; j < childCells.Length; j++) {
-                    var childCell = childCells[j];
-                    Debug.Log($"Child Cell {j}. World pos: {childCell.WorldPosition}. Base cost: {childCell.BaseCost}. ");
+                Debug.Log($"Parent cell {index}. Child cells created: {childCells.ListData->IsCreated}. Child cells length: {childCells.ListData->Length}");
+                for (int j = 0; j < childCells.ListData->Length; j++) {
+                    var childCell = childCells.ListData->Ptr[j];
+                    Debug.Log($"Child Cell {j}. World pos: {childCell.WorldPosition}. Grid pos: {childCell.GridPosition}. Base cost: {childCell.BaseCost}. Best direction: {childCell.BestDirection}. IS best: {childCell.IsBestCell}");
                 }
             }
         }
@@ -166,7 +179,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                 
                 for (int i = 0; i < _parentCellsWriter.ListData->Length; i++) {
                     var cell = _parentCellsWriter.ListData->Ptr[i];
-                    cell.ChildCells = new UnsafeList<FlowfieldCellComponent>(gridSize.x * gridSize.y, Allocator.Persistent);
+                    cell.InitChildCells(gridSize.x * gridSize.y, Allocator.Persistent);
                     cell.ChildGridSize = gridSize;
                     _parentCellsWriter.ListData->Ptr[i] = cell;
                 }

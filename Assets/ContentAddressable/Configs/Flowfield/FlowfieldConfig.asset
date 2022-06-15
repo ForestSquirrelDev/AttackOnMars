@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fda922be5cea13140af0d51ab5f64315, type: 3}
   m_Name: FlowfieldConfig
   m_EditorClassIdentifier: 
-  ParentCellSize: 50
-  ChildCellSize: 2
+  ParentCellSize: 55
+  ChildCellSize: 5
   CostHeightThreshold: 21
   UnwalkableAngleThreshold: 35

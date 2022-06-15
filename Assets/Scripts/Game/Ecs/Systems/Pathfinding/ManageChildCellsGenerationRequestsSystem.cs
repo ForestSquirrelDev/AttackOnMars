@@ -63,7 +63,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                 if (request.Value.FramesLifetime > 0) continue;
 
                 var arrayIndex = FlowfieldUtility.CalculateIndexFromGrid(request.Key, _parentGridSize);
-                var cellsToClear = _parentCells.ListData->Ptr[arrayIndex].ChildCells.AsParallelWriter();
+                var cellsToClear = _parentCells.ListData->Ptr[arrayIndex].ChildCells;
                 if (cellsToClear.ListData->Length == 0) continue;
                 
                 var clearCellsJob = new ClearChildCellsJob(cellsToClear);
@@ -76,16 +76,27 @@ namespace Game.Ecs.Systems.Pathfinding {
                 if (request.Value.FramesLifetime <= 0) continue;
 
                 var arrayIndex = FlowfieldUtility.CalculateIndexFromGrid(request.Key, _parentGridSize);
-                var parentCell = _parentCells.ListData->Ptr[arrayIndex];
-                var cellsToAdd = _parentCells.ListData->Ptr[arrayIndex].ChildCells.AsParallelWriter();
-                if (cellsToAdd.ListData->Length > 0) continue;
+                var currentParentCell = _parentCells.ListData->Ptr[arrayIndex];
+                var cellsToAdd = _parentCells.ListData->Ptr[arrayIndex].ChildCells;
+                if (cellsToAdd.ListData->Length > 0 || currentParentCell.BestCost == float.MaxValue || currentParentCell.BaseCost == float.MaxValue) continue;
 
+                var bestCellOut = new NativeArray<FlowfieldCellComponent>(1, Allocator.TempJob);
+                
                 var generateCellsJob = _emptyCellsGenerationSubSystem.Schedule(_flowfieldRuntimeData.ChildCellSize, _flowfieldRuntimeData.ChildGridSize,
-                    parentCell.WorldPosition, cellsToAdd, default(JobHandle));
-                var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, generateCellsJob, _flowfieldRuntimeData.UnwalkableAngleThreshold,
+                    currentParentCell.WorldPosition, cellsToAdd, _jobDependenciesHandler.GetCombinedReadWriteDependencies());
+                
+                
+                var findClosestToBestParentCellJob = new FindClosestToBestParentCellJob(arrayIndex, MonoHivemind.Instance.CurrentTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
+                var closestCellHandle = _jobDependenciesHandler.ScheduleReadWrite(findClosestToBestParentCellJob, dependenciesIn: generateCellsJob);
+
+                var fillHeightsJob = _findBaseCostAndHeightsSubSystem.Schedule(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, closestCellHandle, _flowfieldRuntimeData.UnwalkableAngleThreshold,
                     _flowfieldRuntimeData.CostlyHeightThreshold);
-                var generateIntegrationFieldJob = _generateIntegrationFieldSubsystem.Schedule(MonoHivemind.Instance.CurrentTarget, _flowfieldRuntimeData.ChildGridSize, cellsToAdd, fillHeightsJob);
-                var generateFlowfieldJob = _generateFlowFieldSubsystem.Schedule(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, MonoHivemind.Instance.CurrentTarget, generateIntegrationFieldJob);
+                
+                var generateIntegrationFieldJob = _generateIntegrationFieldSubsystem.Schedule(currentParentCell, bestCellOut, _flowfieldRuntimeData.ChildGridSize, cellsToAdd, fillHeightsJob);
+                
+                var generateFlowfieldJob = _generateFlowFieldSubsystem.Schedule(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, bestCellOut, generateIntegrationFieldJob);
+                
+                bestCellOut.Dispose(generateFlowfieldJob);
             }
         }
 
@@ -102,8 +113,10 @@ namespace Game.Ecs.Systems.Pathfinding {
             }
             
             public unsafe void Execute() {
-                if (_childCellsWriter.ListData->Length > 0)
+                if (_childCellsWriter.ListData->Length > 0) {
                     _childCellsWriter.ListData->Clear();
+                    Debug.Log($"Cleared cells.");
+                }
             }
         }
     }

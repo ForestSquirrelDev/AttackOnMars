@@ -86,16 +86,17 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
              if (_debugCosts) {
                  DrawCosts(cell);
              }
-             if (_drawArrows && !(cell.BestDirection.x == 0 && cell.BestDirection.y == 0) && cell.BestCost != float.MaxValue) {
+             if (_drawArrows && ((!(cell.BestDirection.x == 0 && cell.BestDirection.y == 0) && cell.BestCost != float.MaxValue) || cell.IsBestCell)) {
                  DrawSingleArrow(cell, arrowLength, arrowThickness);
              }
              if (_debugPositions) {
                  var text = cell.GridPosition.ToString();
                  Handles.Label(cell.WorldPosition, text);
              }
-             if (cell.ChildCells.Length > 0 && _debugSmallGrids) {
-                 foreach (var childCell in cell.ChildCells) {
-                     DebugCell(childCell, 1f, 1f, false);
+             if (cell.ChildCells.ListData->Length > 0 && _debugSmallGrids) {
+                 var childCells = cell.ChildCells;
+                 for (int i = 0; i < childCells.ListData->Length; i++) {
+                     DebugCell(childCells.ListData->Ptr[i], 1f, 1f, false);
                  }
              }
          }
@@ -128,8 +129,8 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
          }
         
          private void DrawSingleCell(FlowfieldCellComponent cell, float cellSize, bool takeHeightIntoAccount = true) {
-             if (cell.IsBestChildCell)
-                 Gizmos.color = Color.cyan;
+             if (cell.IsBestCell)
+                 Gizmos.color = Color.magenta;
              var height = takeHeightIntoAccount ? cell.WorldPosition.y : _terrain.transform.position.y;
              cell.WorldPosition.y = height;
              var rightBottom = new Vector3(cell.WorldPosition.x + cellSize, height, cell.WorldPosition.z);

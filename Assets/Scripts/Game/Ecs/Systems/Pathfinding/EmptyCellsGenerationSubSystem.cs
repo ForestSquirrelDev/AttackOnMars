@@ -1,5 +1,4 @@
 ﻿using Game.Ecs.Components.Pathfinding;
-using Game.Ecs.Systems.Spawners;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;

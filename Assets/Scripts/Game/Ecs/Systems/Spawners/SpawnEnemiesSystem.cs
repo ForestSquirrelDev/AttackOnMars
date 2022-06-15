@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Game.Ecs.Components;
 using Game.Ecs.Components.BlobAssetsData;
 using Game.Ecs.Components.Tags;
 using Shared;
@@ -22,6 +24,8 @@ namespace Game.Ecs.Systems.Spawners {
         private Random _positionRandomizer;
         private Random _enemyTypeRandomizer;
 
+        private List<SpawnPointData> _spawnPoints;
+
         protected override void OnCreate() {
             _enemiesEnumCount = Enum.GetNames(typeof(EnemyType)).Length;
         }
@@ -29,8 +33,13 @@ namespace Game.Ecs.Systems.Spawners {
         protected override void OnStartRunning() {
             _reference = GetSingleton<ConvertedEnemiesBlobAssetReference>();
             _ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-            _positionRandomizer = new Random(1);
-            _enemyTypeRandomizer = new Random(1);
+            _positionRandomizer = new Random((uint)UnityEngine.Random.Range(1, 1000000));
+            _enemyTypeRandomizer = new Random((uint)UnityEngine.Random.Range(1, 1000000));
+            
+            _spawnPoints = new List<SpawnPointData>();
+            Entities.WithAll<EnemySpawnPoint>().ForEach((in LocalToWorld ltw, in EnemySpawnPoint spawnPoint) => {
+                _spawnPoints.Add(new SpawnPointData(ltw.Position, spawnPoint.SpawnRadius));
+            }).WithoutBurst().Run();
         }
 
         protected override void OnUpdate() {
@@ -40,15 +49,12 @@ namespace Game.Ecs.Systems.Spawners {
                     EntityManager.DestroyEntity(e);
                 }).WithStructuralChanges().WithoutBurst().Run();
             }
-            if (_counter > 5) return;
+            if (_counter > 5000) return;
             _sortKey++;
 
+            var spawnPoint = _spawnPoints[UnityEngine.Random.Range(0, _spawnPoints.Count)];
             for (int i = 0; i < 1; i++) {
-                float3 translation = new float3 {
-                    x = _positionRandomizer.NextFloat(0f, 1665f),
-                    y = 90,
-                    z = _positionRandomizer.NextFloat(0f, 1800f)
-                };
+                float3 translation = (float3)UnityEngine.Random.insideUnitSphere * spawnPoint.Radius + spawnPoint.WorldPos;
                 var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
                 var spawnEnemiesJob = new SpawnEnemyJob {
                     EnemiesReference = _reference,
@@ -62,6 +68,22 @@ namespace Game.Ecs.Systems.Spawners {
                 _ecb.AddJobHandleForProducer(handle);
                 Dependency = handle;
                 _counter++;
+            }
+        }
+
+        public void OnDrawGizmos() {
+            foreach (var spawnPoint in _spawnPoints) {
+                Gizmos.DrawWireSphere(spawnPoint.WorldPos, spawnPoint.Radius);
+            }
+        }
+
+        private struct SpawnPointData {
+            public float3 WorldPos;
+            public float Radius;
+            
+            public SpawnPointData(float3 worldPos, float radius) {
+                WorldPos = worldPos;
+                Radius = radius;
             }
         }
         
