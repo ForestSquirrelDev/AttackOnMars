@@ -6,6 +6,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
+using UnityEngine;
 using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Spawners {
@@ -25,6 +26,7 @@ namespace Game.Ecs.Systems.Spawners {
         
         protected override unsafe void OnUpdate() {
             if (!_initialized) return;
+            int counter = 0;
             var inputDeps = JobHandle.CombineDependencies(_dependenciesHandler.GetCombinedReadWriteDependencies(), Dependency);
             var writer = _parentCellsWriter;
             
@@ -33,14 +35,18 @@ namespace Game.Ecs.Systems.Spawners {
             var cellSize = _runtimeData.ParentCellSize;
             var hivemindTarget = GetSingleton<CurrentHivemindTargetSingleton>();
             
-            Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, in Translation translation) => {
+            Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref LocalToWorld ltw) => {
+                //Debug.Log($"ReadyToAttack.OnBeforeCheck");
                 if (enemyState.Value != EnemyState.Moving) return;
-                var currentCell = writer.ListData->Ptr[FlowfieldUtility.CalculateIndexFromWorld(translation.Value, origin, gridSize, cellSize)];
-                var targetCell = writer.ListData->Ptr[FlowfieldUtility.CalculateIndexFromWorld(hivemindTarget.Value, origin, gridSize, cellSize)];
-                if (currentCell == targetCell) {
+                var currentIndex = FlowfieldUtility.CalculateIndexFromWorld(ltw.Position, origin, gridSize, cellSize);
+                var targetIndex = FlowfieldUtility.CalculateIndexFromWorld(hivemindTarget.Value, origin, gridSize, cellSize);
+                var currentCell = writer.ListData->Ptr[currentIndex];
+                var targetCell = writer.ListData->Ptr[targetIndex];
+                //Debug.Log($"ReadyToAttack.OnAfterCheck. Position: {ltw.Position} Current cell: {currentCell.GridPosition}. Index: {currentIndex} Target cell: {targetCell.GridPosition}. Index: {targetIndex}. Equals? {currentCell == targetCell}");
+                if (currentCell.GridPosition.x == targetCell.GridPosition.x && currentCell.GridPosition.y == targetCell.GridPosition.y) {
                     enemyState.Value = EnemyState.ReadyToAttack;
                 }
-            }).WithoutBurst().ScheduleParallel(inputDeps);
+            }).Schedule(inputDeps);
             
             _dependenciesHandler.AddExternalReadWriteDependency(Dependency);
         }

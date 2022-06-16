@@ -49,7 +49,7 @@ namespace Game.Ecs.Systems.Spawners {
                     EntityManager.DestroyEntity(e);
                 }).WithStructuralChanges().WithoutBurst().Run();
             }
-            if (_counter > 50000) return;
+            if (_counter > 20000) return;
             _sortKey++;
 
             var spawnPoint = _spawnPoints[UnityEngine.Random.Range(0, _spawnPoints.Count)];
