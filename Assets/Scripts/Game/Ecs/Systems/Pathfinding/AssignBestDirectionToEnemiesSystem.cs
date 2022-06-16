@@ -42,7 +42,7 @@ namespace Game.Ecs.Systems.Spawners {
                 var parentCellIndex = FlowfieldUtility.CalculateIndexFromWorld(enemyPos, parentGridOrigin, parentGridSize, parentCellSize);
                 var parentCell = parentCellsWriter.ListData->Ptr[parentCellIndex];
                 if (FlowfieldUtility.TileOutOfGrid(parentCell.GridPosition, parentGridSize)) return;
-                if (parentCell.BaseCost == float.MaxValue || parentCell.BestCost == float.MaxValue) return;
+                if (parentCell.Unwalkable) return;
                 
                 var childCellsWriter = parentCell.ChildCells;
                 if (childCellsWriter.ListData->Length <= 0) return;

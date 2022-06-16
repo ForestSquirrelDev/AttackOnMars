@@ -15,7 +15,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _jobDependenciesHandler = dependenciesHandler;
         }
         
-        public JobHandle Schedule(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize, JobHandle inputDeps, float unwalkableAngleThreshold, float costlyHeightThreshold) {
+        public JobHandle ScheduleReadWrite(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize, JobHandle inputDeps, float unwalkableAngleThreshold, float costlyHeightThreshold) {
             var cellsCount = gridSize.x * gridSize.y;
 
             var cellsOriginRaycastCommands = new NativeArray<RaycastCommand>(cellsCount, Allocator.TempJob);

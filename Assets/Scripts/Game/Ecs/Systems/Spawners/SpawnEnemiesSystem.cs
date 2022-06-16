@@ -49,11 +49,11 @@ namespace Game.Ecs.Systems.Spawners {
                     EntityManager.DestroyEntity(e);
                 }).WithStructuralChanges().WithoutBurst().Run();
             }
-            if (_counter > 5000) return;
+            if (_counter > 50000) return;
             _sortKey++;
 
             var spawnPoint = _spawnPoints[UnityEngine.Random.Range(0, _spawnPoints.Count)];
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 10; i++) {
                 float3 translation = (float3)UnityEngine.Random.insideUnitSphere * spawnPoint.Radius + spawnPoint.WorldPos;
                 var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
                 var spawnEnemiesJob = new SpawnEnemyJob {

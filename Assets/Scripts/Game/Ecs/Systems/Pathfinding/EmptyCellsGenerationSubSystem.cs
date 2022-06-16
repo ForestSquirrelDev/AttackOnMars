@@ -11,21 +11,21 @@ namespace Game.Ecs.Systems.Pathfinding {
     public class EmptyCellsGenerationSubSystem {
         private FlowfieldJobDependenciesHandler _jobDependenciesHandler;
 
-        public EmptyCellsGenerationSubSystem(FlowfieldJobDependenciesHandler dependenciesHandler, FindBaseCostAndHeightsSubSystem findBaseCostAndHeightsSubSystem) {
+        public EmptyCellsGenerationSubSystem(FlowfieldJobDependenciesHandler dependenciesHandler) {
             _jobDependenciesHandler = dependenciesHandler;
         }
         
-        public JobHandle Schedule(float cellSize, int2 gridSize, float3 origin, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
+        public JobHandle ScheduleReadWrite(float cellSize, int2 gridSize, float3 origin, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps = default) {
             var fillEmptyCellsJob = new FillEmptyCellsJob(writer, gridSize, origin, cellSize);
             return _jobDependenciesHandler.ScheduleReadWrite(fillEmptyCellsJob, 4, inputDeps);
         }
 
         [BurstCompile]
-        private struct FillEmptyCellsJob : IJob {
-            private UnsafeList<FlowfieldCellComponent>.ParallelWriter _cellsWriter;
-            private int2 _gridSize;
-            private float3 _origin;
-            private float _cellSize;
+        private readonly struct FillEmptyCellsJob : IJob {
+            private readonly UnsafeList<FlowfieldCellComponent>.ParallelWriter _cellsWriter;
+            private readonly int2 _gridSize;
+            private readonly float3 _origin;
+            private readonly float _cellSize;
 
             public FillEmptyCellsJob(UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, int2 gridSize, float3 origin, float cellSize) {
                 _cellsWriter = cellsWriter;

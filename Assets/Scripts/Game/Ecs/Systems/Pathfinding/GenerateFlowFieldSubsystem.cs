@@ -16,42 +16,21 @@ namespace Game.Ecs.Systems.Pathfinding {
             _dependenciesHandler = dependenciesHandler;
         }
 
-        public JobHandle Schedule(UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, int2 gridSize, NativeArray<FlowfieldCellComponent> bestCellIn, JobHandle inputDeps) {
-            var flowfieldJob = new GenerateFlowFieldJob(cellsWriter, gridSize, bestCellIn);
+        public JobHandle ScheduleReadWrite(UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, int2 gridSize, JobHandle inputDeps = default) {
+            var flowfieldJob = new GenerateFlowFieldJob(cellsWriter, gridSize);
             return _dependenciesHandler.ScheduleReadWrite(flowfieldJob, dependenciesIn: inputDeps);
-        }
-        
-        public JobHandle Schedule(float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, JobHandle inputDeps) {
-            var emptyArray = new NativeArray<FlowfieldCellComponent>(0, Allocator.TempJob);
-            var flowfieldJob = new GenerateFlowFieldJob(cellsWriter, gridSize, targetWorld, emptyArray);
-            var handle = _dependenciesHandler.ScheduleReadWrite(flowfieldJob, dependenciesIn: inputDeps);
-            emptyArray.Dispose(handle);
-            return handle;
         }
 
         [BurstCompile]
         private readonly struct GenerateFlowFieldJob : IJob {
             private readonly UnsafeList<FlowfieldCellComponent>.ParallelWriter _writer;
             private readonly int2 _gridSize;
-            private readonly NativeArray<FlowfieldCellComponent> _bestCellIn;
 
-            // used only for parent grid generation
-            private readonly float3 _targetWorldPosition;
-
-            public GenerateFlowFieldJob(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize, NativeArray<FlowfieldCellComponent> bestCellIn) {
+            public GenerateFlowFieldJob(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize) {
                 _writer = writer;
                 _gridSize = gridSize;
-                _bestCellIn = bestCellIn;
-                _targetWorldPosition = BoilerplateShortcuts.Invalid();
             }
-            
-            public GenerateFlowFieldJob(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize, float3 targetWorldPosition, NativeArray<FlowfieldCellComponent> emptyArray) {
-                _writer = writer;
-                _gridSize = gridSize;
-                _targetWorldPosition = targetWorldPosition;
-                _bestCellIn = emptyArray;
-            }
-            
+
             public unsafe void Execute() {
                 for (var i = 0; i < _writer.ListData->Length; i++) {
                     var cell = _writer.ListData->Ptr[i];
@@ -59,7 +38,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                     var index = FlowfieldUtility.CalculateIndexFromGrid(cell.GridPosition, _gridSize);
 
                     var neighbours = FindNeighbours(cell, _writer, _gridSize);
-                    var bestDirection = FindBestDirectionBasedOnCosts(cell, neighbours, _writer, _gridSize);
+                    var bestDirection = FindBestDirectionBasedOnCosts(cell, neighbours);
                     neighbours.Dispose();
                     cell.BestDirection = bestDirection;
                     
@@ -85,8 +64,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                 return neighbours;
             }
             
-            private unsafe int2 FindBestDirectionBasedOnCosts(FlowfieldCellComponent currentCell, NativeList<FlowfieldCellComponent> validNeighbours,
-                UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize) {
+            private int2 FindBestDirectionBasedOnCosts(FlowfieldCellComponent currentCell, NativeList<FlowfieldCellComponent> validNeighbours) {
                 var bestCell = FindLowestCostCellSlow(validNeighbours);
                 return bestCell.GridPosition - currentCell.GridPosition;
             }

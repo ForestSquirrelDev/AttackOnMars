@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EasyButtons;
 using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Utils;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
@@ -38,6 +39,7 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
 
          private IEnumerator UpdateCellsRoutine() {
              _flowfieldCells.Clear();
+             _flowfieldCells.Capacity = 5000;
              while (Application.isPlaying) {
                  if (_flowfieldManagerSystem.Initialized == false) {
                      yield return new WaitForEndOfFrame();
@@ -80,7 +82,7 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
          }
 
          private unsafe void DebugCell(FlowfieldCellComponent cell, float arrowLength, float arrowThickness, bool isParentCell) {
-             Gizmos.color = cell.BaseCost.Approximately(float.MaxValue) ? Color.red : Color.green;
+             Gizmos.color = cell.Unwalkable ? Color.red : Color.green;
              DrawSingleCell(cell, cell.Size, true);
         
              if (_debugCosts) {
@@ -116,8 +118,8 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
          private void DrawCosts(FlowfieldCellComponent cell) {
              Handles.color = Color.magenta;
         
-             var bestCost = "Best cost:" + ((cell.BaseCost == float.MaxValue || cell.BestCost == float.MaxValue) ? "MAX" : (cell.BestCost).ToString("0"));
-             var baseCost = "Base cost:" + (cell.BaseCost == float.MaxValue || cell.BestCost == float.MaxValue ? "MAX" : cell.BaseCost.ToString("0"));
+             var bestCost = "Best cost:" + ((cell.Unwalkable) ? "MAX" : (cell.BestCost).ToString("0"));
+             var baseCost = "Base cost:" + (cell.Unwalkable ? "MAX" : cell.BaseCost.ToString("0"));
              Handles.Label(cell.WorldCenter, bestCost);
              Handles.Label(cell.WorldPosition, baseCost);
          }
@@ -142,6 +144,7 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
              Gizmos.DrawLine(leftTop, cell.WorldPosition);
          }
          
+         [BurstCompile]
          private struct FillCellsForDebugJob : IJob {
              public UnsafeList<FlowfieldCellComponent>.ParallelReader FlowFieldCellsIn;
              public NativeList<FlowfieldCellComponent> FlowFieldCellsOut;

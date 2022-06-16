@@ -9,18 +9,18 @@ using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
     public class GenerateIntegrationFieldSubsystem {
-        private FlowfieldJobDependenciesHandler _dependenciesHandler;
+        private readonly FlowfieldJobDependenciesHandler _dependenciesHandler;
 
         public GenerateIntegrationFieldSubsystem(FlowfieldJobDependenciesHandler dependenciesHandler) {
             _dependenciesHandler = dependenciesHandler;
         }
 
-        public JobHandle Schedule(FlowfieldCellComponent currentParentCell, NativeArray<FlowfieldCellComponent> bestCellIn, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
+        public JobHandle ScheduleReadWrite(FlowfieldCellComponent currentParentCell, NativeArray<FlowfieldCellComponent> bestCellIn, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var integrationFieldJob = new CreateIntegrationFieldJob(currentParentCell, bestCellIn, gridSize, writer);
             return _dependenciesHandler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
         }
 
-        public JobHandle Schedule(float3 origin, float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
+        public JobHandle ScheduleReadWrite(float3 origin, float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var emptyArray = new NativeArray<FlowfieldCellComponent>(0, Allocator.TempJob);
             var integrationFieldJob = new CreateIntegrationFieldJob(origin, targetWorld, gridSize, writer, emptyArray);
             var handle = _dependenciesHandler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
@@ -30,17 +30,17 @@ namespace Game.Ecs.Systems.Pathfinding {
         
         [BurstCompile]
         private struct CreateIntegrationFieldJob : IJob {
-            private NativeArray<FlowfieldCellComponent> _bestCellsIn;
+            private NativeArray<FlowfieldCellComponent> _bestCellIn;
             private readonly int2 _gridSize;
             private readonly UnsafeList<FlowfieldCellComponent>.ParallelWriter _cellsWriter;
             private readonly FlowfieldCellComponent _currentParentCell;
 
-            // origin and target as float3 are used only from parent grid, as there are no best child cells to generate from
+            // origin and target as float3's are used only for parent grid, as there are no best child cells to generate from
             private readonly float3 _origin;
             private readonly float3 _targetWorld;
 
-            public CreateIntegrationFieldJob(FlowfieldCellComponent currentParentCell, NativeArray<FlowfieldCellComponent> bestCellsIn, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter) {
-                _bestCellsIn = bestCellsIn;
+            public CreateIntegrationFieldJob(FlowfieldCellComponent currentParentCell, NativeArray<FlowfieldCellComponent> bestCellIn, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter) {
+                _bestCellIn = bestCellIn;
                 _gridSize = gridSize;
                 _cellsWriter = cellsWriter;
                 _currentParentCell = currentParentCell;
@@ -49,7 +49,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             }
 
             public CreateIntegrationFieldJob(float3 origin, float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, NativeArray<FlowfieldCellComponent> emptyArray) {
-                _bestCellsIn = emptyArray;
+                _bestCellIn = emptyArray;
                 _currentParentCell = default;
                 _origin = origin;
                 _targetWorld = targetWorld;
@@ -59,7 +59,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             
             public unsafe void Execute() {
                 var origin = _currentParentCell == default ? _origin : _currentParentCell.WorldPosition;
-                var targetWorld = _bestCellsIn.Length == 0 ? _targetWorld : _bestCellsIn[0].WorldPosition;
+                var targetWorld = _bestCellIn.Length == 0 ? _targetWorld : _bestCellIn[0].WorldPosition;
                 
                 var openList = new NativeQueue<FlowfieldCellComponent>(Allocator.Temp);
                 var closedList = new NativeList<FlowfieldCellComponent>(_cellsWriter.ListData->Length, Allocator.Temp);
@@ -93,6 +93,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                     }
                     neighbours.Dispose();
                 }
+                closedList.Dispose();
             }
             
             private unsafe NativeList<FlowfieldCellComponent> FindNeighbours(FlowfieldCellComponent currentCell, UnsafeList<FlowfieldCellComponent>.ParallelWriter allCells, int2 gridSize) {

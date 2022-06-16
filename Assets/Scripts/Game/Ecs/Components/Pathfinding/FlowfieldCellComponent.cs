@@ -18,13 +18,13 @@ namespace Game.Ecs.Components.Pathfinding {
         public float BaseCost;
         public float BestCost;
         public int2 BestDirection;
+        public bool IsBestCell;
+        
         public UnsafeList<FlowfieldCellComponent>.ParallelWriter ChildCells => _childCells.AsParallelWriter();
+        public bool Unwalkable => BaseCost.Approximately(float.MaxValue) || BestCost.Approximately(float.MaxValue);
         
         private UnsafeList<FlowfieldCellComponent> _childCells;
-
-        // for gizmos
-        public bool IsBestCell;
-
+        
         public void InitChildCells(int capacity, Allocator allocator) {
             _childCells = new UnsafeList<FlowfieldCellComponent>(capacity, allocator);
         }
