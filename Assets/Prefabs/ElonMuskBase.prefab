@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 7810110918301957678}
   - component: {fileID: 3458874152458540163}
   - component: {fileID: 7809015963714678470}
+  - component: {fileID: 2792076501276422268}
   m_Layer: 0
   m_Name: ElonMuskBase
   m_TagString: Untagged
@@ -148,9 +149,9 @@ MonoBehaviour:
     y: 2.2122004
     z: -0.38000488
   m_PrimitiveSize:
-    x: 13.280001
+    x: 11.56
     y: 4.481926
-    z: 8.850001
+    z: 6.8
   m_PrimitiveOrientation:
     Value:
       x: -0
@@ -158,15 +159,15 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 13.280001
-    Radius: 4.4250007
+    Height: 11.56
+    Radius: 3.4
     Axis: 0
   m_Cylinder:
-    Height: 13.280001
-    Radius: 4.4250007
+    Height: 11.56
+    Radius: 3.4
     Axis: 0
   m_CylinderSideCount: 20
-  m_SphereRadius: 6.6400003
+  m_SphereRadius: 5.78
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.1992
@@ -324,6 +325,20 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
+--- !u!114 &2792076501276422268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5715360934450542271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44243e5f6eb492747ab43dd4988f654b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 50000
+  CurrentHealth: 50000
 --- !u!1 &5715360934814410923
 GameObject:
   m_ObjectHideFlags: 0
