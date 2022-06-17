@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.AddressableConfigs;
 using Game.Ecs.Components;
 using Game.Ecs.Components.BlobAssetsData;
 using Game.Ecs.Components.Tags;
@@ -21,11 +22,15 @@ namespace Game.Ecs.Systems.Spawners {
         private int _enemiesEnumCount;
         private ConvertedEnemiesBlobAssetReference _reference;
         private EndSimulationEntityCommandBufferSystem _ecb;
-        private Random _positionRandomizer;
         private Random _enemyTypeRandomizer;
+        private EnemiesSpawnerConfig _config;
 
         private List<SpawnPointData> _spawnPoints;
 
+        public void InjectConfigs(EnemiesSpawnerConfig config) {
+            _config = config;
+        }
+        
         protected override void OnCreate() {
             _enemiesEnumCount = Enum.GetNames(typeof(EnemyType)).Length;
         }
@@ -33,7 +38,6 @@ namespace Game.Ecs.Systems.Spawners {
         protected override void OnStartRunning() {
             _reference = GetSingleton<ConvertedEnemiesBlobAssetReference>();
             _ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-            _positionRandomizer = new Random((uint)UnityEngine.Random.Range(1, 1000000));
             _enemyTypeRandomizer = new Random((uint)UnityEngine.Random.Range(1, 1000000));
             
             _spawnPoints = new List<SpawnPointData>();
@@ -49,11 +53,11 @@ namespace Game.Ecs.Systems.Spawners {
                     EntityManager.DestroyEntity(e);
                 }).WithStructuralChanges().WithoutBurst().Run();
             }
-            if (_counter > 20000) return;
+            if (_counter > _config.EnemiesCount) return;
             _sortKey++;
 
             var spawnPoint = _spawnPoints[UnityEngine.Random.Range(0, _spawnPoints.Count)];
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < _config.CountPerFrame; i++) {
                 float3 translation = (float3)UnityEngine.Random.insideUnitSphere * spawnPoint.Radius + spawnPoint.WorldPos;
                 var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
                 var spawnEnemiesJob = new SpawnEnemyJob {

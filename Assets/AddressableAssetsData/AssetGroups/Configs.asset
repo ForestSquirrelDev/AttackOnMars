@@ -25,6 +25,14 @@ MonoBehaviour:
     m_Address: config_flowfieldConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: df7864a5e4a4e3146889b42644e881e5
+    m_Address: config_defaultEnemiesSpawnerConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d6008883153c21247ae85f0a4d76ed61
+    m_Address: config_defaultEnemyStatsConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: cd9f16cbb7bd9f44aa8bc03399bf1def, type: 2}
   m_SchemaSet:

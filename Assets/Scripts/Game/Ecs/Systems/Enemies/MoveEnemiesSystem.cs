@@ -1,3 +1,4 @@
+using Game.AddressableConfigs;
 using Game.Ecs.Components.Enemies;
 using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Components.Tags;
@@ -9,15 +10,20 @@ using UnityEngine;
 namespace Game.Ecs.Systems {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial class MoveEnemiesSystem : SystemBase {
-        private const float _xzDelta = 0.1f;
-        private const float _yDelta = 0.2f;
-        
+        private EnemyStatsConfig _config;
+
+        public void InjectConfigs(EnemyStatsConfig config) {
+            _config = config;
+        }
+
         protected override void OnUpdate() {
+            var xzSpeed = _config.XZMoveSpeed;
+            var ySpeed = _config.YMoveSpeed;
             Entities.WithAll<Tag_Enemy>().ForEach((ref Translation translation, in EnemyStateComponent enemyState, in BestEnemyDirectionComponent bestDirection) => {
                 if (enemyState.Value != EnemyState.Moving) return;
-                var x = Mathf.MoveTowards(translation.Value.x, translation.Value.x + bestDirection.Value.x, _xzDelta);
-                var y = Mathf.MoveTowards(translation.Value.y, bestDirection.Value.y, _yDelta);
-                var z = Mathf.MoveTowards(translation.Value.z, translation.Value.z + bestDirection.Value.z, _xzDelta);
+                var x = Mathf.MoveTowards(translation.Value.x, translation.Value.x + bestDirection.Value.x, xzSpeed);
+                var y = Mathf.MoveTowards(translation.Value.y, translation.Value.y + bestDirection.Value.y, ySpeed);
+                var z = Mathf.MoveTowards(translation.Value.z, translation.Value.z + bestDirection.Value.z, xzSpeed);
                 translation.Value = new float3(x, y, z);
             }).ScheduleParallel();
         }

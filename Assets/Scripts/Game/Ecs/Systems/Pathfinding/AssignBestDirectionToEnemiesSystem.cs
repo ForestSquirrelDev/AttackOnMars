@@ -1,3 +1,4 @@
+using Game.Ecs.Components.Enemies;
 using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Components.Tags;
 using Game.Ecs.Systems.Pathfinding;
@@ -6,7 +7,6 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Spawners {
@@ -17,7 +17,7 @@ namespace Game.Ecs.Systems.Spawners {
 
         private bool _initialized;
 
-        public void Construct(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter,
+        public void InjectFlowfieldDependencies(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter,
             FlowfieldRuntimeData runtimeData) {
             _dependenciesHandler = dependenciesHandler;
             _parentCellsWriter = parentCellsWriter;
@@ -35,7 +35,8 @@ namespace Game.Ecs.Systems.Spawners {
             var childGridSize = _flowfieldRuntimeData.ChildGridSize;
             var childCellSize = _flowfieldRuntimeData.ChildCellSize;
             
-            Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref BestEnemyDirectionComponent bestDirectionComponent, in LocalToWorld ltw) => {
+            Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref BestEnemyDirectionComponent bestDirectionComponent, in LocalToWorld ltw, in EnemyStateComponent enemyState) => {
+                if (enemyState.Value != EnemyState.Moving) return;
                 var enemyPos = ltw.Position;
                 var toGrid = FlowfieldUtility.ToGrid(enemyPos, parentGridOrigin, parentCellSize);
                 if (FlowfieldUtility.TileOutOfGrid(toGrid, parentGridSize)) return;
@@ -51,7 +52,7 @@ namespace Game.Ecs.Systems.Spawners {
                 //Debug.Log($"Parent cell index: {parentCellIndex}. Child cell index: {childCellIndex}. Child cells length: {childCellsWriter.ListData->Length}");
                 var childCell = childCellsWriter.ListData->Ptr[childCellIndex];
                 var bestDirectionOnGrid = childCell.BestDirection;
-                var bestWorldDirection = new float3(bestDirectionOnGrid.x, childCell.WorldCenter.y, bestDirectionOnGrid.y);
+                var bestWorldDirection = math.normalize(new float3(bestDirectionOnGrid.x, math.normalize(childCell.WorldCenter - ltw.Position).y, bestDirectionOnGrid.y));
                 bestDirectionComponent.Value = bestWorldDirection;
             }).Schedule(inputDeps);
             

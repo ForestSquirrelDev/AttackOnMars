@@ -9,8 +9,7 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
         private World World => World.DefaultGameObjectInjectionWorld;
         private FlowfieldManagerSystem _flowfieldManagerSystem => World.GetOrCreateSystem<FlowfieldManagerSystem>();
 
-        public override async void OnAwake() {
-            await _flowfieldManagerSystem.LoadConfigsAsync();
+        public override void OnAwake() {
             _flowfieldManagerSystem.Init(_terrainTransform);
         }
     }

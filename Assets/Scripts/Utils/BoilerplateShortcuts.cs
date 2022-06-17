@@ -21,5 +21,9 @@ namespace Game.Ecs.Utils {
         public static float3 Invalid() {
             return new float3(-123123, -123123, -123123);
         }
+
+        public static float3 Up(this float3 f) {
+            return new float3(0, 1, 0);
+        }
     }
 }

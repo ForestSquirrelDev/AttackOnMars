@@ -30,14 +30,14 @@ namespace Game.Ecs.Systems.Pathfinding {
         private SetReadyToAttackStateSystem _setReadyToAttackStateSystem;
 
         private FlowfieldConfig _flowfieldConfig;
-        private FlowfieldRuntimeData _flowfieldRuntimeData;
         private TerrainData _terrainData;
-        
-        public async Task LoadConfigsAsync() {
-            _flowfieldConfig = await LoadFlowfieldConfig();
-            _terrainData = await LoadTerrainData();
-        }
+        private FlowfieldRuntimeData _flowfieldRuntimeData;
 
+        public void InjectConfigs(FlowfieldConfig flowfieldConfig, TerrainData terrainData) {
+            _flowfieldConfig = flowfieldConfig;
+            _terrainData = terrainData;
+        }
+        
         public void Init(Transform terrainTransform) {
             GetSubsystems();
             CallSubsystemsOnCreate();
@@ -82,7 +82,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _detectEnemiesSystem.Construct(_jobDependenciesHandler, _flowfieldRuntimeData, _childCellsGenerationSystem);
             _childCellsGenerationSystem.Construct(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
-            _assignBestDirectionToEnemiesSystem.Construct(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
+            _assignBestDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
             _setReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
         }
         
@@ -129,19 +129,6 @@ namespace Game.Ecs.Systems.Pathfinding {
             return _jobDependenciesHandler.ScheduleReadOnly(flowfieldRelatedJob, framesLifetime);
         }
 
-        private async Task<FlowfieldConfig> LoadFlowfieldConfig() {
-            var flowfieldConfigHandle = Addressables.LoadAssetAsync<FlowfieldConfig>("config_flowfieldConfig");
-            await flowfieldConfigHandle.Task;
-            return flowfieldConfigHandle.Result;
-        }
-        
-        private static async Task<TerrainData> LoadTerrainData() {
-            var terrainDataHandle = Addressables.LoadAssetAsync<TerrainData>("config_defaultTerrainData");
-            await terrainDataHandle.Task;
-            var terrainData = terrainDataHandle.Result;
-            return terrainData;
-        }
-        
         private int2 FindParentGridSize(Vector3 terrainPosition, TerrainData terrainData, FlowfieldConfig config) {
             var terrainRect = TerrainUtility.GetWorldRect(terrainPosition.x, terrainPosition.z, terrainData.size.x, terrainData.size.z);
             return new int2(terrainRect.width / config.ParentCellSize);
