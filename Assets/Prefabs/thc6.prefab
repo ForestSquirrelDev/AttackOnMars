@@ -9,11 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 494698}
+  - component: {fileID: 5690125882879848492}
   - component: {fileID: 504305656}
   - component: {fileID: 3233276849124810493}
-  - component: {fileID: 5690125882879848492}
   - component: {fileID: -5274929297801637913}
   - component: {fileID: 8702840604820584320}
+  - component: {fileID: 205703505880618169}
   m_Layer: 0
   m_Name: thc6
   m_TagString: Untagged
@@ -28,15 +29,38 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111292}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: -1.2690953, y: 0.015, z: -3.9280033}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 440078}
   - {fileID: 288181789811319643}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &5690125882879848492
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111292}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.0010731816, y: 1.0213901, z: -0.105097264}
+  m_Size: 2.0981872
+  m_FadeMode: 2
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.06968627
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2112022579259056944}
+  - screenRelativeHeight: 0.008999994
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5909942589081469327}
+  m_Enabled: 1
 --- !u!114 &504305656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,29 +86,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed0243a61c1e2b1468ccdae1e2643c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!205 &5690125882879848492
-LODGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 111292}
-  serializedVersion: 2
-  m_LocalReferencePoint: {x: 0.0010731816, y: 1.0213901, z: -0.105097264}
-  m_Size: 2.0981872
-  m_FadeMode: 2
-  m_AnimateCrossFading: 0
-  m_LastLODIsBillboard: 0
-  m_LODs:
-  - screenRelativeHeight: 0.06968627
-    fadeTransitionWidth: 0
-    renderers:
-    - renderer: {fileID: 2112022579259056944}
-  - screenRelativeHeight: 0.008999994
-    fadeTransitionWidth: 0
-    renderers:
-    - renderer: {fileID: 5909942589081469327}
-  m_Enabled: 1
 --- !u!114 &-5274929297801637913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +115,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: 0
+--- !u!114 &205703505880618169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7ccc5ec3d13244e9c0eb27811337e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 1
 --- !u!1 &138000
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,7 +155,7 @@ Transform:
   m_GameObject: {fileID: 138000}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 494698}
   m_RootOrder: 0
@@ -222,7 +236,7 @@ Transform:
   m_GameObject: {fileID: 4918299622457052849}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 494698}
   m_RootOrder: 1

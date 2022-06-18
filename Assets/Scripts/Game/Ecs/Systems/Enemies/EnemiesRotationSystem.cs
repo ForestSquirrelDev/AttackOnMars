@@ -24,13 +24,14 @@ namespace Game.Ecs.Systems {
             var rotationSpeed = _config.RotationSpeed;
             var t = _elapsedFrames / _lerpFramesCount;
             var delta = UnityEngine.Time.deltaTime;
+            var basePosition = GetSingleton<CurrentHivemindTargetSingleton>().Value;
 
-            Entities.WithAll<Tag_Enemy>().ForEach((ref Rotation rotation, in LocalToWorld localToWorldMatrix, in BestEnemyDirectionComponent bestDirection) => {
+            Entities.WithAll<Tag_Enemy>().ForEach((ref Rotation rotation, in LocalToWorld ltw, in BestEnemyDirectionComponent bestDirection, in EnemyStateComponent enemyState) => {
                 if (bestDirection.Value.Magnitude() <= 0.01f) return;
-                var lookAtPoint = localToWorldMatrix.Position + bestDirection.Value;
-                var directionToWorldPoint = (lookAtPoint - localToWorldMatrix.Position);
+                var lookAtPoint = enemyState.Value != EnemyState.Attacking ? ltw.Position + bestDirection.Value : ltw.Position + math.normalizesafe(basePosition - ltw.Position);
+                var directionToWorldPoint = lookAtPoint - ltw.Position;
                 var lookRotation = quaternion.LookRotation(directionToWorldPoint, new float3(0, 1, 0));
-                var lerpedRotation = math.nlerp(localToWorldMatrix.Rotation, lookRotation, t * delta * rotationSpeed);
+                var lerpedRotation = math.nlerp(ltw.Rotation, lookRotation, t * delta * rotationSpeed);
                 rotation.Value = lerpedRotation;
             }).ScheduleParallel();
             

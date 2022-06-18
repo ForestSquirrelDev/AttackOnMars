@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Physics.Authoring;
 using UnityEngine;
 
 namespace Game.Ecs.Hybrid.Conversion {
@@ -9,9 +10,11 @@ namespace Game.Ecs.Hybrid.Conversion {
         
         public override void Convert() {
             _assetStore = new BlobAssetStore();
-            var conversionSettings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, _assetStore);
+            var conversionSettings = GameObjectConversionSettings.FromWorld(World, _assetStore);
             var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(_base, conversionSettings);
-            World.DefaultGameObjectInjectionWorld.EntityManager.SetName(entity, "ElonMuskBase");
+            // physics body is added here because conversion for some reason doesn't want to grab it from the gameobject authoring component
+            EntityManager.AddComponent<PhysicsBodyAuthoring>(entity);
+            EntityManager.SetName(entity, "ElonMuskBase");
             Destroy(_base);
         }
 

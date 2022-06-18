@@ -52,6 +52,7 @@ namespace Game.Ecs.Systems {
             _world.GetOrCreateSystem<SpawnEnemiesSystem>().InjectConfigs(EnemiesSpawnerConfig);
             _world.GetOrCreateSystem<MoveEnemiesSystem>().InjectConfigs(EnemyStatsConfig);
             _world.GetOrCreateSystem<HumanBaseHealthControllerSystem>().InjectConfigs(HumanBaseConfig);
+            _world.GetOrCreateSystem<EnemiesAttackSystem>().InjectConfigs(EnemyStatsConfig);
         }
     }
 }

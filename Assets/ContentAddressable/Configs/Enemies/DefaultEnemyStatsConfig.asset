@@ -15,3 +15,16 @@ MonoBehaviour:
   XZMoveSpeed: 0.15
   YMoveSpeed: 0.2
   RotationSpeed: 15
+  RaycastHeight: 4
+  RAycastLength: 2
+  AttackCooldown: 1
+  BoxCastOffset:
+    x: 0
+    y: 1
+    z: 1
+  BoxCastSize:
+    x: 3
+    y: 3
+    z: 3
+  BoxCastMaxDistance: 3
+  Damage: 1000

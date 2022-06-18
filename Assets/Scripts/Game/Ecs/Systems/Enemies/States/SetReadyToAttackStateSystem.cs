@@ -2,9 +2,11 @@ using Game.Ecs.Components.Enemies;
 using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Components.Tags;
 using Game.Ecs.Systems.Pathfinding;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using Utils.Pathfinding;
@@ -42,13 +44,29 @@ namespace Game.Ecs.Systems.Spawners {
                 var targetIndex = FlowfieldUtility.CalculateIndexFromWorld(hivemindTarget.Value, origin, gridSize, cellSize);
                 var currentCell = writer.ListData->Ptr[currentIndex];
                 var targetCell = writer.ListData->Ptr[targetIndex];
-                //Debug.Log($"ReadyToAttack.OnAfterCheck. Position: {ltw.Position} Current cell: {currentCell.GridPosition}. Index: {currentIndex} Target cell: {targetCell.GridPosition}. Index: {targetIndex}. Equals? {currentCell == targetCell}");
-                if (currentCell.GridPosition.x == targetCell.GridPosition.x && currentCell.GridPosition.y == targetCell.GridPosition.y) {
+                var neighbourOfsets = FlowfieldUtility.GetNeighbourOffsets();
+                var closeToTarget = new NativeArray<bool>(neighbourOfsets.Length, Allocator.Temp);
+                for (int i = 0; i < closeToTarget.Length; i++) {
+                    var gridPos = targetCell.GridPosition;
+                    gridPos += neighbourOfsets[i];
+                    closeToTarget[i] = currentCell.GridPosition.x == gridPos.x && currentCell.GridPosition.y == gridPos.y;
+                }
+                var arrivedAtCell = currentCell.GridPosition.x == targetCell.GridPosition.x && currentCell.GridPosition.y == targetCell.GridPosition.y;
+                if (arrivedAtCell || Any(closeToTarget)) {
                     enemyState.Value = EnemyState.ReadyToAttack;
                 }
+                neighbourOfsets.Dispose();
+                closeToTarget.Dispose();
             }).Schedule(inputDeps);
             
             _dependenciesHandler.AddExternalReadWriteDependency(Dependency);
+        }
+
+        private static bool Any(NativeArray<bool> bools) {
+            foreach (var value in bools) {
+                if (value) return true;
+            }
+            return false;
         }
     }
 }

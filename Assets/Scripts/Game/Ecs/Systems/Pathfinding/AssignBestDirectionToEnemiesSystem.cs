@@ -36,7 +36,7 @@ namespace Game.Ecs.Systems.Spawners {
             var childCellSize = _flowfieldRuntimeData.ChildCellSize;
             
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref BestEnemyDirectionComponent bestDirectionComponent, in LocalToWorld ltw, in EnemyStateComponent enemyState) => {
-                if (enemyState.Value != EnemyState.Moving) return;
+                if (enemyState.Value == EnemyState.Attacking) return;
                 var enemyPos = ltw.Position;
                 var toGrid = FlowfieldUtility.ToGrid(enemyPos, parentGridOrigin, parentCellSize);
                 if (FlowfieldUtility.TileOutOfGrid(toGrid, parentGridSize)) return;
