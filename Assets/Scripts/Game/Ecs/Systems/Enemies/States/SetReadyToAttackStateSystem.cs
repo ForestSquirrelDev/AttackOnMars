@@ -36,27 +36,35 @@ namespace Game.Ecs.Systems.Spawners {
             var gridSize = _runtimeData.ParentGridSize;
             var cellSize = _runtimeData.ParentCellSize;
             var hivemindTarget = GetSingleton<CurrentHivemindTargetSingleton>();
+            var checkNeighboringCells = false;
             
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref LocalToWorld ltw) => {
                 //Debug.Log($"ReadyToAttack.OnBeforeCheck");
-                if (enemyState.Value != EnemyState.Moving) return;
+                if (enemyState.State != EnemyState.Moving) return;
                 var currentIndex = FlowfieldUtility.CalculateIndexFromWorld(ltw.Position, origin, gridSize, cellSize);
                 var targetIndex = FlowfieldUtility.CalculateIndexFromWorld(hivemindTarget.Value, origin, gridSize, cellSize);
                 var currentCell = writer.ListData->Ptr[currentIndex];
                 var targetCell = writer.ListData->Ptr[targetIndex];
-                var neighbourOfsets = FlowfieldUtility.GetNeighbourOffsets();
-                var closeToTarget = new NativeArray<bool>(neighbourOfsets.Length, Allocator.Temp);
-                for (int i = 0; i < closeToTarget.Length; i++) {
-                    var gridPos = targetCell.GridPosition;
-                    gridPos += neighbourOfsets[i];
-                    closeToTarget[i] = currentCell.GridPosition.x == gridPos.x && currentCell.GridPosition.y == gridPos.y;
-                }
                 var arrivedAtCell = currentCell.GridPosition.x == targetCell.GridPosition.x && currentCell.GridPosition.y == targetCell.GridPosition.y;
-                if (arrivedAtCell || Any(closeToTarget)) {
-                    enemyState.Value = EnemyState.ReadyToAttack;
+
+                if (checkNeighboringCells) {
+                    var neighbourOfsets = FlowfieldUtility.GetNeighbourOffsets();
+                    var closeToTarget = new NativeArray<bool>(neighbourOfsets.Length, Allocator.Temp);
+                    for (int i = 0; i < closeToTarget.Length; i++) {
+                        var gridPos = targetCell.GridPosition;
+                        gridPos += neighbourOfsets[i];
+                        closeToTarget[i] = !FlowfieldUtility.TileOutOfGrid(gridPos, gridSize) && (currentCell.GridPosition.x == gridPos.x && currentCell.GridPosition.y == gridPos.y);
+                    }
+                    if (arrivedAtCell || Any(closeToTarget)) {
+                        enemyState.State = EnemyState.ReadyToAttack;
+                    }
+                    neighbourOfsets.Dispose();
+                    closeToTarget.Dispose();
+                } else {
+                    if (arrivedAtCell) {
+                        enemyState.State = EnemyState.ReadyToAttack;
+                    }
                 }
-                neighbourOfsets.Dispose();
-                closeToTarget.Dispose();
             }).Schedule(inputDeps);
             
             _dependenciesHandler.AddExternalReadWriteDependency(Dependency);

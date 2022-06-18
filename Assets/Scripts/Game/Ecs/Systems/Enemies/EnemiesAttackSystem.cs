@@ -28,7 +28,7 @@ namespace Game.Ecs.Systems.Spawners {
             var ecb = _ecb.CreateCommandBuffer();
             
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref AttackCounterComponent attackCounter, in LocalToWorld ltw, in EnemyStateComponent enemyState) => {
-                if (enemyState.Value != EnemyState.Attacking) 
+                if (enemyState.State != EnemyState.Attacking) 
                     return;
                 if (attackCounter.Value > 0) {
                     attackCounter.Value -= delta;

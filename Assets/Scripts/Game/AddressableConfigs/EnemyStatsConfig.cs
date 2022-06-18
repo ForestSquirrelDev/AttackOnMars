@@ -10,7 +10,8 @@ namespace Game.AddressableConfigs {
 
         [Header("Enemy base detection")]
         public float RaycastHeight = 3f;
-        public float RAycastLength = 3;
+        public float RaycastLength = 3;
+        public float RaycastCooldown = 0.5f;
         
         [Header("Attack")]
         public float AttackCooldown = 1f;

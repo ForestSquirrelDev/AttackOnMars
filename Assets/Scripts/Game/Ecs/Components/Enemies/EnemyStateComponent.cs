@@ -3,7 +3,8 @@ using Unity.Entities;
 namespace Game.Ecs.Components.Enemies {
     [GenerateAuthoringComponent]
     public struct EnemyStateComponent : IComponentData {
-        public EnemyState Value;
+        public EnemyState State;
+        public float ArrivedRaycastCheckCounter;
     }
 
     public enum EnemyState {
