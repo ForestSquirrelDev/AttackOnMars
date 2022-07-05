@@ -3,8 +3,6 @@ using Game.Ecs.Components;
 using Game.Ecs.Components.Buildings;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Jobs;
-using UnityEngine;
 
 namespace Game.Ecs.Systems.Buildings {
     public partial class HumanBaseHealthControllerSystem : SystemBase {
@@ -37,12 +35,6 @@ namespace Game.Ecs.Systems.Buildings {
             Dependency = Entities.WithAll<Tag_MainHumanBase>().ForEach((in BuildingHealthComponent healthIn) => {
                 currentHealthOut[0] = healthIn.CurrentHealth;
             }).Schedule(Dependency);
-
-            if (Input.GetKeyDown(KeyCode.U)) {
-                Entities.WithAll<Tag_MainHumanBase>().ForEach((ref BuildingHealthComponent health) => {
-                    health.CurrentHealth -= 1000;
-                }).Schedule();
-            }
         }
 
         protected override void OnDestroy() {
