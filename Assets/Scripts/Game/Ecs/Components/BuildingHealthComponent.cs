@@ -2,7 +2,7 @@ using Unity.Entities;
 
 namespace Game.Ecs.Components {
     [GenerateAuthoringComponent]
-    public struct HealthComponent : IComponentData {
+    public struct BuildingHealthComponent : IComponentData {
         public int CurrentHealth;
     }
 }

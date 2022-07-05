@@ -12,20 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deb58ca5d50c49c47be53efa12b68a03, type: 3}
   m_Name: DefaultEnemyStatsConfig
   m_EditorClassIdentifier: 
-  XZMoveSpeed: 0.15
+  XZMoveSpeed: 0.3
   YMoveSpeed: 0.2
   RotationSpeed: 15
   RaycastHeight: 2
-  RaycastLength: 0.5
+  RaycastLength: 1
   RaycastCooldown: 0.5
-  AttackCooldown: 1
-  BoxCastOffset:
+  AttackCooldown: 3
+  StartRaycastOffset:
     x: 0
-    y: 1
-    z: 1
-  BoxCastSize:
-    x: 3
-    y: 3
-    z: 3
-  BoxCastMaxDistance: 3
+    y: 2
+    z: 0
+  AttackRaycastLength: 2.5
   Damage: 1000

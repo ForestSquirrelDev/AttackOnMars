@@ -14,7 +14,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         public NativeHashMap<int2, ChildCellsGenerationRequest> Requests;
 
         private UnsafeList<FlowfieldCellComponent>.ParallelWriter _parentCells;
-        private FlowfieldJobDependenciesHandler _jobDependenciesHandler;
+        private DependenciesScheduler _jobDependenciesScheduler;
 
         private EmptyCellsGenerationSubSystem _emptyCellsGenerationSubSystem;
         private FindBaseCostAndHeightsSubSystem _findBaseCostAndHeightsSubSystem;
@@ -25,10 +25,10 @@ namespace Game.Ecs.Systems.Pathfinding {
         private FlowfieldRuntimeData _flowfieldRuntimeData;
         private bool _initialized;
         
-        public void Construct(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCells,
+        public void Construct(DependenciesScheduler dependenciesScheduler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCells,
             EmptyCellsGenerationSubSystem emptyCellsGenerationSubSystem, FindBaseCostAndHeightsSubSystem findBaseCostAndHeightsSubSystem,
             GenerateIntegrationFieldSubsystem generateIntegrationFieldSubsystem, GenerateFlowFieldSubsystem generateFlowFieldSubsystem, int2 gridSize, FlowfieldRuntimeData runtimeData) {
-            _jobDependenciesHandler = dependenciesHandler;
+            _jobDependenciesScheduler = dependenciesScheduler;
             _emptyCellsGenerationSubSystem = emptyCellsGenerationSubSystem;
             _findBaseCostAndHeightsSubSystem = findBaseCostAndHeightsSubSystem;
             _generateIntegrationFieldSubsystem = generateIntegrationFieldSubsystem;
@@ -71,7 +71,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                 if (cellsToClear.ListData->Length == 0) continue;
                 
                 var clearCellsJob = new ClearChildCellsJob(cellsToClear);
-                _jobDependenciesHandler.ScheduleReadWrite(clearCellsJob);
+                _jobDependenciesScheduler.ScheduleReadWrite(clearCellsJob);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Game.Ecs.Systems.Pathfinding {
 
                 var bestCellOut = new NativeArray<FlowfieldCellComponent>(1, Allocator.TempJob);
                 var findClosestToBestParentCellJob = new FindTargetCellJob(arrayIndex, hivemindTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
-                var closestCellHandle = _jobDependenciesHandler.ScheduleReadWrite(findClosestToBestParentCellJob, dependenciesIn: generateCellsJob);
+                var closestCellHandle = _jobDependenciesScheduler.ScheduleReadWrite(findClosestToBestParentCellJob, dependenciesIn: generateCellsJob);
 
                 var fillHeightsJob = _findBaseCostAndHeightsSubSystem.ScheduleReadWrite(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, closestCellHandle, _flowfieldRuntimeData.UnwalkableAngleThreshold,
                     _flowfieldRuntimeData.CostlyHeightThreshold);

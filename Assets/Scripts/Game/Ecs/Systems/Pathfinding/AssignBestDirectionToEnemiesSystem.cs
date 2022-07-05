@@ -11,15 +11,15 @@ using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Spawners {
     public partial class AssignBestDirectionToEnemiesSystem : SystemBase {
-        private FlowfieldJobDependenciesHandler _dependenciesHandler;
+        private DependenciesScheduler _dependenciesScheduler;
         private UnsafeList<FlowfieldCellComponent>.ParallelWriter _parentCellsWriter;
         private FlowfieldRuntimeData _flowfieldRuntimeData;
 
         private bool _initialized;
 
-        public void InjectFlowfieldDependencies(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter,
+        public void InjectFlowfieldDependencies(DependenciesScheduler dependenciesScheduler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter,
             FlowfieldRuntimeData runtimeData) {
-            _dependenciesHandler = dependenciesHandler;
+            _dependenciesScheduler = dependenciesScheduler;
             _parentCellsWriter = parentCellsWriter;
             _flowfieldRuntimeData = runtimeData;
             _initialized = true;
@@ -27,7 +27,7 @@ namespace Game.Ecs.Systems.Spawners {
 
         protected override unsafe void OnUpdate() {
             if (!_initialized) return;
-            var inputDeps = JobHandle.CombineDependencies(Dependency, _dependenciesHandler.GetCombinedReadWriteDependencies());
+            var inputDeps = JobHandle.CombineDependencies(Dependency, _dependenciesScheduler.GetCombinedReadWriteDependencies());
             var parentCellsWriter = _parentCellsWriter;
             var parentGridOrigin = _flowfieldRuntimeData.ParentGridOrigin;
             var parentCellSize = _flowfieldRuntimeData.ParentCellSize;
@@ -56,7 +56,7 @@ namespace Game.Ecs.Systems.Spawners {
                 bestDirectionComponent.Value = bestWorldDirection;
             }).Schedule(inputDeps);
             
-            _dependenciesHandler.AddExternalReadWriteDependency(Dependency);
+            _dependenciesScheduler.AddExternalReadWriteDependency(Dependency);
         }
     }
 }

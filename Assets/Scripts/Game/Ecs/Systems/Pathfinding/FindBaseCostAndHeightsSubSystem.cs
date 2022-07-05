@@ -9,10 +9,10 @@ using UnityEngine;
 namespace Game.Ecs.Systems.Pathfinding {
     // Flowfield step 2: find heights and base costs via scheduled raycasts.
     public class FindBaseCostAndHeightsSubSystem {
-        private readonly FlowfieldJobDependenciesHandler _jobDependenciesHandler;
+        private readonly DependenciesScheduler _jobDependenciesScheduler;
 
-        public FindBaseCostAndHeightsSubSystem(FlowfieldJobDependenciesHandler dependenciesHandler) {
-            _jobDependenciesHandler = dependenciesHandler;
+        public FindBaseCostAndHeightsSubSystem(DependenciesScheduler dependenciesScheduler) {
+            _jobDependenciesScheduler = dependenciesScheduler;
         }
         
         public JobHandle ScheduleReadWrite(UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, int2 gridSize, JobHandle inputDeps, float unwalkableAngleThreshold, float costlyHeightThreshold) {
@@ -24,7 +24,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             var cellsCentersRaycastHits = new NativeArray<RaycastHit>(cellsCount, Allocator.TempJob);
 
             var fillRaycastsCommandsJob = new FillRaycastCommandsJob(writer, cellsOriginRaycastCommands, cellsCenterRaycastCommands);
-            var fillRaycastCommandsHandle = _jobDependenciesHandler.ScheduleReadWrite(fillRaycastsCommandsJob, dependenciesIn: inputDeps);
+            var fillRaycastCommandsHandle = _jobDependenciesScheduler.ScheduleReadWrite(fillRaycastsCommandsJob, dependenciesIn: inputDeps);
             
             var fireOriginRaycastsJobHandle = RaycastCommand.ScheduleBatch(cellsOriginRaycastCommands, cellsOriginsRaycastHits, 1, fillRaycastCommandsHandle);
             var fireCenterRaycastsJobHandle = RaycastCommand.ScheduleBatch(cellsCenterRaycastCommands, cellsCentersRaycastHits, 1, fillRaycastCommandsHandle);
@@ -33,7 +33,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             
             var heightsAndBaseCostJob = new FillHeightsAndCalculateBaseCostsJob(writer, cellsOriginsRaycastHits, 
                 cellsCentersRaycastHits, unwalkableAngleThreshold, costlyHeightThreshold);
-            var heightsAndBaseCostJobHandle = _jobDependenciesHandler.ScheduleReadWrite(heightsAndBaseCostJob, dependenciesIn: combinedDependencies);
+            var heightsAndBaseCostJobHandle = _jobDependenciesScheduler.ScheduleReadWrite(heightsAndBaseCostJob, dependenciesIn: combinedDependencies);
             
             cellsOriginRaycastCommands.Dispose(heightsAndBaseCostJobHandle);
             cellsCenterRaycastCommands.Dispose(heightsAndBaseCostJobHandle);

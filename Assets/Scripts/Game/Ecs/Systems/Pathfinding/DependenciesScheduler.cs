@@ -9,13 +9,13 @@ namespace Game.Ecs.Systems.Pathfinding {
     // There are also cases when we still need to access job's results on the main thread, for instance in Gizmos drawer.
     // For that case all jobs have virtual "lifetime" based on frames: after given number of frames job.Complete() is called so it's results can be accessed from main thread.
     // That means if we want to access job's results, we could schedule it, for instance, with lifetime of one frame, and wait one frame before accessing results.
-    public class FlowfieldJobDependenciesHandler {
-        private NativeList<FrameBoundJobHandle> _readWriteFlowfieldDependencies;
-        private NativeList<FrameBoundJobHandle> _readonlyFlowfieldDependencies;
+    public class DependenciesScheduler {
+        private NativeList<FrameBoundJobHandle> _readWriteDependencies;
+        private NativeList<FrameBoundJobHandle> _readonlyDependencies;
 
         public void OnCreate() {
-            _readWriteFlowfieldDependencies = new NativeList<FrameBoundJobHandle>(10, Allocator.Persistent);
-            _readonlyFlowfieldDependencies = new NativeList<FrameBoundJobHandle>(10, Allocator.Persistent);
+            _readWriteDependencies = new NativeList<FrameBoundJobHandle>(10, Allocator.Persistent);
+            _readonlyDependencies = new NativeList<FrameBoundJobHandle>(10, Allocator.Persistent);
         }
         
         public void OnUpdate() {
@@ -25,43 +25,43 @@ namespace Game.Ecs.Systems.Pathfinding {
         
         public void OnDestroy() {
             CompleteAll();
-            _readWriteFlowfieldDependencies.Dispose();
-            _readonlyFlowfieldDependencies.Dispose();
+            _readWriteDependencies.Dispose();
+            _readonlyDependencies.Dispose();
         }
         
         private void RemoveCompletedHandles() {
-            for (int i = 0; i < _readWriteFlowfieldDependencies.Length; i++) {
-                var deps = _readWriteFlowfieldDependencies[i];
+            for (int i = 0; i < _readWriteDependencies.Length; i++) {
+                var deps = _readWriteDependencies[i];
                 if (deps.Completed) {
-                    _readWriteFlowfieldDependencies.RemoveAt(i);
+                    _readWriteDependencies.RemoveAt(i);
                 }
             }
             
-            for (int i = 0; i < _readonlyFlowfieldDependencies.Length; i++) {
-                var deps = _readonlyFlowfieldDependencies[i];
+            for (int i = 0; i < _readonlyDependencies.Length; i++) {
+                var deps = _readonlyDependencies[i];
                 if (deps.Completed) {
-                    _readonlyFlowfieldDependencies.RemoveAt(i);
+                    _readonlyDependencies.RemoveAt(i);
                 }
             }
         }
         
         private void DecrementHandlesLifetimeAndComplete() {
-            for (var i = 0; i < _readWriteFlowfieldDependencies.Length; i++) {
-                var deps = _readWriteFlowfieldDependencies[i];
+            for (var i = 0; i < _readWriteDependencies.Length; i++) {
+                var deps = _readWriteDependencies[i];
                 deps.DecrementLifetime();
                 if (deps.FramesLifetime <= 0) {
                     deps.Complete();
                 }
-                _readWriteFlowfieldDependencies[i] = deps;
+                _readWriteDependencies[i] = deps;
             }
             
-            for (var i = 0; i < _readonlyFlowfieldDependencies.Length; i++) {
-                var deps = _readonlyFlowfieldDependencies[i];
+            for (var i = 0; i < _readonlyDependencies.Length; i++) {
+                var deps = _readonlyDependencies[i];
                 deps.DecrementLifetime();
                 if (deps.FramesLifetime <= 0) {
                     deps.Complete();
                 }
-                _readonlyFlowfieldDependencies[i] = deps;
+                _readonlyDependencies[i] = deps;
             }
         }
 
@@ -69,7 +69,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             var dependencies = GetDependenciesForReadWrite();
             var combinedDependencies = JobHandle.CombineDependencies(JobHandle.CombineDependencies(dependencies), dependenciesIn);
             var handle = readWriteFlowfieldJob.Schedule(combinedDependencies);
-            _readWriteFlowfieldDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
+            _readWriteDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
             dependencies.Dispose();
             return handle;
         }
@@ -78,16 +78,16 @@ namespace Game.Ecs.Systems.Pathfinding {
             var dependencies = GetDependenciesForReadOnly();
             var combinedDependencies = JobHandle.CombineDependencies(dependencies);
             var handle = readOnlyFlowfieldJob.Schedule(combinedDependencies);
-            _readonlyFlowfieldDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
+            _readonlyDependencies.Add(new FrameBoundJobHandle(handle, framesLifetime));
             dependencies.Dispose();
             return handle;
         }
         
         public void CompleteAll() {
-            foreach (var deps in _readWriteFlowfieldDependencies) {
+            foreach (var deps in _readWriteDependencies) {
                 deps.Complete();
             }
-            foreach (var deps in _readonlyFlowfieldDependencies) {
+            foreach (var deps in _readonlyDependencies) {
                 deps.Complete();
             }
         }
@@ -100,28 +100,28 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
 
         public void AddExternalReadWriteDependency(JobHandle dependency, int framesLifetime = 4) {
-            _readWriteFlowfieldDependencies.Add(new FrameBoundJobHandle(dependency, framesLifetime));
+            _readWriteDependencies.Add(new FrameBoundJobHandle(dependency, framesLifetime));
         }
 
         private NativeArray<JobHandle> GetDependenciesForReadWrite() {
-            var dependencies = new NativeArray<JobHandle>(_readWriteFlowfieldDependencies.Length + _readonlyFlowfieldDependencies.Length, Allocator.Temp);
+            var dependencies = new NativeArray<JobHandle>(_readWriteDependencies.Length + _readonlyDependencies.Length, Allocator.Temp);
             var foundReadWriteJobsCount = 0;
-            for (var readWriteIndex = 0; readWriteIndex < _readWriteFlowfieldDependencies.Length; readWriteIndex++) {
-                var deps = _readWriteFlowfieldDependencies[readWriteIndex];
+            for (var readWriteIndex = 0; readWriteIndex < _readWriteDependencies.Length; readWriteIndex++) {
+                var deps = _readWriteDependencies[readWriteIndex];
                 dependencies[readWriteIndex] = deps.Handle;
                 foundReadWriteJobsCount++;
             }
-            for (var readonlyIndex = 0; readonlyIndex < _readonlyFlowfieldDependencies.Length; readonlyIndex++) {
-                var deps = _readonlyFlowfieldDependencies[readonlyIndex];
+            for (var readonlyIndex = 0; readonlyIndex < _readonlyDependencies.Length; readonlyIndex++) {
+                var deps = _readonlyDependencies[readonlyIndex];
                 dependencies[readonlyIndex + foundReadWriteJobsCount] = deps.Handle;
             }
             return dependencies;
         }
 
         private NativeArray<JobHandle> GetDependenciesForReadOnly() {
-            var dependencies = new NativeArray<JobHandle>(_readWriteFlowfieldDependencies.Length, Allocator.Temp);
-            for (var i = 0; i < _readWriteFlowfieldDependencies.Length; i++) {
-                var deps = _readWriteFlowfieldDependencies[i];
+            var dependencies = new NativeArray<JobHandle>(_readWriteDependencies.Length, Allocator.Temp);
+            for (var i = 0; i < _readWriteDependencies.Length; i++) {
+                var deps = _readWriteDependencies[i];
                 dependencies[i] = deps.Handle;
             }
             return dependencies;

@@ -14,14 +14,14 @@ using Utils.Pathfinding;
 namespace Game.Ecs.Systems.Spawners {
     public partial class SetReadyToAttackStateSystem : SystemBase {
         private UnsafeList<FlowfieldCellComponent>.ParallelWriter _parentCellsWriter;
-        private FlowfieldJobDependenciesHandler _dependenciesHandler;
+        private DependenciesScheduler _dependenciesScheduler;
         private FlowfieldRuntimeData _runtimeData;
 
         private bool _initialized;
 
-        public void InjectFlowfieldDependencies(FlowfieldJobDependenciesHandler dependenciesHandler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter, FlowfieldRuntimeData runtimeData) {
+        public void InjectFlowfieldDependencies(DependenciesScheduler dependenciesScheduler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter, FlowfieldRuntimeData runtimeData) {
             _parentCellsWriter = parentCellsWriter;
-            _dependenciesHandler = dependenciesHandler;
+            _dependenciesScheduler = dependenciesScheduler;
             _runtimeData = runtimeData;
             _initialized = true;
         }
@@ -29,14 +29,14 @@ namespace Game.Ecs.Systems.Spawners {
         protected override unsafe void OnUpdate() {
             if (!_initialized) return;
             int counter = 0;
-            var inputDeps = JobHandle.CombineDependencies(_dependenciesHandler.GetCombinedReadWriteDependencies(), Dependency);
+            var inputDeps = JobHandle.CombineDependencies(_dependenciesScheduler.GetCombinedReadWriteDependencies(), Dependency);
             var writer = _parentCellsWriter;
             
             var origin = _runtimeData.ParentGridOrigin;
             var gridSize = _runtimeData.ParentGridSize;
             var cellSize = _runtimeData.ParentCellSize;
             var hivemindTarget = GetSingleton<CurrentHivemindTargetSingleton>();
-            var checkNeighboringCells = false;
+            var checkNeighboringCellsHardcoded = false;
             
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref LocalToWorld ltw) => {
                 //Debug.Log($"ReadyToAttack.OnBeforeCheck");
@@ -47,7 +47,7 @@ namespace Game.Ecs.Systems.Spawners {
                 var targetCell = writer.ListData->Ptr[targetIndex];
                 var arrivedAtCell = currentCell.GridPosition.x == targetCell.GridPosition.x && currentCell.GridPosition.y == targetCell.GridPosition.y;
 
-                if (checkNeighboringCells) {
+                if (checkNeighboringCellsHardcoded) {
                     var neighbourOfsets = FlowfieldUtility.GetNeighbourOffsets();
                     var closeToTarget = new NativeArray<bool>(neighbourOfsets.Length, Allocator.Temp);
                     for (int i = 0; i < closeToTarget.Length; i++) {
@@ -67,7 +67,7 @@ namespace Game.Ecs.Systems.Spawners {
                 }
             }).Schedule(inputDeps);
             
-            _dependenciesHandler.AddExternalReadWriteDependency(Dependency);
+            _dependenciesScheduler.AddExternalReadWriteDependency(Dependency);
         }
 
         private static bool Any(NativeArray<bool> bools) {

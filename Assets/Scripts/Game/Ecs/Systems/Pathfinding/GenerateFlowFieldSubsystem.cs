@@ -10,15 +10,15 @@ using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
     public class GenerateFlowFieldSubsystem {
-        private FlowfieldJobDependenciesHandler _dependenciesHandler;
+        private DependenciesScheduler _dependenciesScheduler;
 
-        public GenerateFlowFieldSubsystem(FlowfieldJobDependenciesHandler dependenciesHandler) {
-            _dependenciesHandler = dependenciesHandler;
+        public GenerateFlowFieldSubsystem(DependenciesScheduler dependenciesScheduler) {
+            _dependenciesScheduler = dependenciesScheduler;
         }
 
         public JobHandle ScheduleReadWrite(UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, int2 gridSize, JobHandle inputDeps = default) {
             var flowfieldJob = new GenerateFlowFieldJob(cellsWriter, gridSize);
-            return _dependenciesHandler.ScheduleReadWrite(flowfieldJob, dependenciesIn: inputDeps);
+            return _dependenciesScheduler.ScheduleReadWrite(flowfieldJob, dependenciesIn: inputDeps);
         }
 
         [BurstCompile]

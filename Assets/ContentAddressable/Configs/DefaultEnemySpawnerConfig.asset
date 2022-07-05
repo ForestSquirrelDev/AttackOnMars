@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a45a9fd578c670f46aed0789b3f445cb, type: 3}
-  m_Name: DefaultEnemiesSpawnerConfig
+  m_Name: DefaultEnemySpawnerConfig
   m_EditorClassIdentifier: 
-  EnemiesCount: 1
-  CountPerFrame: 1
+  EnemiesCount: 50000
+  CountPerFrame: 500

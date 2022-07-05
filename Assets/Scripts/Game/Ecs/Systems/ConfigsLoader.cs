@@ -8,21 +8,19 @@ using UnityEngine.AddressableAssets;
 
 namespace Game.Ecs.Systems {
     public class ConfigsLoader : GameManagerBase {
-        public static ConfigsLoader Instance { get; private set; }
-        public FlowfieldConfig FlowfieldConfig { get; private set; }
-        public TerrainData TerrainData { get; private set; }
-        public EnemiesSpawnerConfig EnemiesSpawnerConfig { get; private set; }
-        public EnemyStatsConfig EnemyStatsConfig { get; private set; }
-        public HumanBaseConfig HumanBaseConfig { get; private set; }
-        
+        private FlowfieldConfig FlowfieldConfig { get; set; }
+        private TerrainData TerrainData { get; set; }
+        private EnemiesSpawnerConfig EnemiesSpawnerConfig { get; set; }
+        private EnemyStatsConfig EnemyStatsConfig { get; set; }
+        private HumanBaseConfig HumanBaseConfig { get; set; }
+
         private World _world => World.DefaultGameObjectInjectionWorld;
-        
+
         public override void OnAwake() {
             LoadAddressableConfigs();
             InjectConfigs();
-            Instance = this;
         }
-        
+
         private void LoadAddressableConfigs() {
             var flowfieldHandle = Addressables.LoadAssetAsync<FlowfieldConfig>("config_flowfieldConfig");
             flowfieldHandle.WaitForCompletion();

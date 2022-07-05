@@ -17,9 +17,10 @@ namespace Game.Ecs.Systems.Pathfinding {
     public partial class FlowfieldManagerSystem : SystemBase {
         public bool Initialized { get; private set; }
         
+        // it's public strictly for debug reasons (FlowFieldGizmosDrawer.cs)
         public UnsafeList<FlowfieldCellComponent> ParentFlowFieldCells;
 
-        private FlowfieldJobDependenciesHandler _jobDependenciesHandler;
+        private DependenciesScheduler _jobDependenciesScheduler;
         private EmptyCellsGenerationSubSystem _emptyCellsGenerationSubSystem;
         private FindBaseCostAndHeightsSubSystem _findBaseCostAndHeightsSubSystem;
         private GenerateIntegrationFieldSubsystem _generateIntegrationFieldSubsystem;
@@ -48,11 +49,11 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
 
         private void GetSubsystems() {
-            _jobDependenciesHandler = new FlowfieldJobDependenciesHandler();
-            _findBaseCostAndHeightsSubSystem = new FindBaseCostAndHeightsSubSystem(_jobDependenciesHandler);
-            _emptyCellsGenerationSubSystem = new EmptyCellsGenerationSubSystem(_jobDependenciesHandler);
-            _generateIntegrationFieldSubsystem = new GenerateIntegrationFieldSubsystem(_jobDependenciesHandler);
-            _generateFlowFieldSubsystem = new GenerateFlowFieldSubsystem(_jobDependenciesHandler);
+            _jobDependenciesScheduler = new DependenciesScheduler();
+            _findBaseCostAndHeightsSubSystem = new FindBaseCostAndHeightsSubSystem(_jobDependenciesScheduler);
+            _emptyCellsGenerationSubSystem = new EmptyCellsGenerationSubSystem(_jobDependenciesScheduler);
+            _generateIntegrationFieldSubsystem = new GenerateIntegrationFieldSubsystem(_jobDependenciesScheduler);
+            _generateFlowFieldSubsystem = new GenerateFlowFieldSubsystem(_jobDependenciesScheduler);
             _childCellsGenerationSystem = World.GetOrCreateSystem<ManageChildCellsGenerationRequestsSystem>();
             _detectEnemiesSystem = World.GetOrCreateSystem<DetectEnemiesAndScheduleChildCellsSystem>();
             _assignBestDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestDirectionToEnemiesSystem>();
@@ -60,7 +61,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
         
         private void CallSubsystemsOnCreate() {
-            _jobDependenciesHandler.OnCreate();
+            _jobDependenciesScheduler.OnCreate();
         }
         
         private void InitSelfGlobalDependencies(Transform terrainTransform) {
@@ -79,11 +80,11 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
         
         private void InjectSubsystemsDependencies() {
-            _detectEnemiesSystem.Construct(_jobDependenciesHandler, _flowfieldRuntimeData, _childCellsGenerationSystem);
-            _childCellsGenerationSystem.Construct(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
+            _detectEnemiesSystem.Construct(_jobDependenciesScheduler, _flowfieldRuntimeData, _childCellsGenerationSystem);
+            _childCellsGenerationSystem.Construct(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
-            _assignBestDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
-            _setReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesHandler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
+            _assignBestDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
+            _setReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
         }
         
         private void InitializeParentGrid() {
@@ -99,13 +100,13 @@ namespace Game.Ecs.Systems.Pathfinding {
             
             var createFlowfieldJob = _generateFlowFieldSubsystem.ScheduleReadWrite(ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData.ParentGridSize, createIntegrationFieldJob);
             
-            var createChildListsJob = _jobDependenciesHandler.ScheduleReadWrite(
+            var createChildListsJob = _jobDependenciesScheduler.ScheduleReadWrite(
                 new InitChildCellsUnsafeListsJob(ParentFlowFieldCells.AsParallelWriter(), _flowfieldConfig.ChildCellSize), dependenciesIn: createFlowfieldJob);
         }
         
         protected override void OnUpdate() {
             if (!Initialized) return;
-            _jobDependenciesHandler.OnUpdate();
+            _jobDependenciesScheduler.OnUpdate();
             _childCellsGenerationSystem.OnUpdateManual();
             
             if (Input.GetKeyDown(KeyCode.I)) {
@@ -114,7 +115,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
 
         protected override void OnDestroy() {
-            _jobDependenciesHandler.OnDestroy();
+            _jobDependenciesScheduler.OnDestroy();
             foreach (var cell in ParentFlowFieldCells) {
                 cell.Dispose();
             }
@@ -122,11 +123,11 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
         
         public JobHandle ScheduleReadWrite<T>(T flowfieldRelatedJob, int framesLifetime = 4) where T: struct, IJob {
-            return _jobDependenciesHandler.ScheduleReadWrite(flowfieldRelatedJob, framesLifetime);
+            return _jobDependenciesScheduler.ScheduleReadWrite(flowfieldRelatedJob, framesLifetime);
         }
         
         public JobHandle ScheduleReadOnly<T>(T flowfieldRelatedJob, int framesLifetime = 1) where T: struct, IJob {
-            return _jobDependenciesHandler.ScheduleReadOnly(flowfieldRelatedJob, framesLifetime);
+            return _jobDependenciesScheduler.ScheduleReadOnly(flowfieldRelatedJob, framesLifetime);
         }
 
         private int2 FindParentGridSize(Vector3 terrainPosition, TerrainData terrainData, FlowfieldConfig config) {

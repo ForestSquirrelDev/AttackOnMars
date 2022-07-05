@@ -9,15 +9,15 @@ using Utils.Pathfinding;
 namespace Game.Ecs.Systems.Pathfinding {
     // Flowfield step 1. Create grid of empty cells.
     public class EmptyCellsGenerationSubSystem {
-        private FlowfieldJobDependenciesHandler _jobDependenciesHandler;
+        private DependenciesScheduler _jobDependenciesScheduler;
 
-        public EmptyCellsGenerationSubSystem(FlowfieldJobDependenciesHandler dependenciesHandler) {
-            _jobDependenciesHandler = dependenciesHandler;
+        public EmptyCellsGenerationSubSystem(DependenciesScheduler dependenciesScheduler) {
+            _jobDependenciesScheduler = dependenciesScheduler;
         }
         
         public JobHandle ScheduleReadWrite(float cellSize, int2 gridSize, float3 origin, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps = default) {
             var fillEmptyCellsJob = new FillEmptyCellsJob(writer, gridSize, origin, cellSize);
-            return _jobDependenciesHandler.ScheduleReadWrite(fillEmptyCellsJob, 4, inputDeps);
+            return _jobDependenciesScheduler.ScheduleReadWrite(fillEmptyCellsJob, 4, inputDeps);
         }
 
         [BurstCompile]

@@ -114,7 +114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820e928e0958f294d9b0e35f68d413ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: 0
+  State: 0
+  ArrivedRaycastCheckCounter: 0
 --- !u!114 &205703505880618169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,7 +145,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967294
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &440078
 Transform:
@@ -225,7 +226,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967294
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &288181789811319643
 Transform:

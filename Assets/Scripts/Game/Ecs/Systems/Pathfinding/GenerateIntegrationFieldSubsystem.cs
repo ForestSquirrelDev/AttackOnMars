@@ -9,21 +9,21 @@ using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
     public class GenerateIntegrationFieldSubsystem {
-        private readonly FlowfieldJobDependenciesHandler _dependenciesHandler;
+        private readonly DependenciesScheduler _dependenciesScheduler;
 
-        public GenerateIntegrationFieldSubsystem(FlowfieldJobDependenciesHandler dependenciesHandler) {
-            _dependenciesHandler = dependenciesHandler;
+        public GenerateIntegrationFieldSubsystem(DependenciesScheduler dependenciesScheduler) {
+            _dependenciesScheduler = dependenciesScheduler;
         }
 
         public JobHandle ScheduleReadWrite(FlowfieldCellComponent currentParentCell, NativeArray<FlowfieldCellComponent> bestCellIn, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var integrationFieldJob = new CreateIntegrationFieldJob(currentParentCell, bestCellIn, gridSize, writer);
-            return _dependenciesHandler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
+            return _dependenciesScheduler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
         }
 
         public JobHandle ScheduleReadWrite(float3 origin, float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter writer, JobHandle inputDeps) {
             var emptyArray = new NativeArray<FlowfieldCellComponent>(0, Allocator.TempJob);
             var integrationFieldJob = new CreateIntegrationFieldJob(origin, targetWorld, gridSize, writer, emptyArray);
-            var handle = _dependenciesHandler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
+            var handle = _dependenciesScheduler.ScheduleReadWrite(integrationFieldJob, 4, inputDeps);
             emptyArray.Dispose(handle);
             return handle;
         }

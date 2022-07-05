@@ -15,9 +15,8 @@ namespace Game.AddressableConfigs {
         
         [Header("Attack")]
         public float AttackCooldown = 1f;
-        public float3 BoxCastOffset = new float3(0f, 0f, 0.5f);
-        public float3 BoxCastSize = new float3(0.5f, 0.5f, 0.5f);
-        public float BoxCastMaxDistance = 2f;
+        public float3 StartRaycastOffset = new float3(0f, 0f, 3f);
+        public float AttackRaycastLength = 3f;
         public int Damage = 1000;
     }
 }

@@ -53,7 +53,7 @@ namespace Game.Ecs.Systems.Spawners {
                     EntityManager.DestroyEntity(e);
                 }).WithStructuralChanges().WithoutBurst().Run();
             }
-            if (_counter > _config.EnemiesCount) return;
+            if (_counter >= _config.EnemiesCount) return;
             _sortKey++;
 
             var spawnPoint = _spawnPoints[UnityEngine.Random.Range(0, _spawnPoints.Count)];

@@ -11,19 +11,19 @@ using ChildCellsGenerationRequest = Game.Ecs.Systems.Pathfinding.ChildCellsGener
 namespace Game.Ecs.Systems.Pathfinding {
     [UpdateAfter(typeof(FlowfieldManagerSystem))]
     public partial class DetectEnemiesAndScheduleChildCellsSystem : SystemBase {
-        private FlowfieldJobDependenciesHandler _dependenciesHandler;
+        private DependenciesScheduler _dependenciesScheduler;
         private FlowfieldRuntimeData _flowfieldRuntimeData;
         private ManageChildCellsGenerationRequestsSystem _childCellsGenerationSubsystem;
 
-        public void Construct(FlowfieldJobDependenciesHandler handler, FlowfieldRuntimeData flowfieldRuntimeData, ManageChildCellsGenerationRequestsSystem childCellsGenerationSubsystem) {
-            _dependenciesHandler = handler;
+        public void Construct(DependenciesScheduler scheduler, FlowfieldRuntimeData flowfieldRuntimeData, ManageChildCellsGenerationRequestsSystem childCellsGenerationSubsystem) {
+            _dependenciesScheduler = scheduler;
             _flowfieldRuntimeData = flowfieldRuntimeData;
             _childCellsGenerationSubsystem = childCellsGenerationSubsystem;
         }
         
         protected override void OnUpdate() {
-            if (_dependenciesHandler == null) return;
-            var inputDeps = _dependenciesHandler.GetCombinedReadWriteDependencies();
+            if (_dependenciesScheduler == null) return;
+            var inputDeps = _dependenciesScheduler.GetCombinedReadWriteDependencies();
             var inputDepsCombined = JobHandle.CombineDependencies(inputDeps, Dependency);
             var gridOrigin = _flowfieldRuntimeData.ParentGridOrigin;
             var gridSize = _flowfieldRuntimeData.ParentGridSize;
@@ -41,7 +41,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             var scheduleRequestsJob = new ScheduleGenerationRequestsJob(requestsIn, requestsOut).Schedule(handle);
             var combinedDeps = JobHandle.CombineDependencies(handle, scheduleRequestsJob);
             
-            _dependenciesHandler.AddExternalReadWriteDependency(combinedDeps);
+            _dependenciesScheduler.AddExternalReadWriteDependency(combinedDeps);
             Dependency = combinedDeps;
             requestsIn.Dispose(combinedDeps);
         }
