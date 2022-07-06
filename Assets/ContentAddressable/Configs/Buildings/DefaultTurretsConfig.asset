@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RadarFrequencySeconds: 1
   EffectiveRadius: 300
+  AttacksPerUpdate: 10
+  Damage: 1
+  RotationSpeed: 5
+  AttackRotationError: 0.95

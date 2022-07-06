@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45a9fd578c670f46aed0789b3f445cb, type: 3}
   m_Name: DefaultEnemySpawnerConfig
   m_EditorClassIdentifier: 
-  EnemiesCount: 500
-  CountPerFrame: 500
+  EnemiesCount: 5
+  CountPerFrame: 5
