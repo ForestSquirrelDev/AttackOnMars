@@ -13,11 +13,11 @@ namespace Game.Ecs.Systems.Spawners {
     public partial class SetAttackingStateSystem : SystemBase {
         private EnemyStatsConfig _config;
 
-        public void InjectConfigs(EnemyStatsConfig config) {
-            _config = config;
+        protected override void OnCreate() {
+            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
-        
-		protected override void OnUpdate() {
+
+        protected override void OnUpdate() {
             var raycastHeight = _config.RaycastHeight;
             var raycastLength = _config.RaycastLength;
             var world = World.DefaultGameObjectInjectionWorld.GetExistingSystem<Unity.Physics.Systems.BuildPhysicsWorld>().PhysicsWorld.CollisionWorld;
@@ -36,7 +36,7 @@ namespace Game.Ecs.Systems.Spawners {
                     Start = start, Filter = CollisionLayers.Enemy(), End = ltw.Position + ltw.Forward * raycastLength
                 };
                 var ray = world.CastRay(raycast);
-                //Debug.Log($"{hito.Entity}//{hito.Position}");
+                
                 if (ray) {
                     enemyState.State = EnemyState.Attacking;
                 }

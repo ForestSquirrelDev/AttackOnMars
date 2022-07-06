@@ -15,7 +15,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private FlowfieldRuntimeData _flowfieldRuntimeData;
         private ManageChildCellsGenerationRequestsSystem _childCellsGenerationSubsystem;
 
-        public void Construct(DependenciesScheduler scheduler, FlowfieldRuntimeData flowfieldRuntimeData, ManageChildCellsGenerationRequestsSystem childCellsGenerationSubsystem) {
+        public void InjectFlowfieldDependencies(DependenciesScheduler scheduler, FlowfieldRuntimeData flowfieldRuntimeData, ManageChildCellsGenerationRequestsSystem childCellsGenerationSubsystem) {
             _dependenciesScheduler = scheduler;
             _flowfieldRuntimeData = flowfieldRuntimeData;
             _childCellsGenerationSubsystem = childCellsGenerationSubsystem;

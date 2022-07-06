@@ -15,12 +15,9 @@ namespace Game.Ecs.Systems.Spawners {
     public partial class EnemiesAttackSystem : SystemBase {
         private NativeQueue<DamageEvent> _pendingEnemyAttacks;
         private EnemyStatsConfig _config;
-
-        public void InjectConfigs(EnemyStatsConfig config) {
-            _config = config;
-        }
-
+        
         protected override void OnCreate() {
+            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
             _pendingEnemyAttacks = new NativeQueue<DamageEvent>(Allocator.Persistent);
         }
 

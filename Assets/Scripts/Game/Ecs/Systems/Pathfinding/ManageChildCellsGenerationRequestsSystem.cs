@@ -10,6 +10,7 @@ using UnityEngine;
 using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
+    // the only reason it is SystemBase and not just plain C# object - it needs to access singleton data
     public partial class ManageChildCellsGenerationRequestsSystem : SystemBase {
         public NativeHashMap<int2, ChildCellsGenerationRequest> Requests;
 
@@ -25,7 +26,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private FlowfieldRuntimeData _flowfieldRuntimeData;
         private bool _initialized;
         
-        public void Construct(DependenciesScheduler dependenciesScheduler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCells,
+        public void InjectFlowfieldDependencies(DependenciesScheduler dependenciesScheduler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCells,
             EmptyCellsGenerationSubSystem emptyCellsGenerationSubSystem, FindBaseCostAndHeightsSubSystem findBaseCostAndHeightsSubSystem,
             GenerateIntegrationFieldSubsystem generateIntegrationFieldSubsystem, GenerateFlowFieldSubsystem generateFlowFieldSubsystem, int2 gridSize, FlowfieldRuntimeData runtimeData) {
             _jobDependenciesScheduler = dependenciesScheduler;

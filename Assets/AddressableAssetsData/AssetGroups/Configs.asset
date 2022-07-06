@@ -37,6 +37,10 @@ MonoBehaviour:
     m_Address: config_defaultHumanBaseConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 40f3c66172536664888cf9f2aaa170e7
+    m_Address: config_defaultTurretsConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: cd9f16cbb7bd9f44aa8bc03399bf1def, type: 2}
   m_SchemaSet:

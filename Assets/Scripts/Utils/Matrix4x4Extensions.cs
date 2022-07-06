@@ -60,7 +60,7 @@ namespace Utils {
             return math.mul(matrix, v);
         }
 
-        public static float3 Scale(this float4x4 matrix) {
+        public static float3 GetScale(this float4x4 matrix) {
             return new float3(math.length(matrix.c0.xyz), math.length(matrix.c1.xyz), math.length(matrix.c2.xyz));
         }
     }

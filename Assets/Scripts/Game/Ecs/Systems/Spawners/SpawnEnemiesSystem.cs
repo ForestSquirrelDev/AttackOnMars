@@ -27,11 +27,8 @@ namespace Game.Ecs.Systems.Spawners {
 
         private List<SpawnPointData> _spawnPoints;
 
-        public void InjectConfigs(EnemiesSpawnerConfig config) {
-            _config = config;
-        }
-        
         protected override void OnCreate() {
+            _config = ConfigsLoader.Get<EnemiesSpawnerConfig>(AddressablesConsts.DefaultEnemiesSpawnerConfig);
             _enemiesEnumCount = Enum.GetNames(typeof(EnemyType)).Length;
         }
 

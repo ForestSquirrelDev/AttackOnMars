@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a45a9fd578c670f46aed0789b3f445cb, type: 3}
-  m_Name: DefaultEnemySpawnerConfig
+  m_Script: {fileID: 11500000, guid: 33c465e9f23154140b7c2bccdc6be0bd, type: 3}
+  m_Name: DefaultTurretsConfig
   m_EditorClassIdentifier: 
-  EnemiesCount: 500
-  CountPerFrame: 500
+  RadarFrequencySeconds: 1
+  EffectiveRadius: 300

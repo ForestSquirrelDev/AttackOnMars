@@ -573,6 +573,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4514986444668122}
+  - component: {fileID: -8230640445870167939}
+  - component: {fileID: 3112851842262566840}
+  - component: {fileID: 4139888978760887620}
+  - component: {fileID: 8289223100032291514}
   m_Layer: 0
   m_Name: GatelingGun_Prefab
   m_TagString: Untagged
@@ -597,6 +601,79 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8230640445870167939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979706888108350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc88284ff037ab4089da3a6202faf6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3112851842262566840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979706888108350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46f47d686582de54c9448be3cd3de991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entity: {fileID: 0}
+  Ltw:
+    Value:
+      c0:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      c1:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      c2:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+      c3:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+--- !u!114 &4139888978760887620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979706888108350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b78db0bd15d17f47a1ef1d6795918d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 1
+--- !u!114 &8289223100032291514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979706888108350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a347112ee9d14214db28d13788465982, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: {fileID: 1157879558086612}
 --- !u!1 &4135893678681637319
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.AddressableConfigs {
     [CreateAssetMenu(menuName = "Game Configs/Flowfield Config")]
-    public class FlowfieldConfig : ScriptableObject {
+    public class FlowfieldConfig : ScriptableObject{
         public float ParentCellSize = 200f;
         public float ChildCellSize = 10f;
         

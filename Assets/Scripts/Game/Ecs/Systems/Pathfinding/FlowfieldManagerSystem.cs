@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Game.AddressableConfigs;
 using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Systems.Spawners;
@@ -9,17 +8,16 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Utils;
 
 namespace Game.Ecs.Systems.Pathfinding {
-    // Flowfield step 1. Initialize grid systems and schedule creation of empty parent grid.
     public partial class FlowfieldManagerSystem : SystemBase {
         public bool Initialized { get; private set; }
         
         // it's public strictly for debug reasons (FlowFieldGizmosDrawer.cs)
         public UnsafeList<FlowfieldCellComponent> ParentFlowFieldCells;
 
+        // systems/subsystems that are either child objects fo flowfieldmanager or tightly coupled with its dependencies
         private DependenciesScheduler _jobDependenciesScheduler;
         private EmptyCellsGenerationSubSystem _emptyCellsGenerationSubSystem;
         private FindBaseCostAndHeightsSubSystem _findBaseCostAndHeightsSubSystem;
@@ -34,11 +32,11 @@ namespace Game.Ecs.Systems.Pathfinding {
         private TerrainData _terrainData;
         private FlowfieldRuntimeData _flowfieldRuntimeData;
 
-        public void InjectConfigs(FlowfieldConfig flowfieldConfig, TerrainData terrainData) {
-            _flowfieldConfig = flowfieldConfig;
-            _terrainData = terrainData;
+        protected override void OnCreate() {
+            _flowfieldConfig = ConfigsLoader.Get<FlowfieldConfig>(AddressablesConsts.FlowfieldConfig);
+            _terrainData = ConfigsLoader.Get<TerrainData>(AddressablesConsts.DefaultTerrainData);
         }
-        
+
         public void Init(Transform terrainTransform) {
             GetSubsystems();
             CallSubsystemsOnCreate();
@@ -80,8 +78,8 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
         
         private void InjectSubsystemsDependencies() {
-            _detectEnemiesSystem.Construct(_jobDependenciesScheduler, _flowfieldRuntimeData, _childCellsGenerationSystem);
-            _childCellsGenerationSystem.Construct(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
+            _detectEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, _flowfieldRuntimeData, _childCellsGenerationSystem);
+            _childCellsGenerationSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
             _assignBestDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
             _setReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);

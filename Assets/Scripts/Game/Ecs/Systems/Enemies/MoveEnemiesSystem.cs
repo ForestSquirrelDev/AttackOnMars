@@ -12,8 +12,8 @@ namespace Game.Ecs.Systems {
     public partial class MoveEnemiesSystem : SystemBase {
         private EnemyStatsConfig _config;
 
-        public void InjectConfigs(EnemyStatsConfig config) {
-            _config = config;
+        protected override void OnCreate() {
+            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
 
         protected override void OnUpdate() {

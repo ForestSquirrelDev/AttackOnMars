@@ -5,18 +5,17 @@ using Game.Ecs.Components.Tags;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 using Utils.Maths;
 
 namespace Game.Ecs.Systems {
-    public partial class EnemiesRotationSystem : SystemBase {
+    public partial class RotateEnemiesOnFlowfieldSystem : SystemBase {
         private EnemyStatsConfig _config;
         
         private const float _lerpFramesCount = 5;
         private float _elapsedFrames = 0;
 
-        public void InjectConfigs(EnemyStatsConfig config) {
-            _config = config;
+        protected override void OnCreate() {
+            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
 
         protected override void OnUpdate() {
