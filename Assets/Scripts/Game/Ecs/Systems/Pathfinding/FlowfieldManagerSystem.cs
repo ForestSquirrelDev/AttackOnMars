@@ -26,7 +26,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private DetectEnemiesAndScheduleChildCellsSystem _detectEnemiesSystem;
         private ManageChildCellsGenerationRequestsSystem _childCellsGenerationSystem;
         private AssignBestDirectionToEnemiesSystem _assignBestDirectionToEnemiesSystem;
-        private SetReadyToAttackStateSystem _setReadyToAttackStateSystem;
+        private SetEnemyReadyToAttackStateSystem _setEnemyReadyToAttackStateSystem;
 
         private FlowfieldConfig _flowfieldConfig;
         private TerrainData _terrainData;
@@ -55,7 +55,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _childCellsGenerationSystem = World.GetOrCreateSystem<ManageChildCellsGenerationRequestsSystem>();
             _detectEnemiesSystem = World.GetOrCreateSystem<DetectEnemiesAndScheduleChildCellsSystem>();
             _assignBestDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestDirectionToEnemiesSystem>();
-            _setReadyToAttackStateSystem = World.GetOrCreateSystem<SetReadyToAttackStateSystem>();
+            _setEnemyReadyToAttackStateSystem = World.GetOrCreateSystem<SetEnemyReadyToAttackStateSystem>();
         }
         
         private void CallSubsystemsOnCreate() {
@@ -82,7 +82,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _childCellsGenerationSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
             _assignBestDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
-            _setReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
+            _setEnemyReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
         }
         
         private void InitializeParentGrid() {

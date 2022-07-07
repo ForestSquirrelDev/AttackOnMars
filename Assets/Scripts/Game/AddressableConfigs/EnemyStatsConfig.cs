@@ -13,6 +13,7 @@ namespace Game.AddressableConfigs {
         public float RaycastHeight = 3f;
         public float RaycastLength = 3;
         public float RaycastCooldown = 0.5f;
+        public bool CheckNeighbourCells = true;
         
         [Header("Attack")]
         public float AttackCooldown = 1f;

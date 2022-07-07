@@ -5,9 +5,9 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Game.Ecs.Systems.Spawners {
+    [UpdateAfter(typeof(ClearTurretsTargetSystem))]
     public partial class TurretsRadarSystem : SystemBase {
         private TurretsConfig _turretsConfig;
         private EnemiesSpawnerConfig _spawnerConfig;
@@ -23,7 +23,9 @@ namespace Game.Ecs.Systems.Spawners {
             var radarFrequency = _turretsConfig.RadarFrequencySeconds;
             var maxDistane = _turretsConfig.EffectiveRadius;
             var deltaTime = UnityEngine.Time.deltaTime;
-            Dependency = Entities.WithAll<Tag_Turret>().ForEach((ref RadarTickCounterComponent radarTickCounter, ref CurrentTargetComponent currentTarget, in LocalToWorld ltw) => {
+            Dependency = Entities.WithAll<Tag_Turret>().ForEach((ref RadarTickCounterComponent radarTickCounter, ref CurrentTurretTargetComponent currentTarget, in LocalToWorld ltw, in CurrentTurretStateComponent state) => {
+                if (state.Value != TurretState.ScanningForEnemies) return;
+                
                 if (radarTickCounter.Value > 0) {
                     radarTickCounter.Value -= deltaTime;
                     return;

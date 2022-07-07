@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000002, guid: 0bd18560e04168f4f92c6d3b5f07c83c, type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 2e4011e2c92c93843b7936c834866eeb, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 81f2090fa36c4fa48be9f68c2665cb79, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -423,7 +423,6 @@ Transform:
   m_LocalRotation: {x: -0.37882856, y: -0.6148715, z: 0.12093466, w: -0.6810263}
   m_LocalPosition: {x: -1.82, y: 7.64, z: 12.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1107095797}
   m_RootOrder: 0
@@ -731,7 +730,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 177520830}
   - {fileID: 1590002385}
@@ -910,7 +908,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.8, y: 3.4, z: 8.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -1003,7 +1000,6 @@ Transform:
   m_LocalRotation: {x: -0.09581068, y: -0.8954499, z: 0.2342799, w: -0.3662006}
   m_LocalPosition: {x: -3.97, y: 3.33, z: 10.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1133,7 +1129,6 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 955056350}
   - {fileID: 1176782645}
@@ -1349,7 +1344,6 @@ Transform:
   m_LocalRotation: {x: 0.045547288, y: 0.92316574, z: -0.24600177, w: -0.2918453}
   m_LocalPosition: {x: -1.3940556, y: 6.65, z: -27.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1107095797}
   m_RootOrder: 1
@@ -1459,7 +1453,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1521,7 +1514,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5

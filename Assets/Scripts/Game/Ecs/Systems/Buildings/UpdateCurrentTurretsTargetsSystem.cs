@@ -17,7 +17,7 @@ namespace Game.Ecs.Systems.Spawners {
             var localToWorldData = GetComponentDataFromEntity<LocalToWorld>();
             var maxRadius = _turretsConfig.EffectiveRadius;
             
-            Dependency = Entities.WithAll<Tag_Turret>().ForEach((ref CurrentTargetComponent currentEnemyTarget, in Entity turretEntity) => {
+            Dependency = Entities.WithAll<Tag_Turret>().ForEach((ref CurrentTurretTargetComponent currentEnemyTarget, in Entity turretEntity) => {
                 if (currentEnemyTarget.Entity == Entity.Null) return;
                 
                 var enemyLtw = localToWorldData[currentEnemyTarget.Entity];

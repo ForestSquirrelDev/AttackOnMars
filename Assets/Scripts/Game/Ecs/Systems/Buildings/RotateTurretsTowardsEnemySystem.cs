@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Game.Ecs.Systems.Spawners {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial class RotateTurretsTowardsEnemySystem : SystemBase {
         private TurretsConfig _turretsConfig;
         
@@ -18,23 +19,25 @@ namespace Game.Ecs.Systems.Spawners {
 
         protected override void OnUpdate() {
             if (_elapsedFrames >= _lerpFramesCount) _elapsedFrames = 0;
-            var rotationSpeed = _turretsConfig.RotationSpeed;
+            var rotationSpeed = _turretsConfig.BaseRotationSpeed;
             var t = _elapsedFrames / _lerpFramesCount;
             var delta = UnityEngine.Time.deltaTime;
             
             var localToWorldData = GetComponentDataFromEntity<LocalToWorld>(true);
             var rotationData = GetComponentDataFromEntity<Rotation>(false);
             
-            Dependency = Entities.WithAll<Tag_Turret>().ForEach((in CurrentTargetComponent currentTargetComponent, in RotatableTurretPartReferenceComponent rotatable, in Entity entity) => {
+            Dependency = Entities.WithAll<Tag_Turret>().ForEach((in CurrentTurretTargetComponent currentTargetComponent, in RotatableTurretPartsReferenceComponent rotatable, in Entity entity, 
+                in CurrentTurretStateComponent state) => {
                 if (currentTargetComponent.Entity == Entity.Null) return;
+                if (state.Value != TurretState.ReadyToAttack && state.Value != TurretState.Attacking) return;
                 
-                var rotatableLtw = localToWorldData[rotatable.Value];
+                var rotatableLtw = localToWorldData[rotatable.BaseRotation];
                 var lookAtPoint = currentTargetComponent.Ltw.Position;
                 var directionToWorldPoint = lookAtPoint - rotatableLtw.Position;
                 var lookRotation = quaternion.LookRotation(directionToWorldPoint, new float3(0, 1, 0));
                 var lerpedRotation = math.nlerp(rotatableLtw.Rotation, lookRotation, t * delta * rotationSpeed);
 
-                rotationData[rotatable.Value] = new Rotation{Value = lerpedRotation};
+                rotationData[rotatable.BaseRotation] = new Rotation{Value = lerpedRotation};
             }).WithReadOnly(localToWorldData).Schedule(Dependency);
 
             _elapsedFrames++;
