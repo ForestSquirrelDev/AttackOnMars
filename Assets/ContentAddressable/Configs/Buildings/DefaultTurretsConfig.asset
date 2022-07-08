@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33c465e9f23154140b7c2bccdc6be0bd, type: 3}
   m_Name: DefaultTurretsConfig
   m_EditorClassIdentifier: 
-  RadarFrequencySeconds: 1
+  RadarFrequencySeconds: 0.1
   EffectiveRadius: 300
   AttacksPerUpdate: 10
   Damage: 1
-  RotationSpeed: 5
-  AttackRotationError: 0.95
+  BaseRotationSpeed: 100
+  BarrelMaxRotationSpeed: 1
+  BarrelRotationSpeedIncreateStep: 0.01
+  LookAtEnemyError: 0.99

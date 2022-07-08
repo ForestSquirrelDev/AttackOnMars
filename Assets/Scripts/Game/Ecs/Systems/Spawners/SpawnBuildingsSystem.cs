@@ -1,5 +1,4 @@
 using Game.Ecs.Components;
-using Game.Ecs.Components.Tags;
 using Game.Ecs.Containers;
 using Shared;
 using Unity.Entities;
@@ -8,13 +7,13 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
-    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
+    [UpdateBefore(typeof(SpawnBuildingGhostSystem))]
     public partial class SpawnBuildingsSystem : SystemBase {
         private GridKeeperSystem _gridKeeperSystem;
         private Camera _camera;
         private EndSimulationEntityCommandBufferSystem _endSimulationEcb;
         
-        protected override void OnStartRunning() {
+        protected override void OnCreate() {
             _gridKeeperSystem = World.GetOrCreateSystem<GridKeeperSystem>();
             _camera = Camera.main;
             _endSimulationEcb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
@@ -23,7 +22,9 @@ namespace Game.Ecs.Systems {
         protected override void OnUpdate() {
             if (!Input.GetMouseButtonDown(0)) return;
             EntityCommandBuffer ecb = _endSimulationEcb.CreateCommandBuffer();
-            Entities.WithAll<Tag_AvailableForPlacementGhostQuad>().ForEach((ref Parent parent) => {
+            Entities.WithAll<BuildingGhostPositioningQuadComponent>().ForEach((in Parent parent, in BuildingGhostPositioningQuadComponent quadComponent) => {
+                if (!quadComponent.AvailableForPlacement) return;
+                
                 TrySpawnBuilding(EntityManager.GetComponentData<BuildingGhostComponent>(parent.Value).BuildingType);
                 ecb.DestroyEntity(parent.Value);
                 SetSingleton(new SpawningGhostSingletonData{CanSpawn = true});

@@ -6,12 +6,11 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Game.Ecs.Systems.Spawners {
-    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial class RotateTurretsBarrelSystem : SystemBase {
         private TurretsConfig _turretsConfig;
 
         protected override void OnCreate() {
-            _turretsConfig = ConfigsLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
+            _turretsConfig = AddressablesLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
         }
 
         protected override void OnUpdate() {

@@ -10,7 +10,7 @@ namespace Game.Ecs.Systems.Spawners {
         private TurretsConfig _turretsConfig;
 
         protected override void OnCreate() {
-            _turretsConfig = ConfigsLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
+            _turretsConfig = AddressablesLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
         }
 
         protected override void OnUpdate() {

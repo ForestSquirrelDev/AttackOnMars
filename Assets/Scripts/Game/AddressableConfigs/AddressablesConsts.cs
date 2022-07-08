@@ -6,5 +6,7 @@ namespace Game.AddressableConfigs {
         public const string DefaultEnemyStatsConfig = "config_defaultEnemyStatsConfig";
         public const string DefaultHumanBaseConfig = "config_defaultHumanBaseConfig";
         public const string DefaultTurretsConfig = "config_defaultTurretsConfig";
+        
+        public const string MuzzelFlashParticles = "prefab_muzzelFlashParticles";
     }
 }

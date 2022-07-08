@@ -10,11 +10,11 @@ using Utils;
 
 namespace Game.Ecs.Systems.Spawners {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-    public partial class SetAttackingStateSystem : SystemBase {
+    public partial class SetEnemiesAttackingStateSystem : SystemBase {
         private EnemyStatsConfig _config;
 
         protected override void OnCreate() {
-            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
+            _config = AddressablesLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
 
         protected override void OnUpdate() {

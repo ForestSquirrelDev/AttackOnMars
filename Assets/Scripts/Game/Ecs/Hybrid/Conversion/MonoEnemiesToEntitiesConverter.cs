@@ -28,7 +28,7 @@ namespace Game.Ecs.Hybrid.Conversion {
                 var enemyEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefabData.Prefab, settings);
                 _world.EntityManager.SetName(enemyEntity, $"Converted <{prefabData.EnemyType}> enemy");
                 _world.EntityManager.AddComponent<EnemyHealthComponent>(enemyEntity);
-                _world.EntityManager.SetComponentData(enemyEntity, new EnemyHealthComponent {Value = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig).Health});
+                _world.EntityManager.SetComponentData(enemyEntity, new EnemyHealthComponent {Value = AddressablesLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig).Health});
                 convertedEnemiesArray[i] = new ConvertedEnemyBlobData {
                     EnemyEntity = enemyEntity, 
                     EnemyType = prefabData.EnemyType

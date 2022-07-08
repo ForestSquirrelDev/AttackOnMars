@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Game.AddressableConfigs {
@@ -10,6 +11,7 @@ namespace Game.AddressableConfigs {
         public float BaseRotationSpeed = 10f;
         public float BarrelMaxRotationSpeed = 10f;
         public float BarrelRotationSpeedIncreateStep = 0.1f;
+        public float3 ParticlesOffset = new float3(0f, 0.466f, 1.85f);
         
         [Range(0, 1f)]
         // tested against dot product between turret forward vector and direction to enemy

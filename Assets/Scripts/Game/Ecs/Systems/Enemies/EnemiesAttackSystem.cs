@@ -17,7 +17,7 @@ namespace Game.Ecs.Systems.Spawners {
         private EnemyStatsConfig _config;
         
         protected override void OnCreate() {
-            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
+            _config = AddressablesLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
             _pendingEnemyAttacks = new NativeQueue<DamageEvent>(Allocator.Persistent);
         }
 

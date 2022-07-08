@@ -6,21 +6,21 @@ using Unity.Entities;
 
 namespace Game.Ecs.Systems.Buildings {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
-    public partial class HumanBaseHealthControllerSystem : SystemBase {
-        public HumanBaseConfig Config { get; private set; }
+    public partial class HumanBaseHealthObserverSystem : SystemBase {
         public int CurrentHealth { get; private set; }
-
+        public int MaxHealth { get; private set; }
+        
+        private HumanBaseConfig _config;
         private NativeArray<int> _currentHealthOut;
 
         protected override void OnCreate() {
-            Config = ConfigsLoader.Get<HumanBaseConfig>(AddressablesConsts.DefaultHumanBaseConfig);
+            _config = AddressablesLoader.Get<HumanBaseConfig>(AddressablesConsts.DefaultHumanBaseConfig);
             _currentHealthOut = new NativeArray<int>(1, Allocator.Persistent);
         }
 
         public void Init() {
-            int maxHealth = Config.MaxHealth;
-            CurrentHealth = maxHealth;
-            SetInitialHealth(maxHealth);
+            MaxHealth = _config.MaxHealth;
+            CurrentHealth = MaxHealth;
         }
 
         protected override void OnUpdate() {
@@ -34,12 +34,6 @@ namespace Game.Ecs.Systems.Buildings {
 
         protected override void OnDestroy() {
             _currentHealthOut.Dispose();
-        }
-        
-        private void SetInitialHealth(int maxHealth) {
-            Entities.WithAll<Tag_MainHumanBase>().ForEach((ref BuildingHealthComponent health) => {
-                health.CurrentHealth = maxHealth;
-            }).Run();
         }
     }
 }

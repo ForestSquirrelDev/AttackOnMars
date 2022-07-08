@@ -19,7 +19,7 @@ namespace Game.Ecs.Systems.Spawners {
         private bool _initialized;
 
         protected override void OnCreate() {
-            _enemyStatsConfig = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
+            _enemyStatsConfig = AddressablesLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
 
         public void InjectFlowfieldDependencies(DependenciesScheduler dependenciesScheduler, UnsafeList<FlowfieldCellComponent>.ParallelWriter parentCellsWriter, FlowfieldRuntimeData runtimeData) {

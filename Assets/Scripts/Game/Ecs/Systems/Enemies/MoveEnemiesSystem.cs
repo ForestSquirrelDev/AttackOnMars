@@ -13,7 +13,7 @@ namespace Game.Ecs.Systems {
         private EnemyStatsConfig _config;
 
         protected override void OnCreate() {
-            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
+            _config = AddressablesLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
 
         protected override void OnUpdate() {

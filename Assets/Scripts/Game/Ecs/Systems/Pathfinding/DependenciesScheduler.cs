@@ -2,9 +2,9 @@
 using Unity.Jobs;
 
 namespace Game.Ecs.Systems.Pathfinding {
-    // Essentially this class schedules all jobs that somehow interact with flowfield one-by-one: until previous bunch of scheduled jobs isn't completed, next one won't start.
+    // Essentially this class schedules all jobs that i pass to it one-by-one: until previous bunch of scheduled jobs isn't completed, next one won't start.
     // Which virtually makes their work single threaded, or just "sequenced".
-    // This indeed sucks, but at the same time it allows all flowfield-related jobs work with the same native collections and, at the same time,
+    // This indeed sucks, but at the same time it allows all jobs work with the same native collections and, at the same time,
     // avoid touching main thread completely for multiple frames, which literally grounds their impact on performance.
     // There are also cases when we still need to access job's results on the main thread, for instance in Gizmos drawer.
     // For that case all jobs have virtual "lifetime" based on frames: after given number of frames job.Complete() is called so it's results can be accessed from main thread.
@@ -13,7 +13,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private NativeList<FrameBoundJobHandle> _readWriteDependencies;
         private NativeList<FrameBoundJobHandle> _readonlyDependencies;
 
-        public void OnCreate() {
+        public DependenciesScheduler() {
             _readWriteDependencies = new NativeList<FrameBoundJobHandle>(10, Allocator.Persistent);
             _readonlyDependencies = new NativeList<FrameBoundJobHandle>(10, Allocator.Persistent);
         }
@@ -23,7 +23,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             DecrementHandlesLifetimeAndComplete();
         }
         
-        public void OnDestroy() {
+        public void Dispose() {
             CompleteAll();
             _readWriteDependencies.Dispose();
             _readonlyDependencies.Dispose();
@@ -101,6 +101,10 @@ namespace Game.Ecs.Systems.Pathfinding {
 
         public void AddExternalReadWriteDependency(JobHandle dependency, int framesLifetime = 4) {
             _readWriteDependencies.Add(new FrameBoundJobHandle(dependency, framesLifetime));
+        }
+
+        public void AddExternalReadOnlyDependency(JobHandle dependency, int framesLifeTime = 1) {
+            _readonlyDependencies.Add(new FrameBoundJobHandle(dependency, framesLifeTime));
         }
 
         private NativeArray<JobHandle> GetDependenciesForReadWrite() {

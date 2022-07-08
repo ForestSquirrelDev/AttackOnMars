@@ -4,13 +4,14 @@ using Game.Ecs.Components.Tags;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Game.Ecs.Systems.Spawners {
-    public partial class SetTurretsAttackStateSystem : SystemBase {
+    public partial class SetTurretsAttackingStateSystem : SystemBase {
         private TurretsConfig _turretsConfig;
 
         protected override void OnCreate() {
-            _turretsConfig = ConfigsLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
+            _turretsConfig = AddressablesLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
         }
 
         protected override void OnUpdate() {
@@ -21,7 +22,8 @@ namespace Game.Ecs.Systems.Spawners {
                 
                 var rotatableLtw = localToWorldData[rotatable.BaseRotation];
                 var directionTowardsEnemy = target.Ltw.Position - rotatableLtw.Position;
-                var dot = math.dot(rotatableLtw.Forward, math.normalizesafe(directionTowardsEnemy));
+                var dot = math.dot(math.normalizesafe(rotatableLtw.Forward), math.normalizesafe(directionTowardsEnemy));
+                
                 if (dot >= lookAtEnemyError) {
                     state.Value = TurretState.Attacking;
                 }

@@ -8,14 +8,14 @@ namespace UI {
         [SerializeField] private TMP_Text _healthPercentage;
         [SerializeField] private Gradient _gradient;
         
-        private HumanBaseHealthControllerSystem _healthController;
+        private HumanBaseHealthObserverSystem _healthObserver;
 
         private void Awake() {
-            _healthController = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<HumanBaseHealthControllerSystem>();
+            _healthObserver = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<HumanBaseHealthObserverSystem>();
         }
 
         private void Update() {
-            var healthNormalized = (float)_healthController.CurrentHealth / _healthController.Config.MaxHealth;
+            var healthNormalized = (float)_healthObserver.CurrentHealth / _healthObserver.MaxHealth;
             var color = _gradient.Evaluate(1 - healthNormalized);
             var healthPercents = Mathf.FloorToInt(healthNormalized * 100f);
             var text = $"{healthPercents.ToString()}%";

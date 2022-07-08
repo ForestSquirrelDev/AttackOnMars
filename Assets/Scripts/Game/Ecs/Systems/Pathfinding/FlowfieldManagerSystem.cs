@@ -33,13 +33,12 @@ namespace Game.Ecs.Systems.Pathfinding {
         private FlowfieldRuntimeData _flowfieldRuntimeData;
 
         protected override void OnCreate() {
-            _flowfieldConfig = ConfigsLoader.Get<FlowfieldConfig>(AddressablesConsts.FlowfieldConfig);
-            _terrainData = ConfigsLoader.Get<TerrainData>(AddressablesConsts.DefaultTerrainData);
+            _flowfieldConfig = AddressablesLoader.Get<FlowfieldConfig>(AddressablesConsts.FlowfieldConfig);
+            _terrainData = AddressablesLoader.Get<TerrainData>(AddressablesConsts.DefaultTerrainData);
         }
 
         public void Init(Transform terrainTransform) {
             GetSubsystems();
-            CallSubsystemsOnCreate();
             InitSelfGlobalDependencies(terrainTransform);
             InjectSubsystemsDependencies();
             InitializeParentGrid();
@@ -57,11 +56,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _assignBestDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestDirectionToEnemiesSystem>();
             _setEnemyReadyToAttackStateSystem = World.GetOrCreateSystem<SetEnemyReadyToAttackStateSystem>();
         }
-        
-        private void CallSubsystemsOnCreate() {
-            _jobDependenciesScheduler.OnCreate();
-        }
-        
+
         private void InitSelfGlobalDependencies(Transform terrainTransform) {
             _flowfieldRuntimeData = CreateFlowfieldRuntimeData(terrainTransform);
             ParentFlowFieldCells = new UnsafeList<FlowfieldCellComponent>(_flowfieldRuntimeData.ParentGridSize.x * _flowfieldRuntimeData.ParentGridSize.y, Allocator.Persistent);
@@ -113,7 +108,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         }
 
         protected override void OnDestroy() {
-            _jobDependenciesScheduler.OnDestroy();
+            _jobDependenciesScheduler.Dispose();
             foreach (var cell in ParentFlowFieldCells) {
                 cell.Dispose();
             }

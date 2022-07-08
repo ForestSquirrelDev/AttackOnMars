@@ -25,6 +25,8 @@ namespace Game.Ecs.Systems {
         }
         
         protected override void OnUpdate() {
+            var inputDeps = JobHandle.CombineDependencies(_gridKeeperSystem.DependenciesScheduler.GetCombinedReadWriteDependencies(), Dependency);
+            
             UpdatePositionsJob job = new UpdatePositionsJob {
                 LocalToWorldHandle = GetComponentTypeHandle<LocalToWorld>(true),
                 Ecb = _commandBufferSystem.CreateCommandBuffer().AsParallelWriter(),
@@ -32,14 +34,14 @@ namespace Game.Ecs.Systems {
                 BuildingGrid = _gridKeeperSystem.BuildingGrid
             };
             
-            JobHandle handle = job.Schedule(EntityManager.CreateEntityQuery(_quadsQueryDescription), Dependency);
+            JobHandle handle = job.Schedule(EntityManager.CreateEntityQuery(_quadsQueryDescription), inputDeps);
             _commandBufferSystem.AddJobHandleForProducer(handle);
-            
             Dependency = handle;
+            
+            _gridKeeperSystem.DependenciesScheduler.AddExternalReadWriteDependency(Dependency);
         }
-
-        // why put this small one-time 0.02ms operation into a job? for learning purposes, of course!
-        [BurstCompile(CompileSynchronously = true)]
+        
+        [BurstCompile]
         private struct UpdatePositionsJob : IJobChunk {
             [ReadOnly] public ComponentTypeHandle<LocalToWorld> LocalToWorldHandle;
             [ReadOnly] public EntityTypeHandle EntityTypeHandle;

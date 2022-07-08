@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using System.Diagnostics;
 using Game.Ecs.Components;
 using Game.Ecs.Components.BufferElements;
@@ -9,9 +9,6 @@ using UnityEngine;
 using Utils;
 
 namespace Game.Ecs.Systems {
-    /// <summary>
-    /// This class is deprecated and should be deleted.
-    /// </summary>
     public class PositioningQuadSystem : ComponentSystem {
         private Matrix4x4 _transformCenter;
         private Matrix4x4 _gridOrigin;
@@ -122,4 +119,4 @@ namespace Game.Ecs.Systems {
             Gizmos.DrawSphere(_transformCenter.MultiplyPoint3x4(new Vector3(-.5f, 0, .5f)), .5f);
         }
     }
-}
+}*/

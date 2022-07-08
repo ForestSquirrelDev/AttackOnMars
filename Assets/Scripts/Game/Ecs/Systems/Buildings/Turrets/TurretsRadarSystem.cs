@@ -13,8 +13,8 @@ namespace Game.Ecs.Systems.Spawners {
         private EnemiesSpawnerConfig _spawnerConfig;
 
         protected override void OnCreate() {
-            _turretsConfig = ConfigsLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
-            _spawnerConfig = ConfigsLoader.Get<EnemiesSpawnerConfig>(AddressablesConsts.DefaultEnemiesSpawnerConfig);
+            _turretsConfig = AddressablesLoader.Get<TurretsConfig>(AddressablesConsts.DefaultTurretsConfig);
+            _spawnerConfig = AddressablesLoader.Get<EnemiesSpawnerConfig>(AddressablesConsts.DefaultEnemiesSpawnerConfig);
         }
         
 		protected override void OnUpdate() {

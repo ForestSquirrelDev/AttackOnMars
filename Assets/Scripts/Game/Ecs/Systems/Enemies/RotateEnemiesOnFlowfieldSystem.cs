@@ -15,7 +15,7 @@ namespace Game.Ecs.Systems {
         private float _elapsedFrames = 0;
 
         protected override void OnCreate() {
-            _config = ConfigsLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
+            _config = AddressablesLoader.Get<EnemyStatsConfig>(AddressablesConsts.DefaultEnemyStatsConfig);
         }
 
         protected override void OnUpdate() {
