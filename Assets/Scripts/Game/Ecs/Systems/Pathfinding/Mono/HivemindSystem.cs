@@ -12,8 +12,6 @@ namespace Game.Ecs.Systems.Pathfinding {
             EntityManager.SetComponentData(hiveMindTargetSingleton, new CurrentHivemindTargetSingleton {Value = humanBaseMatrix.Position});
         }
     
-        protected override void OnUpdate() {
-        
-        }
+        protected override void OnUpdate() { }
     }
 }

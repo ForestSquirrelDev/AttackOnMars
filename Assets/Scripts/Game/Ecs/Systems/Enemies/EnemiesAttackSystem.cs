@@ -31,7 +31,7 @@ namespace Game.Ecs.Systems.Spawners {
             var damageEventsQueue = _pendingEnemyAttacks;
 
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref AttackCounterComponent attackCounter, in LocalToWorld ltw, in EnemyStateComponent enemyState, in Entity enemyEntity) => {
-                if (enemyState.State != EnemyState.Attacking) 
+                if (enemyState.Value != EnemyState.Attacking) 
                     return;
                 if (attackCounter.Value > 0) {
                     attackCounter.Value -= delta;
@@ -76,7 +76,7 @@ namespace Game.Ecs.Systems.Spawners {
                 for (int i = _damageEvents.Count; i > 0; i--) {
                     var damageEvent = _damageEvents.Dequeue();
                     var buildingHealth = _buildingsHealthCollection[damageEvent.Target];
-                    buildingHealth.CurrentHealth -= damageEvent.Amount;
+                    buildingHealth.Value -= damageEvent.Amount;
                     _buildingsHealthCollection[damageEvent.Target] = buildingHealth;
                 }
             }

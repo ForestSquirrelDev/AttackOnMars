@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -5274929297801637913}
   - component: {fileID: 8702840604820584320}
   - component: {fileID: 205703505880618169}
+  - component: {fileID: -970072022768849621}
   m_Layer: 0
   m_Name: thc6
   m_TagString: Untagged
@@ -114,8 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820e928e0958f294d9b0e35f68d413ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  State: 0
-  ArrivedRaycastCheckCounter: 0
+  Value: 0
 --- !u!114 &205703505880618169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,6 +129,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: 1
+--- !u!114 &-970072022768849621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90d84b0b67049934aa78f1cc1732a675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 0
 --- !u!1 &138000
 GameObject:
   m_ObjectHideFlags: 0

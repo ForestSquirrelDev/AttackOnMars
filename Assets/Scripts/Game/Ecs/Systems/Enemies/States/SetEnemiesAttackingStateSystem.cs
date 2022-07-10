@@ -24,13 +24,14 @@ namespace Game.Ecs.Systems.Spawners {
             var raycastCooldown = _config.RaycastCooldown;
             var delta = UnityEngine.Time.deltaTime;
             
-            Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref Translation translation, in BestEnemyDirectionComponent bestDirection, in LocalToWorld ltw) => {
-                if (enemyState.State != EnemyState.ReadyToAttack) return;
-                if (enemyState.ArrivedRaycastCheckCounter > 0) {
-                    enemyState.ArrivedRaycastCheckCounter -= delta;
+            Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref HumanBaseDetectionTickCounterComponent detectionCounter,
+                ref Translation translation, in BestEnemyDirectionComponent bestDirection, in LocalToWorld ltw) => {
+                if (enemyState.Value != EnemyState.ReadyToAttack) return;
+                if (detectionCounter.Value > 0) {
+                    detectionCounter.Value -= delta;
                     return;
                 }
-                enemyState.ArrivedRaycastCheckCounter = raycastCooldown;
+                detectionCounter.Value = raycastCooldown;
                 var start = ltw.Position + new float3(0, raycastHeight, 0);
                 var raycast = new RaycastInput {
                     Start = start, Filter = CollisionLayers.Enemy(), End = ltw.Position + ltw.Forward * raycastLength
@@ -38,7 +39,7 @@ namespace Game.Ecs.Systems.Spawners {
                 var ray = world.CastRay(raycast);
                 
                 if (ray) {
-                    enemyState.State = EnemyState.Attacking;
+                    enemyState.Value = EnemyState.Attacking;
                 }
             }).Schedule(Dependency);
         }

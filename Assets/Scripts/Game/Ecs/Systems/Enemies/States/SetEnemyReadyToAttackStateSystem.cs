@@ -41,14 +41,14 @@ namespace Game.Ecs.Systems.Spawners {
             var checkNeighboringCells = _enemyStatsConfig.CheckNeighbourCells;
             
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref LocalToWorld ltw) => {
-                if (enemyState.State != EnemyState.Moving) return;
+                if (enemyState.Value != EnemyState.Moving) return;
                 var currentIndex = FlowfieldUtility.CalculateIndexFromWorld(ltw.Position, origin, gridSize, cellSize);
                 var targetIndex = FlowfieldUtility.CalculateIndexFromWorld(hivemindTarget.Value, origin, gridSize, cellSize);
                 var currentCell = writer.ListData->Ptr[currentIndex];
                 var targetCell = writer.ListData->Ptr[targetIndex];
                 var arrivedAtCell = currentCell.GridPosition.x == targetCell.GridPosition.x && currentCell.GridPosition.y == targetCell.GridPosition.y;
                 if (arrivedAtCell) {
-                    enemyState.State = EnemyState.ReadyToAttack;
+                    enemyState.Value = EnemyState.ReadyToAttack;
                     return;
                 }
 
@@ -59,7 +59,7 @@ namespace Game.Ecs.Systems.Spawners {
                         gridPos += neighbourOfsets[i];
                         var closeToTarget = !FlowfieldUtility.TileOutOfGrid(gridPos, gridSize) && (currentCell.GridPosition.x == gridPos.x && currentCell.GridPosition.y == gridPos.y);
                         if (closeToTarget) {
-                            enemyState.State = EnemyState.ReadyToAttack;
+                            enemyState.Value = EnemyState.ReadyToAttack;
                             break;
                         }
                     }

@@ -487,6 +487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29a9301380f9b2944b85c380507ccfb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasGameObject: {fileID: 1675594708}
   _healthPercentage: {fileID: 186543694}
   _gradient:
     serializedVersion: 2
@@ -3282,7 +3283,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 2.825e-42, z: 1e-45, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 3.1e-44, w: 3.2e-44}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -3319,6 +3320,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5715360934450542271, guid: f43f4e94fa3ba834aab5a5e8eb66808b, type: 3}
   m_PrefabInstance: {fileID: 5715780396038514548}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1000012487446988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000012487446987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea14c04dbcf50934d90523565b4c2c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5715780396038514548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3329,6 +3342,18 @@ PrefabInstance:
     - target: {fileID: 5715360934450542271, guid: f43f4e94fa3ba834aab5a5e8eb66808b, type: 3}
       propertyPath: m_Name
       value: ElonMuskBase
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715360934855692085, guid: f43f4e94fa3ba834aab5a5e8eb66808b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715360937348741771, guid: f43f4e94fa3ba834aab5a5e8eb66808b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715360937558288831, guid: f43f4e94fa3ba834aab5a5e8eb66808b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5718641347937730421, guid: f43f4e94fa3ba834aab5a5e8eb66808b, type: 3}
       propertyPath: m_RootOrder

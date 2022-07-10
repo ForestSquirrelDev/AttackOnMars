@@ -45,6 +45,10 @@ MonoBehaviour:
     m_Address: prefab_muzzelFlashParticles
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 9ec746d2dd6998448b240e366c498cea
+    m_Address: prefab_humanBaseExplosionParticles
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: cd9f16cbb7bd9f44aa8bc03399bf1def, type: 2}
   m_SchemaSet:

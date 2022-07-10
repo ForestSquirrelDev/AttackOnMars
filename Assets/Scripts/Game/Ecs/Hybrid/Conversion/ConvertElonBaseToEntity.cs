@@ -18,7 +18,7 @@ namespace Game.Ecs.Hybrid.Conversion {
             var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(_base, conversionSettings);
             // physics body is added here because conversion for some reason doesn't want to grab it from the gameobject authoring component
             EntityManager.AddComponent<PhysicsBodyAuthoring>(entity);
-            EntityManager.SetComponentData(entity, new BuildingHealthComponent {CurrentHealth = _config.MaxHealth});
+            EntityManager.SetComponentData(entity, new BuildingHealthComponent {Value = _config.MaxHealth});
             EntityManager.SetName(entity, "ElonMuskBase");
             Destroy(_base);
         }

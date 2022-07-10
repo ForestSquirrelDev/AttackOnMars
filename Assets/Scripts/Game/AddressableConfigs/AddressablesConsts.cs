@@ -8,5 +8,6 @@ namespace Game.AddressableConfigs {
         public const string DefaultTurretsConfig = "config_defaultTurretsConfig";
         
         public const string MuzzelFlashParticles = "prefab_muzzelFlashParticles";
+        public const string HumanBaseExplosionParticles = "prefab_humanBaseExplosionParticles";
     }
 }

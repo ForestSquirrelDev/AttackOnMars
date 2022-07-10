@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.AddressableConfigs;
 using Game.Ecs.Components;
 using Game.Ecs.Components.BlobAssetsData;
+using Game.Ecs.Components.Buildings;
 using Game.Ecs.Components.Tags;
 using Shared;
 using Unity.Burst;
@@ -28,6 +29,7 @@ namespace Game.Ecs.Systems.Spawners {
         private List<SpawnPointData> _spawnPoints;
 
         protected override void OnCreate() {
+            RequireSingletonForUpdate<MainHumanBaseSingletonComponent>();
             _config = AddressablesLoader.Get<EnemiesSpawnerConfig>(AddressablesConsts.DefaultEnemiesSpawnerConfig);
             _enemiesEnumCount = Enum.GetNames(typeof(EnemyType)).Length;
         }
