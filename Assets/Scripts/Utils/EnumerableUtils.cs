@@ -5,9 +5,11 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using Utils.HelperAttributes;
 
 namespace Utils {
     public static class EnumerableUtils {
+        [OffMainThreadUsage(OffMainThreadUsage.Disallowed)]
         public static Entity ReverseFindEntityWithComponent<T>(this Entity entity, EntityManager manager) where T : IComponentData {
             var entityGroups = manager.GetBuffer<LinkedEntityGroup>(entity);
             for (int i = entityGroups.Length - 1; i >= 0; i--) {

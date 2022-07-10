@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Flowfield;
-using Game.Ecs.Utils;
 using Unity.Mathematics;
+using Utils.Maths;
 using Utils.Pathfinding;
 
 #pragma warning disable 660,661

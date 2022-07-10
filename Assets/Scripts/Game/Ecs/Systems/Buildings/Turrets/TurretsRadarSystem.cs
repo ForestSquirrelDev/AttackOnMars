@@ -23,8 +23,8 @@ namespace Game.Ecs.Systems.Spawners {
             var radarFrequency = _turretsConfig.RadarFrequencySeconds;
             var maxDistane = _turretsConfig.EffectiveRadius;
             var deltaTime = UnityEngine.Time.deltaTime;
-            Dependency = Entities.WithAll<Tag_Turret>().ForEach((ref RadarTickCounterComponent radarTickCounter, ref CurrentTurretTargetComponent currentTarget, in LocalToWorld ltw, in CurrentTurretStateComponent state) => {
-                if (state.Value != TurretState.ScanningForEnemies) return;
+            Dependency = Entities.WithAll<Tag_Turret>().ForEach((ref RadarTickCounterComponent radarTickCounter, ref CurrentTurretTargetComponent currentTarget, in LocalToWorld ltw, in TurretStateComponent state) => {
+                if (state.CurrentState != TurretState.ScanningForEnemies) return;
                 
                 if (radarTickCounter.Value > 0) {
                     radarTickCounter.Value -= deltaTime;

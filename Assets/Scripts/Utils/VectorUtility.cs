@@ -114,5 +114,17 @@ namespace Utils {
         public static Vector3 MaxValue() {
             return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         }
+        
+        public static float3 Invalid() {
+            return new float3(float.MinValue, float.MinValue, float.MinValue);
+        }
+
+        public static float3 Up(this float3 f) {
+            return new float3(0, 1, 0);
+        }
+        
+        public static bool Approximately(this Vector3 v, Vector3 v2) {
+            return Mathf.Approximately(v.x, v2.x) && Mathf.Approximately(v.y, v2.y) && Mathf.Approximately(v.z, v2.z);
+        }
     }
 }

@@ -63,13 +63,19 @@ namespace Utils {
         public static float3 GetScale(this float4x4 matrix) {
             return new float3(math.length(matrix.c0.xyz), math.length(matrix.c1.xyz), math.length(matrix.c2.xyz));
         }
-        
+
         public static Quaternion GetRotation(this Matrix4x4 m) {
             var forward = m.GetColumn(2);
             var up = m.GetColumn(1);
             return Quaternion.LookRotation(forward, up);
         }
- 
+
+        public static quaternion GetRotation(this float4x4 m) {
+            var forward = m.c2;
+            var up = m.c1;
+            return quaternion.LookRotation(forward.xyz, up.xyz);
+        }
+
         public static Vector3 GetPosition(this Matrix4x4 m) {
             return m.GetColumn(3);
         }
@@ -77,18 +83,18 @@ namespace Utils {
         public static Vector3 GetScale(this Matrix4x4 m) {
             return new Vector3(m.GetColumn(0).magnitude, m.GetColumn(1).magnitude, m.GetColumn(2).magnitude);
         }
-        
+
         /// <summary>
         /// Returns world position of local offset, i.e. as if it was a child object of given matrix.
         /// </summary>
         /// <param name="localToWorldMatrixParent">"Parent" matrix</param>
         /// <param name="offset">Offset in the local space of parent matrix</param>
         /// <returns>World position of the offset</returns>
-        public static float4 LocalOffsetToWorldPoint(float4x4 localToWorldMatrixParent, float4 offset) {
+        public static float4 LocalOffsetToWorldPoint(float4x4 localToWorldMatrixParent, float3 offset) {
             var worldToLocalMatrix = math.inverse(localToWorldMatrixParent);
-            var localPos = math.mul(localToWorldMatrixParent, worldToLocalMatrix.c3 + offset);
-            var worldPos = localToWorldMatrixParent.c3 + localPos;
-            return worldPos;
+            var worldVector = math.mul(localToWorldMatrixParent, worldToLocalMatrix.c3 + new float4(offset.xyz, 0));
+            var worldPoint = localToWorldMatrixParent.c3 + worldVector;
+            return worldPoint;
         }
     }
 }

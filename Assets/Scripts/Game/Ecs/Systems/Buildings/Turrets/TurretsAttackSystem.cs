@@ -18,8 +18,8 @@ namespace Game.Ecs.Systems.Spawners {
             var damage = _turretsConfig.Damage;
             var attacksPerUpdate = _turretsConfig.AttacksPerUpdate;
                 
-            Entities.WithAll<Tag_Turret>().ForEach((in RotatableTurretPartsReferenceComponent rotatable, in CurrentTurretTargetComponent currentEnemyTarget, in CurrentTurretStateComponent state) => {
-                if (state.Value != TurretState.Attacking) return;
+            Entities.WithAll<Tag_Turret>().ForEach((in RotatableTurretPartsReferenceComponent rotatable, in CurrentTurretTargetComponent currentEnemyTarget, in TurretStateComponent state) => {
+                if (state.CurrentState != TurretState.Attacking) return;
                 var isValidEntity = enemyHealthData.HasComponent(currentEnemyTarget.Entity);
                 if (!isValidEntity) return;
                 

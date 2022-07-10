@@ -1,8 +1,8 @@
 using System;
-using Game.Ecs.Utils;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
+using Utils.Maths;
 using Utils.Pathfinding;
 
 namespace Game.Ecs.Components.Pathfinding {

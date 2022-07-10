@@ -17,15 +17,15 @@ namespace Game.Ecs.Systems.Spawners {
         protected override void OnUpdate() {
             var lookAtEnemyError = _turretsConfig.LookAtEnemyError;
             var localToWorldData = GetComponentDataFromEntity<LocalToWorld>(true);
-            Entities.WithAll<Tag_Turret>().ForEach((ref CurrentTurretStateComponent state, in CurrentTurretTargetComponent target, in RotatableTurretPartsReferenceComponent rotatable) => {
-                if (state.Value != TurretState.ReadyToAttack) return;
+            Entities.WithAll<Tag_Turret>().ForEach((ref TurretStateComponent state, in CurrentTurretTargetComponent target, in RotatableTurretPartsReferenceComponent rotatable) => {
+                if (state.CurrentState != TurretState.ReadyToAttack) return;
                 
                 var rotatableLtw = localToWorldData[rotatable.BaseRotation];
                 var directionTowardsEnemy = target.Ltw.Position - rotatableLtw.Position;
                 var dot = math.dot(math.normalizesafe(rotatableLtw.Forward), math.normalizesafe(directionTowardsEnemy));
                 
                 if (dot >= lookAtEnemyError) {
-                    state.Value = TurretState.Attacking;
+                    state.CurrentState = TurretState.Attacking;
                 }
             }).WithReadOnly(localToWorldData).Schedule();
         }

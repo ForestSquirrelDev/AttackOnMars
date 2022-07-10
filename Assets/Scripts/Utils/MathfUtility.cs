@@ -41,5 +41,9 @@ namespace Utils.Maths
         public static float Magnitude(this float3 value) {
             return Mathf.Sqrt(Mathf.Pow(value.x, 2) + Mathf.Pow(value.y, 2) + Mathf.Pow(value.z, 2));
         }
+        
+        public static bool Approximately(this float f, float f2) {
+            return Mathf.Approximately(f, f2);
+        }
     }
 }

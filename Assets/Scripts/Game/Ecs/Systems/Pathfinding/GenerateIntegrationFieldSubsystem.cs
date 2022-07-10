@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Utils;
 using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Pathfinding {
@@ -44,8 +45,8 @@ namespace Game.Ecs.Systems.Pathfinding {
                 _gridSize = gridSize;
                 _cellsWriter = cellsWriter;
                 _currentParentCell = currentParentCell;
-                _origin = BoilerplateShortcuts.Invalid();
-                _targetWorld = BoilerplateShortcuts.Invalid();
+                _origin = VectorUtility.Invalid();
+                _targetWorld = VectorUtility.Invalid();
             }
 
             public CreateIntegrationFieldJob(float3 origin, float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, NativeArray<FlowfieldCellComponent> emptyArray) {

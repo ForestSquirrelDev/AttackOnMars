@@ -5,11 +5,11 @@ using Unity.Entities;
 namespace Game.Ecs.Systems.Spawners {
     public partial class SetTurretsScanningStateSystem : SystemBase {
 		protected override void OnUpdate() {
-            Entities.WithAll<Tag_Turret>().ForEach((ref CurrentTurretStateComponent state, in CurrentTurretTargetComponent target) => {
-                if (state.Value == TurretState.ScanningForEnemies) return;
+            Entities.WithAll<Tag_Turret>().ForEach((ref TurretStateComponent state, in CurrentTurretTargetComponent target) => {
+                if (state.CurrentState == TurretState.ScanningForEnemies) return;
 
                 if (target.Entity == Entity.Null) {
-                    state.Value = TurretState.ScanningForEnemies;
+                    state.CurrentState = TurretState.ScanningForEnemies;
                 }
             }).Schedule();
         }

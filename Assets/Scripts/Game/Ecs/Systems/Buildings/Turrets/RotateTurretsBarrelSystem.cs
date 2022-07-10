@@ -17,10 +17,10 @@ namespace Game.Ecs.Systems.Spawners {
             var rotationData = GetComponentDataFromEntity<Rotation>();
             var increaseStep = _turretsConfig.BarrelRotationSpeedIncreateStep;
             var maxSpeed = _turretsConfig.BarrelMaxRotationSpeed;
-            Entities.WithAll<Tag_Turret>().ForEach((ref TurretBarrelCurrentRotationComponent rotationComponent, in RotatableTurretPartsReferenceComponent rotatable, in CurrentTurretStateComponent state) => {
+            Entities.WithAll<Tag_Turret>().ForEach((ref TurretBarrelCurrentRotationComponent rotationComponent, in RotatableTurretPartsReferenceComponent rotatable, in TurretStateComponent state) => {
                 if (!rotationData.HasComponent(rotatable.Barrel)) return;
                 
-                rotationComponent.CurrentSpeed = state.Value != TurretState.Attacking 
+                rotationComponent.CurrentSpeed = state.CurrentState != TurretState.Attacking 
                     ? math.clamp(rotationComponent.CurrentSpeed - increaseStep, 0, maxSpeed) 
                     : math.clamp(rotationComponent.CurrentSpeed + increaseStep, 0, maxSpeed);
                 rotationComponent.Angle += rotationComponent.CurrentSpeed;

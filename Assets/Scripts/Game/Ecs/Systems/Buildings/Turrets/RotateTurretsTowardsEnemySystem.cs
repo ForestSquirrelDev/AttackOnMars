@@ -21,9 +21,9 @@ namespace Game.Ecs.Systems.Spawners {
             var localToWorldData = GetComponentDataFromEntity<LocalToWorld>(true);
             var rotationData = GetComponentDataFromEntity<Rotation>(false);
             Entities.WithAll<Tag_Turret>().ForEach((ref RotatableTurretPartsReferenceComponent rotatable, in CurrentTurretTargetComponent currentTargetComponent, in Entity entity, 
-                in CurrentTurretStateComponent state) => {
+                in TurretStateComponent state) => {
                 if (currentTargetComponent.Entity == Entity.Null) return;
-                if (state.Value != TurretState.ReadyToAttack && state.Value != TurretState.Attacking) return;
+                if (state.CurrentState != TurretState.ReadyToAttack && state.CurrentState != TurretState.Attacking) return;
 
                 var rotatableLtw = localToWorldData[rotatable.BaseRotation];
                 var baseRotation = rotationData[rotatable.BaseRotation];
