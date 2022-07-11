@@ -118,7 +118,6 @@ namespace Game.Ecs.Systems.Pathfinding {
             public unsafe void Execute() {
                 if (_childCellsWriter.ListData->Length > 0) {
                     _childCellsWriter.ListData->Clear();
-                    Debug.Log($"Cleared cells.");
                 }
             }
         }

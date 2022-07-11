@@ -25,7 +25,7 @@ namespace Game.Ecs.Systems.Spawners {
             var delta = UnityEngine.Time.deltaTime;
             
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((ref EnemyStateComponent enemyState, ref HumanBaseDetectionTickCounterComponent detectionCounter,
-                ref Translation translation, in BestEnemyDirectionComponent bestDirection, in LocalToWorld ltw) => {
+                ref Translation translation, in BestEnemyGridDirectionComponent bestDirection, in LocalToWorld ltw) => {
                 if (enemyState.Value != EnemyState.ReadyToAttack) return;
                 if (detectionCounter.Value > 0) {
                     detectionCounter.Value -= delta;

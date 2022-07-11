@@ -13,7 +13,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using Random = Unity.Mathematics.Random;
 
 namespace Game.Ecs.Systems.Spawners {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
@@ -21,28 +20,31 @@ namespace Game.Ecs.Systems.Spawners {
         private int _counter;
         private int _sortKey;
         private int _enemiesEnumCount;
-        private ConvertedEnemiesBlobAssetReference _reference;
+        private ConvertedEnemiesBlobAssetReference _enemiesReference;
         private EndSimulationEntityCommandBufferSystem _ecb;
-        private Random _enemyTypeRandomizer;
         private EnemiesSpawnerConfig _config;
 
         private List<SpawnPointData> _spawnPoints;
+
+        private bool _isRunning;
 
         protected override void OnCreate() {
             RequireSingletonForUpdate<MainHumanBaseSingletonComponent>();
             _config = AddressablesLoader.Get<EnemiesSpawnerConfig>(AddressablesConsts.DefaultEnemiesSpawnerConfig);
             _enemiesEnumCount = Enum.GetNames(typeof(EnemyType)).Length;
+            _ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         }
 
         protected override void OnStartRunning() {
-            _reference = GetSingleton<ConvertedEnemiesBlobAssetReference>();
-            _ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-            _enemyTypeRandomizer = new Random((uint)UnityEngine.Random.Range(1, 1000000));
+            if (_isRunning) return;
             
+            _enemiesReference = GetSingleton<ConvertedEnemiesBlobAssetReference>();
             _spawnPoints = new List<SpawnPointData>();
             Entities.WithAll<EnemySpawnPoint>().ForEach((in LocalToWorld ltw, in EnemySpawnPoint spawnPoint) => {
                 _spawnPoints.Add(new SpawnPointData(ltw.Position, spawnPoint.SpawnRadius));
             }).WithoutBurst().Run();
+            
+            _isRunning = true;
         }
 
         protected override void OnUpdate() {
@@ -60,9 +62,9 @@ namespace Game.Ecs.Systems.Spawners {
                 float3 translation = (float3)UnityEngine.Random.insideUnitSphere * spawnPoint.Radius + spawnPoint.WorldPos;
                 var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
                 var spawnEnemiesJob = new SpawnEnemyJob {
-                    EnemiesReference = _reference,
+                    EnemiesReference = _enemiesReference,
                     Ecb = ecb,
-                    EnemyType = (EnemyType)_enemyTypeRandomizer.NextInt(0, _enemiesEnumCount),
+                    EnemyType = (EnemyType)UnityEngine.Random.Range(0, _enemiesEnumCount),
                     SortKey = _sortKey, 
                     InitialPos = translation
                 };

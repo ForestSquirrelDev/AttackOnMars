@@ -19,7 +19,7 @@ namespace Game.Ecs.Systems {
         protected override void OnUpdate() {
             var xzSpeed = _config.XZMoveSpeed;
             var ySpeed = _config.YMoveSpeed;
-            Entities.WithAll<Tag_Enemy>().ForEach((ref Translation translation, in EnemyStateComponent enemyState, in BestEnemyDirectionComponent bestDirection) => {
+            Entities.WithAll<Tag_Enemy>().ForEach((ref Translation translation, in EnemyStateComponent enemyState, in BestEnemyGridDirectionComponent bestDirection) => {
                 if (enemyState.Value != EnemyState.Moving && enemyState.Value != EnemyState.ReadyToAttack) return;
                 var x = Mathf.MoveTowards(translation.Value.x, translation.Value.x + bestDirection.Value.x, xzSpeed);
                 var y = Mathf.MoveTowards(translation.Value.y, translation.Value.y + bestDirection.Value.y, ySpeed);

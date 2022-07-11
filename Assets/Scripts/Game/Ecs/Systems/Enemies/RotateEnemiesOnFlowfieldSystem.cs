@@ -25,7 +25,7 @@ namespace Game.Ecs.Systems {
             var delta = UnityEngine.Time.deltaTime;
             var basePosition = GetSingleton<CurrentHivemindTargetSingleton>().Value;
 
-            Entities.WithAll<Tag_Enemy>().ForEach((ref Rotation rotation, in LocalToWorld ltw, in BestEnemyDirectionComponent bestDirection, in EnemyStateComponent enemyState) => {
+            Entities.WithAll<Tag_Enemy>().ForEach((ref Rotation rotation, in LocalToWorld ltw, in BestEnemyGridDirectionComponent bestDirection, in EnemyStateComponent enemyState) => {
                 if (bestDirection.Value.Magnitude() <= 0.01f) return;
                 if (enemyState.Value == EnemyState.Attacking) return;
                 

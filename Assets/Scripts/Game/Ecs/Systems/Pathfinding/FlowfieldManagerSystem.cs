@@ -25,7 +25,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private GenerateFlowFieldSubsystem _generateFlowFieldSubsystem;
         private DetectEnemiesAndScheduleChildCellsSystem _detectEnemiesSystem;
         private ManageChildCellsGenerationRequestsSystem _childCellsGenerationSystem;
-        private AssignBestDirectionToEnemiesSystem _assignBestDirectionToEnemiesSystem;
+        private AssignBestGridDirectionToEnemiesSystem _assignBestGridDirectionToEnemiesSystem;
         private SetEnemyReadyToAttackStateSystem _setEnemyReadyToAttackStateSystem;
 
         private FlowfieldConfig _flowfieldConfig;
@@ -53,7 +53,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _generateFlowFieldSubsystem = new GenerateFlowFieldSubsystem(_jobDependenciesScheduler);
             _childCellsGenerationSystem = World.GetOrCreateSystem<ManageChildCellsGenerationRequestsSystem>();
             _detectEnemiesSystem = World.GetOrCreateSystem<DetectEnemiesAndScheduleChildCellsSystem>();
-            _assignBestDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestDirectionToEnemiesSystem>();
+            _assignBestGridDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestGridDirectionToEnemiesSystem>();
             _setEnemyReadyToAttackStateSystem = World.GetOrCreateSystem<SetEnemyReadyToAttackStateSystem>();
         }
 
@@ -76,7 +76,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _detectEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, _flowfieldRuntimeData, _childCellsGenerationSystem);
             _childCellsGenerationSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _emptyCellsGenerationSubSystem,
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
-            _assignBestDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
+            _assignBestGridDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
             _setEnemyReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
         }
         
