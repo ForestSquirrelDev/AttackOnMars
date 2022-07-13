@@ -27,6 +27,7 @@ namespace Game.Ecs.Systems.Pathfinding {
         private ManageChildCellsGenerationRequestsSystem _childCellsGenerationSystem;
         private AssignBestGridDirectionToEnemiesSystem _assignBestGridDirectionToEnemiesSystem;
         private SetEnemyReadyToAttackStateSystem _setEnemyReadyToAttackStateSystem;
+        private AddEnemiesToGridSystem _addEnemiesToGridSystem;
 
         private FlowfieldConfig _flowfieldConfig;
         private TerrainData _terrainData;
@@ -55,6 +56,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             _detectEnemiesSystem = World.GetOrCreateSystem<DetectEnemiesAndScheduleChildCellsSystem>();
             _assignBestGridDirectionToEnemiesSystem = World.GetOrCreateSystem<AssignBestGridDirectionToEnemiesSystem>();
             _setEnemyReadyToAttackStateSystem = World.GetOrCreateSystem<SetEnemyReadyToAttackStateSystem>();
+            _addEnemiesToGridSystem = World.GetOrCreateSystem<AddEnemiesToGridSystem>();
         }
 
         private void InitSelfGlobalDependencies(Transform terrainTransform) {
@@ -78,6 +80,8 @@ namespace Game.Ecs.Systems.Pathfinding {
                 _findBaseCostAndHeightsSubSystem, _generateIntegrationFieldSubsystem, _generateFlowFieldSubsystem, _flowfieldRuntimeData.ParentGridSize, _flowfieldRuntimeData);
             _assignBestGridDirectionToEnemiesSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
             _setEnemyReadyToAttackStateSystem.InjectFlowfieldDependencies(_jobDependenciesScheduler, ParentFlowFieldCells.AsParallelWriter(), _flowfieldRuntimeData);
+            _addEnemiesToGridSystem.InjectFlowfieldDependencies(ParentFlowFieldCells.AsParallelWriter(), _jobDependenciesScheduler, _flowfieldRuntimeData);
+            World.GetOrCreateSystem<RemoveEnemiesFromGridSystem>().InjectFlowfieldDependencies(ParentFlowFieldCells.AsParallelWriter(), _jobDependenciesScheduler, _flowfieldRuntimeData);
         }
         
         private void InitializeParentGrid() {
@@ -140,10 +144,11 @@ namespace Game.Ecs.Systems.Pathfinding {
             for (var index = 0; index < ParentFlowFieldCells.Length; index++) {
                 var cell = ParentFlowFieldCells[index];
                 var childCells = cell.ChildCells;
-                Debug.Log($"Parent cell {index}. Child cells created: {childCells.ListData->IsCreated}. Child cells length: {childCells.ListData->Length}");
+                Debug.Log($"Parent cell {index}. Child cells created: {childCells.ListData->IsCreated}. Child cells length: {childCells.ListData->Length}. entities count: {cell.Entities.Count()}");
                 for (int j = 0; j < childCells.ListData->Length; j++) {
                     var childCell = childCells.ListData->Ptr[j];
-                    Debug.Log($"Child Cell {j}. World pos: {childCell.WorldPosition}. Grid pos: {childCell.GridPosition}. Base cost: {childCell.BaseCost}. Best direction: {childCell.BestDirection}. IS best: {childCell.IsBestCell}");
+                    Debug.Log($"Child Cell {j}. World pos: {childCell.WorldPosition}. Grid pos: {childCell.GridPosition}. Base cost: {childCell.BaseCost}. Best direction: {childCell.BestDirection}. IS best: {childCell.IsBestCell}." +
+                              $"");
                 }
             }
         }
@@ -165,8 +170,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                 
                 for (int i = 0; i < _parentCellsWriter.ListData->Length; i++) {
                     var cell = _parentCellsWriter.ListData->Ptr[i];
-                    cell.InitChildCells(gridSize.x * gridSize.y, Allocator.Persistent);
-                    cell.ChildGridSize = gridSize;
+                    cell.Init(gridSize.x * gridSize.y, 10, Allocator.Persistent);
                     _parentCellsWriter.ListData->Ptr[i] = cell;
                 }
             }

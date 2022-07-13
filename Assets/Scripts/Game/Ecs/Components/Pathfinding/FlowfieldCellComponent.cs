@@ -1,7 +1,7 @@
 using System;
-using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Entities;
 using Unity.Mathematics;
 using Utils.Maths;
 using Utils.Pathfinding;
@@ -13,7 +13,6 @@ namespace Game.Ecs.Components.Pathfinding {
         public float3 WorldPosition;
         public float3 WorldCenter;
         public int2 GridPosition;
-        public int2 ChildGridSize;
         public float Size;
         public FlowFieldRect WorldRect;
         public float BaseCost;
@@ -22,16 +21,20 @@ namespace Game.Ecs.Components.Pathfinding {
         public bool IsBestCell;
         
         public UnsafeList<FlowfieldCellComponent>.ParallelWriter ChildCells => _childCells.AsParallelWriter();
+        public UnsafeHashSet<Entity> Entities => _entities;
         public bool Unwalkable => BaseCost.Approximately(float.MaxValue) || BestCost.Approximately(float.MaxValue);
         
         private UnsafeList<FlowfieldCellComponent> _childCells;
-        
-        public void InitChildCells(int capacity, Allocator allocator) {
-            _childCells = new UnsafeList<FlowfieldCellComponent>(capacity, allocator);
+        private UnsafeHashSet<Entity> _entities;
+
+        public void Init(int childCellsCapacity, int entitiesCapacity, Allocator allocator) {
+            _childCells = new UnsafeList<FlowfieldCellComponent>(childCellsCapacity, allocator);
+            _entities = new UnsafeHashSet<Entity>(entitiesCapacity, allocator);
         }
         
         public void Dispose() {
             _childCells.Dispose();
+            _entities.Dispose();
         }
         
         public bool Equals(FlowfieldCellComponent other) {
