@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Game.Ecs.Systems.Buildings;
 using TMPro;
@@ -12,8 +13,9 @@ namespace UI {
         
         private HumanBaseHealthObserverSystem _healthObserver;
 
-        private void Awake() {
+        private IEnumerator Start() {
             _healthObserver = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<HumanBaseHealthObserverSystem>();
+            yield return new WaitForEndOfFrame();
             StartCoroutine(UpdateRoutine());
         }
 

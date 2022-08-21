@@ -8,6 +8,7 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
@@ -88,8 +89,10 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
              if (_debugCosts) {
                  DrawCosts(cell);
              }
-             if (_drawArrows && ((!(cell.BestDirection.x == 0 && cell.BestDirection.y == 0) && cell.BestCost != float.MaxValue) || cell.IsBestCell)) {
-                 DrawSingleArrow(cell, arrowLength, arrowThickness);
+             if (_drawArrows && ((!(cell.BestFlowfieldDirection.x == 0 && cell.BestFlowfieldDirection.y == 0) && cell.BestCost != float.MaxValue) || cell.IsBestCell)) {
+                 Handles.color = Color.cyan;
+                 DrawSingleArrow(cell.WorldCenter, cell.BestFlowfieldDirection, arrowLength, arrowThickness);
+                 Handles.color = Color.red;
              }
              if (_debugPositions) {
                  var text = cell.GridPosition.ToString();
@@ -103,12 +106,12 @@ namespace Game.Ecs.Systems.Pathfinding.Mono {
              }
          }
         
-         private void DrawSingleArrow(FlowfieldCellComponent cell, float length = 1f, float thickness = 1f) {
-             Handles.color = Color.cyan;
-             var arrowTip = new Vector3(cell.WorldCenter.x + cell.BestDirection.x * length, cell.WorldCenter.y, cell.WorldCenter.z + cell.BestDirection.y * length);
-             Handles.DrawLine(cell.WorldCenter, arrowTip, thickness);
-             var middle = ((Vector3)cell.WorldCenter + arrowTip) * 0.5f;
-             var AB = (Vector3)cell.WorldCenter - arrowTip;
+         private void DrawSingleArrow(float3 worldCenter, int2 bestDirection, float length = 1f, float thickness = 1f) {
+             if (bestDirection.x == 0 && bestDirection.y == 0) return;
+             var arrowTip = new Vector3(worldCenter.x + bestDirection.x * length, worldCenter.y, worldCenter.z + bestDirection.y * length);
+             Handles.DrawLine(worldCenter, arrowTip, thickness);
+             var middle = ((Vector3)worldCenter + arrowTip) * 0.5f;
+             var AB = (Vector3)worldCenter - arrowTip;
              var middleRight = Vector3.Cross(Vector3.down, AB).normalized * length / 3;
              var middleLeft = Vector3.Cross(AB, Vector3.down).normalized * length / 3;
              Handles.DrawLine(arrowTip, (Vector3)middle + middleRight, thickness);

@@ -40,9 +40,9 @@ namespace Game.Ecs.Systems.Pathfinding {
             }
             
             bestCellOut.IsBestCell = true;
-            var bestCellDir = math.normalize(currentParentCell.BestDirection);
+            var bestCellDir = math.normalize(currentParentCell.BestFlowfieldDirection);
           //  Debug.Log($"Best cell dir: {bestCellDir}");
-            bestCellOut.BestDirection = new int2(Mathf.RoundToInt(bestCellDir.x), Mathf.RoundToInt(bestCellDir.y));
+            bestCellOut.BestFlowfieldDirection = new int2(Mathf.RoundToInt(bestCellDir.x), Mathf.RoundToInt(bestCellDir.y));
             _bestCellOut[0] = bestCellOut;
           //  Debug.Log($"%%%%%%%%%%%%%%{bestCellOut.WorldPosition}%%%%%%%%%%");
 
@@ -56,7 +56,7 @@ namespace Game.Ecs.Systems.Pathfinding {
             
         private unsafe FlowfieldCellComponent FindClosestCellToNextBestCell(FlowfieldCellComponent bestDirectionParentCell, FlowfieldCellComponent currentParentCell, 
             UnsafeList<FlowfieldCellComponent>.ParallelWriter currentParentCellChildCells, int2 childCellsGridSize, float childCellSize) {
-            var directionFromCellCenterToBestParentCell = currentParentCell.BestDirection;
+            var directionFromCellCenterToBestParentCell = currentParentCell.BestFlowfieldDirection;
             var bestChildCell = new FlowfieldCellComponent();
             var bestCellWorldPosition = currentParentCell.WorldCenter;
             var bestCellGridPosition = FlowfieldUtility.ToGrid(bestCellWorldPosition, currentParentCell.WorldPosition, childCellSize);

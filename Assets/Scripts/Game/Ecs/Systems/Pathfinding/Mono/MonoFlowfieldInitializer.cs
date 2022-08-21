@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Ecs.Systems.Pathfinding.Mono {
     // Flowfield step 0: call initializer from monobehaviour class.
-    public class MonoFlowfieldInitializer : GameManagerBase {
+    public class MonoFlowfieldInitializer : SystemInitializerBase {
         [SerializeField] private Transform _terrainTransform;
         
         private World World => World.DefaultGameObjectInjectionWorld;

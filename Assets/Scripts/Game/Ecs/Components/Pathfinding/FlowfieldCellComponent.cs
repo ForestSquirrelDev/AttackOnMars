@@ -17,24 +17,45 @@ namespace Game.Ecs.Components.Pathfinding {
         public FlowFieldRect WorldRect;
         public float BaseCost;
         public float BestCost;
-        public int2 BestDirection;
+        public int2 BestFlowfieldDirection;
         public bool IsBestCell;
-        
-        public UnsafeList<FlowfieldCellComponent>.ParallelWriter ChildCells => _childCells.AsParallelWriter();
-        public UnsafeHashSet<Entity> Entities => _entities;
-        public bool Unwalkable => BaseCost.Approximately(float.MaxValue) || BestCost.Approximately(float.MaxValue);
-        
-        private UnsafeList<FlowfieldCellComponent> _childCells;
-        private UnsafeHashSet<Entity> _entities;
 
-        public void Init(int childCellsCapacity, int entitiesCapacity, Allocator allocator) {
+        public FlowfieldNeighbours NeighboursIndexes { get; set; }
+        public UnsafeList<FlowfieldCellComponent>.ParallelWriter ChildCells => _childCells.AsParallelWriter();
+        public UnsafeHashSet<Entity> Entities { get; private set; }
+
+        public bool IsCreated { get; set; }
+        public bool Unwalkable => BaseCost.Approximately(float.MaxValue) || BestCost.Approximately(float.MaxValue);
+
+        private UnsafeList<FlowfieldCellComponent> _childCells;
+
+        public void InitChildCells(int childCellsCapacity, Allocator allocator) {
             _childCells = new UnsafeList<FlowfieldCellComponent>(childCellsCapacity, allocator);
-            _entities = new UnsafeHashSet<Entity>(entitiesCapacity, allocator);
+        }
+
+        public void InitEntities(int initialCapacity, Allocator allocator) {
+            Entities = new UnsafeHashSet<Entity>(initialCapacity, allocator);
+        }
+
+        public void ClearEntities() {
+            if (Entities.IsCreated) {
+                Entities.Dispose();
+            }
+        }
+
+        public void ClearChildCells() {
+            if (!_childCells.IsCreated) return;
+            foreach (var cell in _childCells) {
+                cell.Dispose();
+            }
+            _childCells.Dispose();
         }
         
         public void Dispose() {
-            _childCells.Dispose();
-            _entities.Dispose();
+            if (!IsCreated) return;
+            ClearChildCells();
+            ClearEntities();
+            IsCreated = false;
         }
         
         public bool Equals(FlowfieldCellComponent other) {
@@ -65,5 +86,46 @@ namespace Game.Ecs.Components.Pathfinding {
         }
 
         public static FlowfieldCellComponent Null => new FlowfieldCellComponent();
+    }
+
+    public struct FlowfieldNeighbours {
+        public const int Count = 8;
+
+        public int Length => Count;
+        public int Item1;
+        public int Item2;
+        public int Item3;
+        public int Item4;
+        public int Item5;
+        public int Item6;
+        public int Item7;
+        public int Item8;
+        
+        public int this[int index] {
+            get {
+                return index switch {
+                    0 => Item1,
+                    1 => Item2,
+                    2 => Item3,
+                    3 => Item4,
+                    4 => Item5,
+                    5 => Item6,
+                    6 => Item7,
+                    7 => Item8,
+                    _ => throw new ArgumentException("Unexpected neighbour index")
+                };
+            }
+        }
+        
+        public FlowfieldNeighbours(int item1, int item2, int item3, int item4, int item5, int item6, int item7, int item8) {
+            Item1 = item1;
+            Item2 = item2;
+            Item3 = item3;
+            Item4 = item4;
+            Item5 = item5;
+            Item6 = item6;
+            Item7 = item7;
+            Item8 = item8;
+        }
     }
 }

@@ -267,9 +267,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 329450781}
-  - {fileID: 1604895517}
   - {fileID: 741035158}
+  - {fileID: 1604895517}
   - {fileID: 1386682721}
+  - {fileID: 1739265247}
   m_Father: {fileID: 592202635}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -995,9 +996,10 @@ MonoBehaviour:
   - {fileID: 1217137382}
   _initializersOrdered:
   - {fileID: 329450780}
-  - {fileID: 741035159}
   - {fileID: 1604895518}
+  - {fileID: 741035159}
   - {fileID: 1386682720}
+  - {fileID: 1739265248}
 --- !u!1 &650990768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,7 +1017,7 @@ GameObject:
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &650990769
 Transform:
   m_ObjectHideFlags: 0
@@ -1380,7 +1382,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 104910562}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &741035159
 MonoBehaviour:
@@ -1469,7 +1471,7 @@ GameObject:
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &819911893
 Transform:
   m_ObjectHideFlags: 0
@@ -2330,6 +2332,7 @@ GameObject:
   - component: {fileID: 1604895517}
   - component: {fileID: 1604895518}
   - component: {fileID: 1604895520}
+  - component: {fileID: 1604895519}
   m_Layer: 0
   m_Name: StripEcsFlowfield
   m_TagString: Untagged
@@ -2349,7 +2352,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 104910562}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1604895518
 MonoBehaviour:
@@ -2364,6 +2367,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _terrainTransform: {fileID: 873730278}
+--- !u!114 &1604895519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604895516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b7d4c824bb8c484c852d3f5107346d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1604895520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2658,6 +2673,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpawnRadius: 50
+--- !u!1 &1739265246
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1739265247}
+  - component: {fileID: 1739265248}
+  m_Layer: 0
+  m_Name: SpawnEnemiesSystemInitializer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1739265247
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739265246}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 104910562}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1739265248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739265246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5df857a6d0d19d246a688a7307c40dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _terrain: {fileID: 873730277}
 --- !u!1 &1792470380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2733,7 +2792,7 @@ GameObject:
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1819179977
 Transform:
   m_ObjectHideFlags: 0
@@ -2773,7 +2832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ec66403bd70534ab7fe57d4e4fb9fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnRadius: 50
+  SpawnRadius: 5
 --- !u!1 &1866131195
 GameObject:
   m_ObjectHideFlags: 0

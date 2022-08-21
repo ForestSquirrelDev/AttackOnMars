@@ -10,7 +10,7 @@ namespace Game.Ecs.Systems.Bridge.GlobalGrid {
     /// form of passing initialization data, perhaps Addresables system or scriptable objects. This script should probably be in Core assembly.
     /// todo: untie GridManager.cs from GridKeeperSystem.cs
     /// </summary>
-    public class MonoGridManager : GameManagerBase {
+    public class MonoGridManager : SystemInitializerBase {
         public int Width => _width;
         public int Height => _height;
         public float CellSize => _cellSize;

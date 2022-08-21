@@ -23,13 +23,21 @@ namespace Game.Ecs.Systems.Spawners {
             var writer = _parentCellsWriter;
             var deps = _dependenciesScheduler.GetCombinedReadWriteDependencies();
             var flowfieldData = _flowfieldRuntimeData;
-            
+
             Dependency = Entities.WithAll<Tag_Enemy>().ForEach((in LocalToWorld ltw, in Entity entity) => {
                 var parentCellIndex = FlowfieldUtility.CalculateIndexFromWorld(
                     ltw.Position, flowfieldData.ParentGridOrigin, flowfieldData.ParentGridSize, flowfieldData.ParentCellSize);
+                if (FlowfieldUtility.IsOutOfRange(writer.ListData->Length, parentCellIndex)) return;
                 var parentCell = writer.ListData->Ptr[parentCellIndex];
                 if (parentCell.Unwalkable) return;
-                parentCell.Entities.Add(entity);
+                
+                var childCells = parentCell.ChildCells;
+                var childCellIndex = FlowfieldUtility.CalculateIndexFromWorld(ltw.Position, parentCell.WorldPosition, flowfieldData.ChildGridSize, flowfieldData.ChildCellSize);
+                if (FlowfieldUtility.IsOutOfRange(childCells.ListData->Length, childCellIndex)) return;
+                var childCell = childCells.ListData->Ptr[childCellIndex];
+                if (childCell.Entities.IsCreated == false) return;
+                childCell.Entities.Add(entity);
+
             }).Schedule(JobHandle.CombineDependencies(deps, Dependency));
             
             _dependenciesScheduler.AddExternalReadWriteDependency(Dependency);

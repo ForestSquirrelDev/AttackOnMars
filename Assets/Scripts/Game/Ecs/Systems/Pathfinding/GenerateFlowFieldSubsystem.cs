@@ -40,7 +40,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                     var neighbours = FindNeighbours(cell, _writer, _gridSize);
                     var bestDirection = FindBestDirectionBasedOnCosts(cell, neighbours);
                     neighbours.Dispose();
-                    cell.BestDirection = bestDirection;
+                    cell.BestFlowfieldDirection = bestDirection;
                     
                     _writer.ListData->Ptr[index] = cell;
                 }

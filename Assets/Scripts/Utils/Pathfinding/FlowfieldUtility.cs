@@ -11,15 +11,15 @@ namespace Utils.Pathfinding {
             return CalculateIndexFromGrid(gridPos, gridSize);
         }
 
-        public static int CalculateIndexFromGrid(float x, float z, int2 gridSize) {
+        public static int CalculateIndexFromGrid(float gridPositionX, float gridPositionY, int2 gridSize) {
             var max = Mathf.Max(gridSize.x, gridSize.y);
             var min = Mathf.Min(gridSize.x, gridSize.y);
-            var index = (x * gridSize.x + z) + ((max - min) * x);
+            var index = (gridPositionX * gridSize.x + gridPositionY) + ((max - min) * gridPositionX);
             return Convert.ToInt32(index);
         }
 
-        public static int CalculateIndexFromGrid(int2 grid, int2 gridSize) {
-            return CalculateIndexFromGrid(grid.x, grid.y, gridSize);
+        public static int CalculateIndexFromGrid(int2 gridPosition, int2 gridSize) {
+            return CalculateIndexFromGrid(gridPosition.x, gridPosition.y, gridSize);
         }
 
         public static int2 ToGrid(float3 worldPos, float3 origin, float cellSize) {

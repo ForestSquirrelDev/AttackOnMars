@@ -23,8 +23,8 @@ namespace Game.Ecs.Systems.Spawners {
         protected override unsafe void OnUpdate() {
             var localToWorldData = GetComponentDataFromEntity<LocalToWorld>(true);
             var deps = JobHandle.CombineDependencies(_flowfieldDependenciesScheduler.GetCombinedReadWriteDependencies(), Dependency);
-            var cellEntitiesJob = new ClearCellsEntitiesJob(localToWorldData, _parentCellsWriter, _flowfieldRuntimeData);
-            Dependency = cellEntitiesJob.Schedule(_parentCellsWriter.ListData->Length, deps);
+            var clearCellsEntitiesJob = new ClearCellsEntitiesJob(localToWorldData, _parentCellsWriter, _flowfieldRuntimeData);
+            Dependency = clearCellsEntitiesJob.Schedule(_parentCellsWriter.ListData->Length, deps);
             _flowfieldDependenciesScheduler.AddExternalReadWriteDependency(Dependency);
         }
         
@@ -41,19 +41,28 @@ namespace Game.Ecs.Systems.Spawners {
             }
             
             public unsafe void Execute(int index) {
-                var cell = _parentCellsWriter.ListData->Ptr[index];
-                foreach (var entity in cell.Entities) {
-                    if (!_ltwData.HasComponent(entity)) {
-                        cell.Entities.Remove(entity);
-                        continue;
-                    }
+                var parentCell = _parentCellsWriter.ListData->Ptr[index];
+                var childCells = parentCell.ChildCells;
+                
+                for (int i = 0; i < childCells.ListData->Length; i++) {
+                    var childCell = childCells.ListData->Ptr[i];
+                    var entities = childCell.Entities;
+                    if (!entities.IsCreated) return;
                     
-                    var ltw = _ltwData[entity];
-                    var testedCellIndex = FlowfieldUtility.CalculateIndexFromGrid(cell.GridPosition, _flowfieldData.ParentGridSize);
-                    var entityCellIndex = FlowfieldUtility.CalculateIndexFromWorld(ltw.Position, _flowfieldData.ParentGridOrigin, _flowfieldData.ParentGridSize, _flowfieldData.ParentCellSize);
-                    if (testedCellIndex != entityCellIndex) {
-                        cell.Entities.Remove(entity);
+                    foreach (var entity in childCell.Entities) {
+                        if (!_ltwData.HasComponent(entity)) {
+                            entities.Remove(entity);
+                            continue;
+                        }
+                    
+                        var ltw = _ltwData[entity];
+                        var testedCellIndex = FlowfieldUtility.CalculateIndexFromGrid(childCell.GridPosition, _flowfieldData.ChildGridSize);
+                        var entityCellIndex = FlowfieldUtility.CalculateIndexFromWorld(ltw.Position, parentCell.WorldPosition, _flowfieldData.ChildGridSize, _flowfieldData.ChildCellSize);
+                        if (testedCellIndex != entityCellIndex) {
+                            entities.Remove(entity);
+                        }
                     }
+                    //
                 }
             }
         }

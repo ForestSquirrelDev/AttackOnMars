@@ -1,4 +1,5 @@
 using Game.AddressableConfigs;
+using Game.Ecs.Components;
 using Game.Ecs.Components.Enemies;
 using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Components.Tags;
@@ -19,11 +20,11 @@ namespace Game.Ecs.Systems {
         protected override void OnUpdate() {
             var xzSpeed = _config.XZMoveSpeed;
             var ySpeed = _config.YMoveSpeed;
-            Entities.WithAll<Tag_Enemy>().ForEach((ref Translation translation, in EnemyStateComponent enemyState, in BestEnemyGridDirectionComponent bestDirection) => {
+            Entities.WithAll<Tag_Enemy>().ForEach((ref Translation translation, in EnemyStateComponent enemyState, in EnemySpeedComponent speed, in BestEnemyCombinedDirectionComponent bestDirection) => {
                 if (enemyState.Value != EnemyState.Moving && enemyState.Value != EnemyState.ReadyToAttack) return;
-                var x = Mathf.MoveTowards(translation.Value.x, translation.Value.x + bestDirection.Value.x, xzSpeed);
+                var x = Mathf.MoveTowards(translation.Value.x, translation.Value.x + bestDirection.Value.x, speed.Value);
                 var y = Mathf.MoveTowards(translation.Value.y, translation.Value.y + bestDirection.Value.y, ySpeed);
-                var z = Mathf.MoveTowards(translation.Value.z, translation.Value.z + bestDirection.Value.z, xzSpeed);
+                var z = Mathf.MoveTowards(translation.Value.z, translation.Value.z + bestDirection.Value.z, speed.Value);
                 translation.Value = new float3(x, y, z);
             }).ScheduleParallel();
         }

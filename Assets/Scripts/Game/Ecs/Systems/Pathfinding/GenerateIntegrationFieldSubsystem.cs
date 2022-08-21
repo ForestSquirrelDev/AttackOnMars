@@ -45,8 +45,8 @@ namespace Game.Ecs.Systems.Pathfinding {
                 _gridSize = gridSize;
                 _cellsWriter = cellsWriter;
                 _currentParentCell = currentParentCell;
-                _origin = VectorUtility.Invalid();
-                _targetWorld = VectorUtility.Invalid();
+                _origin = VectorUtility.InvalidFloat3();
+                _targetWorld = VectorUtility.InvalidFloat3();
             }
 
             public CreateIntegrationFieldJob(float3 origin, float3 targetWorld, int2 gridSize, UnsafeList<FlowfieldCellComponent>.ParallelWriter cellsWriter, NativeArray<FlowfieldCellComponent> emptyArray) {

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -93,6 +94,16 @@ namespace Utils {
 
         public static bool IsOutOfRange(IList collection, int index) {
             return index < 0 || index >= collection.Count;
+        }
+
+        public static void Insert<T>(this NativeList<T> list, T element, int position) where T: unmanaged {
+            if (position < 0 || position > list.Length) {
+                throw new IndexOutOfRangeException();
+            }
+            var old = list[position];
+            list.Add(element);
+            list[position] = list[list.Length - 1];
+            list[list.Length - 1] = old;
         }
     }
 }

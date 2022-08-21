@@ -4,15 +4,19 @@ using Game.AddressableConfigs;
 using Game.Ecs.Components;
 using Game.Ecs.Components.BlobAssetsData;
 using Game.Ecs.Components.Buildings;
+using Game.Ecs.Components.Pathfinding;
 using Game.Ecs.Components.Tags;
+using Game.Ecs.Systems.Pathfinding;
 using Shared;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using Utils.Pathfinding;
 
 namespace Game.Ecs.Systems.Spawners {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
@@ -23,16 +27,25 @@ namespace Game.Ecs.Systems.Spawners {
         private ConvertedEnemiesBlobAssetReference _enemiesReference;
         private EndSimulationEntityCommandBufferSystem _ecb;
         private EnemiesSpawnerConfig _config;
-
+        private Terrain _terrain;
         private List<SpawnPointData> _spawnPoints;
 
         private bool _isRunning;
+        private bool _inited;
+
+        private float _countPerFrame;
 
         protected override void OnCreate() {
             RequireSingletonForUpdate<MainHumanBaseSingletonComponent>();
             _config = AddressablesLoader.Get<EnemiesSpawnerConfig>(AddressablesConsts.DefaultEnemiesSpawnerConfig);
+            _countPerFrame = _config.CountPerFrame;
             _enemiesEnumCount = Enum.GetNames(typeof(EnemyType)).Length;
             _ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        }
+
+        public void Init(Terrain terrain) {
+            _terrain = terrain;
+            _inited = true;
         }
 
         protected override void OnStartRunning() {
@@ -48,6 +61,7 @@ namespace Game.Ecs.Systems.Spawners {
         }
 
         protected override void OnUpdate() {
+            if (!_inited) return;
             if (Input.GetKeyDown(KeyCode.F1)) {
                 _counter = 0;
                 Entities.WithAll<Tag_Enemy>().ForEach((ref Entity e) => {
@@ -58,15 +72,20 @@ namespace Game.Ecs.Systems.Spawners {
             _sortKey++;
 
             var spawnPoint = _spawnPoints[UnityEngine.Random.Range(0, _spawnPoints.Count)];
-            for (int i = 0; i < _config.CountPerFrame; i++) {
+            if (_countPerFrame < 1) {
+                _countPerFrame += _countPerFrame;
+                return;
+            }
+            for (int i = 0; i < _countPerFrame; i++) {
                 float3 translation = (float3)UnityEngine.Random.insideUnitSphere * spawnPoint.Radius + spawnPoint.WorldPos;
+                var y = _terrain.SampleHeight(translation);
                 var ecb = _ecb.CreateCommandBuffer().AsParallelWriter();
                 var spawnEnemiesJob = new SpawnEnemyJob {
                     EnemiesReference = _enemiesReference,
                     Ecb = ecb,
                     EnemyType = (EnemyType)UnityEngine.Random.Range(0, _enemiesEnumCount),
                     SortKey = _sortKey, 
-                    InitialPos = translation
+                    InitialPos = new float3(translation.x, y, translation.z)
                 };
             
                 var handle = spawnEnemiesJob.Schedule();
@@ -74,6 +93,8 @@ namespace Game.Ecs.Systems.Spawners {
                 Dependency = handle;
                 _counter++;
             }
+
+            _countPerFrame = _config.CountPerFrame;
         }
 
         public void OnDrawGizmos() {

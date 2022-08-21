@@ -9,5 +9,7 @@ namespace Game.AddressableConfigs {
         
         public const string MuzzelFlashParticles = "prefab_muzzelFlashParticles";
         public const string HumanBaseExplosionParticles = "prefab_humanBaseExplosionParticles";
+
+        public const string LocalAvoidanceConfig = "config_localAvoidanceConfig";
     }
 }

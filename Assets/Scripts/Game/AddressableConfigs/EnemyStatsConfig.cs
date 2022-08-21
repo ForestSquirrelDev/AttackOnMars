@@ -1,11 +1,13 @@
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.AddressableConfigs {
     [CreateAssetMenu(menuName = "GameConfigs/Default Enemy Stats Config")]
     public class EnemyStatsConfig : ScriptableObject {
         [Header("Movement")]
         public float XZMoveSpeed = 0.1f;
+        public float XZRandomSpeedFactor = 0.1f;
         public float YMoveSpeed = 0.2f;
         public float RotationSpeed = 10f;
 
@@ -23,5 +25,6 @@ namespace Game.AddressableConfigs {
 
         [Header("Misc")]
         public float Health = 500;
+        public int GridDirectionUpdateSkipCount = 10;
     }
 }

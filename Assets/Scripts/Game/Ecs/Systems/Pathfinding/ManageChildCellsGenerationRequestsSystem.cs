@@ -87,9 +87,12 @@ namespace Game.Ecs.Systems.Pathfinding {
                 if (cellsToAdd.ListData->Length > 0 || currentParentCell.Unwalkable) continue;
 
                 var generateCellsJob = _emptyCellsGenerationSubSystem.ScheduleReadWrite(_flowfieldRuntimeData.ChildCellSize, _flowfieldRuntimeData.ChildGridSize,
-                    currentParentCell.WorldPosition, cellsToAdd);
+                    currentParentCell.WorldPosition, cellsToAdd, default, true);
+
+                //var initEntitiesJob = new InitChildCellsEntitiesJob(cellsToAdd).Schedule(cellsToAdd.ListData->Length, generateCellsJob);
 
                 var bestCellOut = new NativeArray<FlowfieldCellComponent>(1, Allocator.TempJob);
+                
                 var findClosestToBestParentCellJob = new FindTargetCellJob(arrayIndex, hivemindTarget, bestCellOut, _parentCells, _flowfieldRuntimeData);
                 var closestCellHandle = _jobDependenciesScheduler.ScheduleReadWrite(findClosestToBestParentCellJob, dependenciesIn: generateCellsJob);
 
@@ -97,6 +100,7 @@ namespace Game.Ecs.Systems.Pathfinding {
                     _flowfieldRuntimeData.CostlyHeightThreshold);
                 
                 var generateIntegrationFieldJob = _generateIntegrationFieldSubsystem.ScheduleReadWrite(currentParentCell, bestCellOut, _flowfieldRuntimeData.ChildGridSize, cellsToAdd, fillHeightsJob);
+                
                 var generateFlowfieldJob = _generateFlowFieldSubsystem.ScheduleReadWrite(cellsToAdd, _flowfieldRuntimeData.ChildGridSize, generateIntegrationFieldJob);
                 
                 bestCellOut.Dispose(generateFlowfieldJob);
@@ -116,6 +120,10 @@ namespace Game.Ecs.Systems.Pathfinding {
             }
             
             public unsafe void Execute() {
+                for (int i = 0; i < _childCellsWriter.ListData->Length; i++) {
+                    var childCell = _childCellsWriter.ListData->Ptr[i];
+                    childCell.Dispose();
+                }
                 if (_childCellsWriter.ListData->Length > 0) {
                     _childCellsWriter.ListData->Clear();
                 }

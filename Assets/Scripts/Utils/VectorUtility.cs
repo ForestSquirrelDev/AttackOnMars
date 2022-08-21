@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
+using Utils.Maths;
 
 namespace Utils {
     public static class VectorUtility {
@@ -115,7 +116,7 @@ namespace Utils {
             return new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         }
         
-        public static float3 Invalid() {
+        public static float3 InvalidFloat3() {
             return new float3(float.MinValue, float.MinValue, float.MinValue);
         }
 
@@ -125,6 +126,49 @@ namespace Utils {
         
         public static bool Approximately(this Vector3 v, Vector3 v2) {
             return Mathf.Approximately(v.x, v2.x) && Mathf.Approximately(v.y, v2.y) && Mathf.Approximately(v.z, v2.z);
+        }
+
+        public static int2 InvalidInt2() {
+            return new int2(int.MinValue, int.MinValue);
+        }
+        
+        public static bool IsValidFloat3(this float3 f) {
+            var invalidFloat = InvalidFloat3();
+            return !f.x.Approximately(invalidFloat.x) && !f.y.Approximately(invalidFloat.y) && !f.z.Approximately(invalidFloat.z);
+        }
+        
+        // https://stackoverflow.com/questions/59449628/check-when-two-vector3-lines-intersect-unity3d
+        public static bool LineLineIntersection(out Vector3 intersection, Vector3 linePoint1,
+            Vector3 lineVec1, Vector3 linePoint2, Vector3 lineVec2){
+
+            Vector3 lineVec3 = linePoint2 - linePoint1;
+            Vector3 crossVec1and2 = Vector3.Cross(lineVec1, lineVec2);
+            Vector3 crossVec3and2 = Vector3.Cross(lineVec3, lineVec2);
+
+            float planarFactor = Vector3.Dot(lineVec3, crossVec1and2);
+
+            //is coplanar, and not parallel
+            if( Mathf.Abs(planarFactor) < 0.0001f 
+                && crossVec1and2.sqrMagnitude > 0.0001f)
+            {
+                float s = Vector3.Dot(crossVec3and2, crossVec1and2) 
+                          / crossVec1and2.sqrMagnitude;
+                intersection = linePoint1 + (lineVec1 * s);
+                return true;
+            }
+            else
+            {
+                intersection = Vector3.zero;
+                return false;
+            }
+        }
+
+        public static bool Equals(this float3 f1, float3 f2) {
+            return f1.x.Approximately(f2.x) && f1.y.Approximately(f2.y) && f1.z.Approximately(f2.z);
+        }
+
+        public static bool IsZero(this float3 f) {
+            return f.x.IsZero() && f.y.IsZero() && f.z.IsZero();
         }
     }
 }

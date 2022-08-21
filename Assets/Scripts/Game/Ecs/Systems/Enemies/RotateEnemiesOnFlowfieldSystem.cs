@@ -8,6 +8,7 @@ using Unity.Transforms;
 using Utils.Maths;
 
 namespace Game.Ecs.Systems {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial class RotateEnemiesOnFlowfieldSystem : SystemBase {
         private EnemyStatsConfig _config;
         
@@ -25,13 +26,14 @@ namespace Game.Ecs.Systems {
             var delta = UnityEngine.Time.deltaTime;
             var basePosition = GetSingleton<CurrentHivemindTargetSingleton>().Value;
 
-            Entities.WithAll<Tag_Enemy>().ForEach((ref Rotation rotation, in LocalToWorld ltw, in BestEnemyGridDirectionComponent bestDirection, in EnemyStateComponent enemyState) => {
+            Entities.WithAll<Tag_Enemy>().ForEach((ref Rotation rotation, in LocalToWorld ltw, in BestEnemyCombinedDirectionComponent bestDirection, in EnemyStateComponent enemyState) => {
                 if (bestDirection.Value.Magnitude() <= 0.01f) return;
                 if (enemyState.Value == EnemyState.Attacking) return;
-                
-                var lookAtPoint = enemyState.Value != EnemyState.Attacking ? ltw.Position + bestDirection.Value : ltw.Position + math.normalizesafe(basePosition - ltw.Position);
+
+                var bestDirectionXz = new float3(bestDirection.Value.x, 0, bestDirection.Value.z);
+                var lookAtPoint = enemyState.Value != EnemyState.Attacking ? ltw.Position + bestDirectionXz : ltw.Position + math.normalizesafe(basePosition - ltw.Position);
                 var directionToWorldPoint = lookAtPoint - ltw.Position;
-                var lookRotation = quaternion.LookRotation(directionToWorldPoint, new float3(0, 1, 0));
+                var lookRotation = quaternion.LookRotationSafe(directionToWorldPoint, new float3(0, 1, 0));
                 var lerpedRotation = math.nlerp(ltw.Rotation, lookRotation, t * delta * rotationSpeed);
                 rotation.Value = lerpedRotation;
             }).ScheduleParallel();
