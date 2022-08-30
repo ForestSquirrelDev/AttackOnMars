@@ -21,7 +21,7 @@ Attack on Mars is a simple 3D RTS (kind of) game made with Unity's data-oriented
 
 
 ## Why?
-The whole idea of this project was based on following desires:
+The whole idea of this project was based on following personal desires:
 - Learn ECS concept and take a look at why it is so loved by fellow game programmers
 - Touch the surface of multithreaded programming (yes, it's rather simplified in Unity DOTS by being wrapped into Jobs system, but still 🙂)
 - Add Unity's Jobs system to my tools pocket
