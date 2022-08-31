@@ -9,7 +9,7 @@
 - [Was it worth?](#was-it-worth)
 
 ## What is it?
-Attack on Mars is a simple 3D RTS (kind of) game made with Unity's data-oriented tech stack (and a bunch of stuff from Unity Asset Store 😌), meaning most things in the game is based on Unity's implementation of Entity-Component-System. The game took "inspiration" from the Series40 game "Sturmtrupp mars" where you were supposed to defend your base on Mars from upcoming bugs:
+Attack on Mars is a simple 3D RTS (kind of) game made with Unity's data-oriented tech stack (and a bunch of free visual assets from Unity Asset Store 😌), meaning most things in the game is based on Unity's implementation of Entity-Component-System. The game took "inspiration" from the Series40 game "Sturmtrupp mars" where you were supposed to defend your base on Mars from upcoming bugs:
 
 ![image](https://user-images.githubusercontent.com/82777171/187526687-220afab4-8c7d-4ff5-8cea-b5ee17533fd6.png)
 
